@@ -153,12 +153,7 @@ type
   LatencyLowOut : CDouble ;
   HostAPIName : string;
       end;
-
-
-   type
-   TUOS_ARDeviceInfos = array of TUOS_DeviceInfos ;
-
-
+  
   type
   TUOS_WaveHeaderChunk = packed record
     wFormatTag: smallint;
@@ -225,7 +220,6 @@ type
     Output: integer;
     PAParam: PaStreamParameters;
     FileBuffer: TUOS_FileBuffer;
-
   end;
 
 type
@@ -2548,29 +2542,29 @@ apiinf : PPaHostApiInfo;
 
   while x < Pa_GetDeviceCount()  do
   begin
-
-   UOSDeviceInfos[x].DeviceNum:= x;
+    UOSDeviceInfos[x].DeviceNum:= x;
 
    devinf := Pa_GetDeviceInfo(x) ;
    apiinf := Pa_GetHostApiInfo(devinf^.hostApi);
-   UOSDeviceInfos[x].HostAPIName := apiinf^._name;
-   UOSDeviceInfos[x].DeviceName:= devinf^._name;
+
+    UOSDeviceInfos[x].HostAPIName := apiinf^._name;
+    UOSDeviceInfos[x].DeviceName:= devinf^._name;
 
     if x = UOSDefaultDeviceIn then
     UOSDeviceInfos[x].DefaultDevIn:= true else
- UOSDeviceInfos[x].DefaultDevIn:= false ;
+    UOSDeviceInfos[x].DefaultDevIn:= false ;
 
       if x = UOSDefaultDeviceOut then
     UOSDeviceInfos[x].DefaultDevOut:= true else
- UOSDeviceInfos[x].DefaultDevOut:= false ;
+    UOSDeviceInfos[x].DefaultDevOut:= false ;
 
-       UOSDeviceInfos[x].ChannelsIn := devinf^.maxInputChannels;
-        UOSDeviceInfos[x].ChannelsOut := devinf^.maxOutPutChannels;
+    UOSDeviceInfos[x].ChannelsIn := devinf^.maxInputChannels;
+    UOSDeviceInfos[x].ChannelsOut := devinf^.maxOutPutChannels;
     UOSDeviceInfos[x].SampleRate:= devinf^.defaultSampleRate ;
-     UOSDeviceInfos[x].LatencyHighIn:= devinf^.defaultHighInputLatency ;
-     UOSDeviceInfos[x].LatencyLowIn:= devinf^.defaultLowInputLatency ;
-      UOSDeviceInfos[x].LatencyHighOut:= devinf^.defaultHighOutputLatency ;
-     UOSDeviceInfos[x].LatencyLowOut:= devinf^.defaultLowOutputLatency ;
+    UOSDeviceInfos[x].LatencyHighIn:= devinf^.defaultHighInputLatency ;
+    UOSDeviceInfos[x].LatencyLowIn:= devinf^.defaultLowInputLatency ;
+    UOSDeviceInfos[x].LatencyHighOut:= devinf^.defaultHighOutputLatency ;
+    UOSDeviceInfos[x].LatencyLowOut:= devinf^.defaultLowOutputLatency ;
 
    inc(x) ;
   end;
