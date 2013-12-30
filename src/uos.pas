@@ -1,6 +1,6 @@
 unit uos;
 
-{.$DEFINE Console}// Uncomment it if you want a console application
+{.$DEFINE ConsoleApp}// Uncomment it if you want a console application
 
 {*******************************************************************************
 *                  United Openlibraries of Sound ( UOS )                       *
@@ -53,7 +53,7 @@ unit uos;
 interface
 
 uses
-  {$IF DEFINED(LCL) or DEFINED(Console)}
+ {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
      {$else}
   fpg_base, fpg_main,
     {$endif}
@@ -523,7 +523,7 @@ var
   UOSDeviceCount : integer;
   UOSDefaultDeviceIn : integer ;
   UOSDefaultDeviceOut : integer ;
-         {$IF DEFINED(LCL) or DEFINED(Console)}
+ {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
       {$else}
 const
   MSG_CUSTOM1 = FPGM_USER + 1;
@@ -1966,7 +1966,7 @@ var
   x, x2, x3: integer;
   curpos: cint64;
   err: CInt32;
-    {$IF DEFINED(LCL) or DEFINED(Console)}
+ {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
       {$else}
   msg: TfpgMessageParams;
     {$endif}
@@ -2082,7 +2082,7 @@ begin
 
         ///////////// the loop procedure
         if StreamIn[x].LoopProc <> nil then
-        {$IF DEFINED(LCL) or DEFINED(Console)}
+ {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
           synchronize(StreamIn[x].LoopProc);
     {$else}
         fpgPostMessage(self, refer, MSG_CUSTOM1, msg);

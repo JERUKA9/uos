@@ -1,6 +1,6 @@
 program consoleplay;
 
-/// Warning : Do not forget to uncoment {$DEFINE Console} in uos.pas !
+/// Warning : Do not forget to uncoment {$DEFINE ConsoleApp} in uos.pas !
 
 {$mode objfpc}{$H+}
    {$DEFINE UseCThreads}
