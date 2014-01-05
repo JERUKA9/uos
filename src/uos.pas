@@ -26,7 +26,7 @@ unit uos;
 *  9 th changes: 2013-01-28 (FFT, Filters HighPass, LowPass, BandSelect,       *
 *                                    BandReject, BandPass)                     *
 * 10 th changes: 2013-02-02 (Dibo's time procedures, Max Karpushin add         * 
-*                                 reference counting in PortAudio              *
+*                                 reference counting in PortAudio)              *
 * 11 th changes: 2013-05-03 (Fully FP/fpGUI/Lazarus compatible)                *
 *                                                                              *
 ********************************************************************************}
@@ -1718,7 +1718,7 @@ begin
   if device = -1 then
     StreamOut[x].Data.PAParam.device := Pa_GetDefaultOutputDevice()
   else
-    StreamOut[x].Data.PAParam.SampleFormat := paInt16;
+    StreamOut[x].Data.PAParam.device := device ;
   if SampleRate = -1 then
     StreamOut[x].Data.SampleRate := DefRate
   else
