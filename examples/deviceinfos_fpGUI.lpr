@@ -1,10 +1,9 @@
 program deviceinfos_fpGUI;
 
 {$mode objfpc}{$H+}
-  {$DEFINE UseCThreads}
 
-uses {$IFDEF UNIX} {$IFDEF UseCThreads}
-  {$ENDIF} {$ENDIF}
+uses 
+  fpg_base,
   SysUtils,
   uos,
   Classes,
@@ -13,7 +12,6 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
   fpg_label,
   fpg_Editbtn,
   fpg_grid,
-  fpg_base,
   fpg_main,
   fpg_form { you can add units after this };
 
@@ -165,8 +163,7 @@ end;
         AddColumn('Latency Low In', 120);
          AddColumn('Latency Low Out', 120);
           AddColumn('Host API', 80);
-
-
+  
       DefaultRowHeight := 24;
     end;
 
@@ -297,6 +294,10 @@ end;
     //////////////////////////////////////////////////////////////////////////
 
     FilenameEdit1.Initialdir := ordir + 'lib';
+    
+     {$IF DEFINED(fpGUI)}
+ windowtitle := 'fpgui';
+  {$endif}
 
   end;
 

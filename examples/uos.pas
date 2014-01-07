@@ -1770,7 +1770,7 @@ function TUOS_Player.AddFromFile(Filename: string; OutputIndex: integer;
   ////////// SampleFormat : -1 default : Int16 (0: Float32, 1:Int32, 2:Int16)
   ////////// example : InputIndex := AddFromFile('/usr/home/test.ogg',-1,-1);
 var
-  mh: Tmpg123_handle = nil;
+  //mh: Tmpg123_handle = nil;
   x, err: integer;
   sfInfo: TSF_INFO;
   mpinfo: Tmpg123_frameinfo;
@@ -1966,17 +1966,24 @@ var
   x, x2, x3: integer;
   curpos: cint64;
   err: CInt32;
- {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
-      {$else}
-  msg: TfpgMessageParams;
+   
+     {$IF FPC_FULLVERSION>=20701}
+           {$else}
+   {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
+        {$else}
+     msg: TfpgMessageParams;
     {$endif}
+   {$ENDIF} 
 
 begin
-
   curpos := 0;
   if BeginProc <> nil then
-    synchronize(BeginProc); /////  Execute BeginProc procedure
-
+     /////  Execute BeginProc procedure
+      {$IF FPC_FULLVERSION>=20701}
+        queue(BeginProc);
+           {$else}
+    synchronize(BeginProc);
+       {$ENDIF} 
   repeat
 
     for x := 0 to high(StreamIn) do
@@ -2081,13 +2088,19 @@ begin
         ///// End DSPin AfterBuffProc
 
         ///////////// the loop procedure
+        
+       
         if StreamIn[x].LoopProc <> nil then
- {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
-          synchronize(StreamIn[x].LoopProc);
+        
+   {$IF FPC_FULLVERSION>=20701}
+    queue(StreamIn[x].LoopProc);
+        {$else}
+   {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
+     synchronize(StreamIn[x].LoopProc);
     {$else}
-        fpgPostMessage(self, refer, MSG_CUSTOM1, msg);
+     fpgPostMessage(self, refer, MSG_CUSTOM1, msg);
     {$endif}
-
+   {$ENDIF} 
       end; ///// End Input enabled
 
     end;

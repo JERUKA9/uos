@@ -2,7 +2,7 @@ program simpleplayer_fpGUI;
 
 {$mode objfpc}{$H+}
   {$DEFINE UseCThreads}
-
+ 
 uses {$IFDEF UNIX} {$IFDEF UseCThreads}
   cthreads,
   cwstring, {$ENDIF} {$ENDIF}
@@ -71,7 +71,11 @@ type
       Shift: TShiftState; const pos: TPoint);
     procedure btnTrackOffClick(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; const pos: TPoint);
-    procedure CustomMsgReceived(var msg: TfpgMessageRec); message MSG_CUSTOM1;
+    
+     {$IF FPC_FULLVERSION>=20701}
+        {$else}
+     procedure CustomMsgReceived(var msg: TfpgMessageRec); message MSG_CUSTOM1;
+        {$ENDIF}   
     procedure ClosePlayer1;
     procedure ShowPosition;
     procedure changecheck(Sender: TObject);
@@ -310,19 +314,15 @@ var
       lposition.Text := format('%.2d:%.2d:%.2d.%.3d', [ho, mi, se, ms]);
     end;
   end;
-
+  
+   {$IF FPC_FULLVERSION>=20701}
+        {$else}
   procedure TSimpleplayer.CustomMsgReceived(var msg: TfpgMessageRec);
   begin
     ShowPosition;
   end;
-
-  // constructor TSimpleplayer.Create(AOwner: TComponent);
-  //begin
-  // inherited Create(AOwner);
-  // borderless and steals focus like a normal form
-  // Include(FWindowAttributes, waBorderLess);
-  // end;
-
+    {$ENDIF}
+  
   procedure TSimpleplayer.AfterCreate;
   begin
     {%region 'Auto-generated GUI code' -fold}
@@ -730,6 +730,8 @@ var
 {$endif}
 
             {$ENDIF}
+            
+            
     FilenameEdit4.Initialdir := ordir + 'sound';
     FilenameEdit1.Initialdir := ordir + 'lib';
     FilenameEdit2.Initialdir := ordir + 'lib';
