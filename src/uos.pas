@@ -1307,102 +1307,132 @@ var
   x, ratio: integer;
   vleft, vright: double;
   lleft, lright: double;
+
   ps: PArShort;     //////// if input is Int16 format
   pl: PArLong;      //////// if input is Int32 format
   pf: PArFloat;     //////// if input is Float32 format
+  mins, maxs: array[0..1] of cInt16;    //////// if input is Int16 format
+  minl, maxl: array[0..1] of cInt32;    //////// if input is Int32 format
+  minf, maxf: array[0..1] of cfloat;    //////// if input is Float32 format
 begin
-
-  lleft := 0;
-  lright := 0;
-
 
   case Data.SampleFormat of
     2:
     begin
+      mins[0] := 32767;
+      mins[1] := 32767;
+      maxs[0] := -32768;
+      maxs[1] := -32768;
       ps := @Data.Buffer;
-      for x := 0 to (Data.OutFrames) do
-        if odd(x) then
-        begin
-          if ps^[x] > 0 then
-            lright := lright + ps^[x];
-        end
-        else
-        begin
-          if ps^[x] > 0 then
-            lleft := lleft + ps^[x];
-        end;
-
-      if Data.OutFrames > 0 then
+      x := 0;
+      while x < Data.OutFrames do
       begin
-        if (lleft / (Data.OutFrames div 16)) / 32768 < 1 then
-          Data.LevelLeft := (lleft / (Data.OutFrames div 16)) / 32768
-        else
-          Data.LevelLeft := 1;
-        if (lright / (Data.OutFrames div 16)) / 32768 < 1 then
-          Data.Levelright := (lright / (Data.OutFrames div 16)) / 32768
-        else
-          Data.Levelright := 1;
+        if ps^[x] < mins[0] then
+          mins[0] := ps^[x];
+        if ps^[x] > maxs[0] then
+          maxs[0] := ps^[x];
+
+        Inc(x, 1);
+
+        if ps^[x] < mins[1] then
+          mins[1] := ps^[x];
+        if ps^[x] > maxs[1] then
+          maxs[1] := ps^[x];
+
+        Inc(x, 1);
       end;
+
+      if Abs(mins[0]) > Abs(maxs[0]) then
+        Data.LevelLeft := Sqrt(Abs(mins[0]) / 32768)
+      else
+        Data.LevelLeft := Sqrt(Abs(maxs[0]) / 32768);
+
+      if Abs(mins[1]) > Abs(maxs[1]) then
+        Data.Levelright := Sqrt(Abs(mins[1]) / 32768)
+      else
+        Data.Levelright := Sqrt(Abs(maxs[1]) / 32768);
+
     end;
 
     1:
     begin
+      mins[0] := 2147483647;
+      mins[1] := 2147483647;
+      maxs[0] := -2147483648;
+      maxs[1] := -2147483648;
       pl := @Data.Buffer;
-      for x := 0 to (Data.OutFrames) do
-        if odd(x) then
-        begin
-          if pl^[x] > 0 then
-            lright := lright + pl^[x];
-        end
-        else
-        begin
-          if pl^[x] > 0 then
-            lleft := lleft + pl^[x];
-        end;
-      if Data.OutFrames > 0 then
+      x := 0;
+      while x < Data.OutFrames do
       begin
-        if (lleft / (Data.OutFrames div 32)) / 2147483647 < 1 then
-          Data.LevelLeft := (lleft / (Data.OutFrames div 32)) / 2147483647
-        else
-          Data.LevelLeft := 1;
-        if (lright / (Data.OutFrames div 32)) / 2147483647 < 1 then
-          Data.Levelright := (lright / (Data.OutFrames div 32)) / 2147483647
-        else
-          Data.Levelright := 1;
+        if pl^[x] < minl[0] then
+          minl[0] := pl^[x];
+        if pl^[x] > maxl[0] then
+          maxl[0] := pl^[x];
+
+        Inc(x, 1);
+
+        if pl^[x] < minl[1] then
+          minl[1] := pl^[x];
+        if pl^[x] > maxl[1] then
+          maxl[1] := pl^[x];
+
+        Inc(x, 1);
       end;
+
+      if Abs(minl[0]) > Abs(maxl[0]) then
+        Data.LevelLeft := Sqrt(Abs(minl[0]) / 2147483648)
+      else
+        Data.LevelLeft := Sqrt(Abs(maxl[0]) / 2147483648);
+
+      if Abs(minl[1]) > Abs(maxl[1]) then
+        Data.Levelright := Sqrt(Abs(minl[1]) / 2147483648)
+      else
+        Data.Levelright := Sqrt(Abs(maxl[1]) / 2147483648);
     end;
+
+
     0:
     begin
       case Data.LibOpen of
         0: ratio := 1;
         1: ratio := 2;
       end;
-      pf := @Data.Buffer;
-      for x := 0 to (Data.OutFrames div ratio) do
-        if odd(x) then
-        begin
-          if pf^[x] > 0 then
-            lright := lright + pf^[x];
-        end
-        else
-        begin
-          if pf^[x] > 0 then
-            lleft := lleft + pf^[x];
-        end;
-      if Data.OutFrames > 0 then
-      begin
-        if lleft / ((Data.OutFrames div ratio) div 16) < 1 then
-          Data.LevelLeft := lleft / ((Data.OutFrames div ratio) div 16)
-        else
-          Data.LevelLeft := 1;
-        if lright / ((Data.OutFrames div ratio) div 16) < 1 then
-          Data.Levelright := lright / ((Data.OutFrames div ratio) div 16)
-        else
-          Data.Levelright := 1;
-      end;
-    end;
 
+      minf[0] := 1;
+      minf[1] := 1;
+      maxf[0] := -1;
+      maxf[1] := -1;
+      pf := @Data.Buffer;
+      x := 0;
+      while x < (Data.OutFrames div ratio) do
+      begin
+        if pf^[x] < minf[0] then
+          minf[0] := pf^[x];
+        if pf^[x] > maxf[0] then
+          maxf[0] := pf^[x];
+
+        Inc(x, 1);
+
+        if pf^[x] < minf[1] then
+          minf[1] := pf^[x];
+        if pf^[x] > maxf[1] then
+          maxf[1] := pf^[x];
+
+        Inc(x, 1);
+      end;
+
+      if Abs(minf[0]) > Abs(maxf[0]) then
+        Data.LevelLeft := Sqrt(Abs(minf[0]))
+      else
+        Data.LevelLeft := Sqrt(Abs(maxf[0]));
+
+      if Abs(minf[1]) > Abs(maxf[1]) then
+        Data.Levelright := Sqrt(Abs(minf[1]))
+      else
+        Data.Levelright := Sqrt(Abs(maxf[1]));
+    end;
   end;
+
   Result := Data;
 end;
 

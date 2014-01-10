@@ -1,7 +1,8 @@
-Here are the great contributors of uos.
-
+Here are the great contributors of uos :
 
 KpjComp : He gives the way to link PortAudio with SndFile and shows the best way to pause a thread.
+
+Sandro Cumerlato : He gives the DSPLevel procedure and lot of other perfect code and ideas.
 
 Blaazen : He knows digital audio and explains me how it works.
 
