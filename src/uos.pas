@@ -1357,10 +1357,10 @@ begin
 
     1:
     begin
-      mins[0] := 2147483647;
-      mins[1] := 2147483647;
-      maxs[0] := -2147483648;
-      maxs[1] := -2147483648;
+      minl[0] := 2147483647;
+      minl[1] := 2147483647;
+      maxl[0] := -2147483648;
+      maxl[1] := -2147483648;
       pl := @Data.Buffer;
       x := 0;
       while x < Data.OutFrames do
