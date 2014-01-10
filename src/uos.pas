@@ -67,7 +67,8 @@ type
   PArFloat = ^TArFloat;
   PArShort = ^TArShort;
   PArLong = ^TArLong;
-  procedure UOS_GetInfoDevice()  ;
+
+procedure UOS_GetInfoDevice();
 
 const
   ///// error
@@ -138,23 +139,23 @@ type
     function InitLib: integer;
   end;
 
-  type
-   TUOS_DeviceInfos = record
-  DeviceNum: shortint;
-  DeviceName : string;
-  DefaultDevIn : boolean;
-  DefaultDevOut : boolean;
-  ChannelsIn : integer;
-  ChannelsOut : integer;
-  SampleRate : CDouble;
-  LatencyHighIn : CDouble ;
-  LatencyLowIn: CDouble ;
-  LatencyHighOut : CDouble ;
-  LatencyLowOut : CDouble ;
-  HostAPIName : string;
-      end;
-  
-  type
+type
+  TUOS_DeviceInfos = record
+    DeviceNum: shortint;
+    DeviceName: string;
+    DefaultDevIn: boolean;
+    DefaultDevOut: boolean;
+    ChannelsIn: integer;
+    ChannelsOut: integer;
+    SampleRate: CDouble;
+    LatencyHighIn: CDouble;
+    LatencyLowIn: CDouble;
+    LatencyHighOut: CDouble;
+    LatencyLowOut: CDouble;
+    HostAPIName: string;
+  end;
+
+type
   TUOS_WaveHeaderChunk = packed record
     wFormatTag: smallint;
     wChannels: word;
@@ -185,6 +186,7 @@ type
     Status: shortint;
     Buffer: TArFloat;
     VLeft, VRight: double;
+    LevelLeft, LevelRight: double;
      {$if defined(cpu64)}
     Wantframes: Tsf_count_t;
     OutFrames: Tsf_count_t;
@@ -235,7 +237,7 @@ type
 
 type
   TFunc = function(Data: TUOS_Data; FFT: TUOS_FFT): TArFloat;
-  TProc = procedure(Data: TUOS_Data; FFT: TUOS_FFT) of object;
+  TProc = procedure of object;
 
 type
   TUOS_InStream = class;
@@ -344,6 +346,14 @@ type
     ////////// InputIndex : InputIndex of existing input
     ////// result : current postion in sample
 
+    function InputGetVolumeLeft(InputIndex: integer): double;
+    ////////// InputIndex : InputIndex of existing input
+    ////// result : left volume from 0 to 1
+
+    function InputGetVolumeRight(InputIndex: integer): double;
+    ////////// InputIndex : InputIndex of existing input
+    ////// result : right volume from 0 to 1
+
     function InputPositionSeconds(InputIndex: integer): cfloat;
     ////////// InputIndex : InputIndex of existing input
     ///////  result : current postion of Input in seconds
@@ -441,6 +451,10 @@ type
     ////////// LoopProc : External procedure to execute after DSP done
     ////////// example : SetFilterOut(OutputIndex1,FilterOutIndex1,1000,1500,-1,True,True,nil);
 
+    function UOS_DSPLevel(Data: TUOS_Data): TUOS_Data;
+    //////////// to get level of buffer (volume)
+
+
     function AddDSPVolumeIn(InputIndex: integer; VolLeft: double;
       VolRight: double): integer;
     ///// DSP Volume changer
@@ -519,10 +533,10 @@ type
 var
   UOSLoadFlag: shortint;
   UOSLoadResult: TUOS_LoadResult;
-  UOSDeviceInfos : array of TUOS_DeviceInfos ;
-  UOSDeviceCount : integer;
-  UOSDefaultDeviceIn : integer ;
-  UOSDefaultDeviceOut : integer ;
+  UOSDeviceInfos: array of TUOS_DeviceInfos;
+  UOSDeviceCount: integer;
+  UOSDefaultDeviceIn: integer;
+  UOSDefaultDeviceOut: integer;
  {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
       {$else}
 const
@@ -783,6 +797,26 @@ begin
   Result := 0;
   if (InputIndex > -1) and (InputIndex < length(StreamIn)) then
     Result := StreamIn[InputIndex].Data.Position;
+end;
+
+function TUOS_Player.InputGetVolumeLeft(InputIndex: integer): double;
+  ////////// InputIndex : InputIndex of existing input
+  ////// result : left volume from 0 to 1
+begin
+  Result := 0;
+  if (InputIndex > -1) and (InputIndex < length(StreamIn)) then
+    Result := StreamIn[InputIndex].Data.LevelLeft;
+
+end;
+
+
+function TUOS_Player.InputGetVolumeRight(InputIndex: integer): double;
+  ////////// InputIndex : InputIndex of existing input
+  ////// result : right volume from 0 to 1
+begin
+  Result := 0;
+  if (InputIndex > -1) and (InputIndex < length(StreamIn)) then
+    Result := StreamIn[InputIndex].Data.LevelRight;
 end;
 
 function TUOS_Player.InputPositionSeconds(InputIndex: integer): cfloat;
@@ -1267,6 +1301,113 @@ begin
   Result := Data.Buffer;
 end;
 
+
+function TUOS_Player.UOS_DSPLevel(Data: TUOS_Data): TUOS_Data;
+var
+  x, ratio: integer;
+  vleft, vright: double;
+  lleft, lright: double;
+  ps: PArShort;     //////// if input is Int16 format
+  pl: PArLong;      //////// if input is Int32 format
+  pf: PArFloat;     //////// if input is Float32 format
+begin
+
+  lleft := 0;
+  lright := 0;
+
+
+  case Data.SampleFormat of
+    2:
+    begin
+      ps := @Data.Buffer;
+      for x := 0 to (Data.OutFrames) do
+        if odd(x) then
+        begin
+          if ps^[x] > 0 then
+            lright := lright + ps^[x];
+        end
+        else
+        begin
+          if ps^[x] > 0 then
+            lleft := lleft + ps^[x];
+        end;
+
+      if Data.OutFrames > 0 then
+      begin
+        if (lleft / (Data.OutFrames div 16)) / 32768 < 1 then
+          Data.LevelLeft := (lleft / (Data.OutFrames div 16)) / 32768
+        else
+          Data.LevelLeft := 1;
+        if (lright / (Data.OutFrames div 16)) / 32768 < 1 then
+          Data.Levelright := (lright / (Data.OutFrames div 16)) / 32768
+        else
+          Data.Levelright := 1;
+      end;
+    end;
+
+    1:
+    begin
+      pl := @Data.Buffer;
+      for x := 0 to (Data.OutFrames) do
+        if odd(x) then
+        begin
+          if pl^[x] > 0 then
+            lright := lright + pl^[x];
+        end
+        else
+        begin
+          if pl^[x] > 0 then
+            lleft := lleft + pl^[x];
+        end;
+      if Data.OutFrames > 0 then
+      begin
+        if (lleft / (Data.OutFrames div 32)) / 2147483647 < 1 then
+          Data.LevelLeft := (lleft / (Data.OutFrames div 32)) / 2147483647
+        else
+          Data.LevelLeft := 1;
+        if (lright / (Data.OutFrames div 32)) / 2147483647 < 1 then
+          Data.Levelright := (lright / (Data.OutFrames div 32)) / 2147483647
+        else
+          Data.Levelright := 1;
+      end;
+    end;
+    0:
+    begin
+      case Data.LibOpen of
+        0: ratio := 1;
+        1: ratio := 2;
+      end;
+      pf := @Data.Buffer;
+      for x := 0 to (Data.OutFrames div ratio) do
+        if odd(x) then
+        begin
+          if pf^[x] > 0 then
+            lright := lright + pf^[x];
+        end
+        else
+        begin
+          if pf^[x] > 0 then
+            lleft := lleft + pf^[x];
+        end;
+      if Data.OutFrames > 0 then
+      begin
+        if lleft / ((Data.OutFrames div ratio) div 16) < 1 then
+          Data.LevelLeft := lleft / ((Data.OutFrames div ratio) div 16)
+        else
+          Data.LevelLeft := 1;
+        if lright / ((Data.OutFrames div ratio) div 16) < 1 then
+          Data.Levelright := lright / ((Data.OutFrames div ratio) div 16)
+        else
+          Data.Levelright := 1;
+      end;
+    end;
+
+  end;
+  Result := Data;
+end;
+
+
+
 function UOS_BandFilter(Data: TUOS_Data; fft: TUOS_FFT): TArFloat;
 var
   i, ratio: integer;
@@ -1454,7 +1595,7 @@ function TUOS_Player.AddDSPVolumeIn(InputIndex: integer; VolLeft: double;
   ////////// InputIndex : InputIndex of a existing Input
   ////////// VolLeft : Left volume
   ////////// VolRight : Right volume
-  //  result : -1 nothing created, otherwise index of DSPIn in array    
+  //  result : -1 nothing created, otherwise index of DSPIn in array
   ////////// example  DSPIndex1 := AddDSPVolumeIn(InputIndex1,1,1);
 begin
   Result := AddDSPin(InputIndex, nil, @UOS_DSPVolume, nil);
@@ -1718,7 +1859,7 @@ begin
   if device = -1 then
     StreamOut[x].Data.PAParam.device := Pa_GetDefaultOutputDevice()
   else
-    StreamOut[x].Data.PAParam.device := device ;
+    StreamOut[x].Data.PAParam.device := device;
   if SampleRate = -1 then
     StreamOut[x].Data.SampleRate := DefRate
   else
@@ -1726,7 +1867,8 @@ begin
   if Latency = -1 then
 
     StreamOut[x].Data.PAParam.SuggestedLatency :=
-      ((Pa_GetDeviceInfo(StreamOut[x].Data.PAParam.device)^.defaultHighOutputLatency)) * 1
+      ((Pa_GetDeviceInfo(StreamOut[x].Data.PAParam.device)^.
+      defaultHighOutputLatency)) * 1
 
   else
     StreamOut[x].Data.PAParam.SuggestedLatency := CDouble(Latency);
@@ -1966,24 +2108,24 @@ var
   x, x2, x3: integer;
   curpos: cint64;
   err: CInt32;
-   
+
      {$IF FPC_FULLVERSION>=20701}
            {$else}
    {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
         {$else}
-     msg: TfpgMessageParams;
+  msg: TfpgMessageParams;
     {$endif}
-   {$ENDIF} 
+   {$ENDIF}
 
 begin
   curpos := 0;
   if BeginProc <> nil then
-     /////  Execute BeginProc procedure
+    /////  Execute BeginProc procedure
       {$IF FPC_FULLVERSION>=20701}
-        queue(BeginProc);
+    queue(BeginProc);
            {$else}
-    synchronize(BeginProc);
-       {$ENDIF} 
+  synchronize(BeginProc);
+       {$ENDIF}
   repeat
 
     for x := 0 to high(StreamIn) do
@@ -2062,14 +2204,18 @@ begin
 
         if (StreamIn[x].Data.LibOpen = 1) and (StreamIn[x].Data.SampleFormat < 2) then
 
-          curpos := curpos + (StreamIn[x].Data.OutFrames div (StreamIn[x].Data.Channels * 2))
+          curpos := curpos + (StreamIn[x].Data.OutFrames div
+            (StreamIn[x].Data.Channels * 2))
         //// strange outframes float 32 with Mpg123 ?
         else
-          curpos := curpos + (StreamIn[x].Data.OutFrames div (StreamIn[x].Data.Channels));
+          curpos := curpos + (StreamIn[x].Data.OutFrames div
+            (StreamIn[x].Data.Channels));
 
         StreamIn[x].Data.position := curpos; // new position
 
         x2 := 0;
+
+
 
         //////// DSPin AfterBuffProc
         if (StreamIn[x].Data.Status = 1) and (length(StreamIn[x].DSP) > 0) then
@@ -2079,29 +2225,37 @@ begin
 
               if (StreamIn[x].DSP[x2].AftProc <> nil) then
                 StreamIn[x].Data.Buffer :=
-                  StreamIn[x].DSP[x2].AftProc(StreamIn[x].Data, StreamIn[x].DSP[x2].fftdata);
+                  StreamIn[x].DSP[x2].AftProc(StreamIn[x].Data,
+                  StreamIn[x].DSP[x2].fftdata);
 
               if (StreamIn[x].DSP[x2].LoopProc <> nil) then
-                StreamIn[x].DSP[x2].LoopProc(StreamIn[x].Data, StreamIn[x].DSP[x2].fftdata);
+        {$IF FPC_FULLVERSION>=20701}
+                queue(StreamIn[x].DSP[x2].LoopProc);
+        {$else}
+              synchronize(StreamIn[x].DSP[x2].LoopProc);
+      {$ENDIF}
+
             end;
 
         ///// End DSPin AfterBuffProc
 
         ///////////// the loop procedure
-        
-       
+
+
         if StreamIn[x].LoopProc <> nil then
-        
+
    {$IF FPC_FULLVERSION>=20701}
-    queue(StreamIn[x].LoopProc);
+          queue(StreamIn[x].LoopProc);
         {$else}
    {$IF DEFINED(LCL) or DEFINED(ConsoleApp)}
-     synchronize(StreamIn[x].LoopProc);
+        synchronize(StreamIn[x].LoopProc);
     {$else}
-     fpgPostMessage(self, refer, MSG_CUSTOM1, msg);
+        fpgPostMessage(self, refer, MSG_CUSTOM1, msg);
     {$endif}
-   {$ENDIF} 
-      end; ///// End Input enabled
+   {$ENDIF}
+      end;
+
+      StreamIn[x].Data := UOS_DSPLevel(StreamIn[x].Data);  //// getting the level-volume
 
     end;
     ////////////////// Seeking if StreamIn is terminated
@@ -2147,9 +2301,12 @@ begin
                   StreamOut[x].Data.Buffer :=
                     StreamOut[x].DSP[x3].AftProc(StreamOut[x].Data,
                     StreamOut[x].DSP[x3].fftdata);
-                if (StreamOut[x].DSP[x3].LoopProc <> nil) then
-                  StreamOut[x].DSP[x3].LoopProc(StreamOut[x].Data,
-                    StreamOut[x].DSP[x3].fftdata);
+                if (StreamIn[x].DSP[x3].LoopProc <> nil) then
+        {$IF FPC_FULLVERSION>=20701}
+                  queue(StreamIn[x].DSP[x3].LoopProc);
+        {$else}
+                synchronize(StreamIn[x].DSP[x3].LoopProc);
+      {$ENDIF}
               end;    ///// end DSPOut AfterBuffProc
 
           //////// Convert Input format into Output format if needed:
@@ -2168,8 +2325,9 @@ begin
             1:     /////// Give to output device
             begin
               err :=
-                Pa_WriteStream(StreamOut[x].Data.HandleSt, @StreamOut[x].Data.Buffer[0],
-                StreamIn[x2].Data.outframes div StreamIn[x2].Data.ratio);
+                Pa_WriteStream(StreamOut[x].Data.HandleSt,
+                @StreamOut[x].Data.Buffer[0], StreamIn[x2].Data.outframes div
+                StreamIn[x2].Data.ratio);
               // if err <> 0 then status := 0;   // if you want clean buffer ...
             end;
 
@@ -2337,9 +2495,9 @@ begin
       begin
         Result := 0;
         LoadResult.PAloadERROR := 0;
-          UOSDefaultDeviceOut :=  Pa_GetDefaultOutPutDevice() ;
-          UOSDefaultDeviceIn :=  Pa_GetDefaultInPutDevice() ;
-          UOSDeviceCount := Pa_GetDeviceCount() ;
+        UOSDefaultDeviceOut := Pa_GetDefaultOutPutDevice();
+        UOSDefaultDeviceIn := Pa_GetDefaultInPutDevice();
+        UOSDeviceCount := Pa_GetDeviceCount();
       end
       else
         LoadResult.PAloadERROR := 2;
@@ -2384,9 +2542,9 @@ begin
       begin
         Result := 0;
         LoadResult.PAloadERROR := 0;
-          UOSDefaultDeviceOut :=  Pa_GetDefaultOutPutDevice() ;
-          UOSDefaultDeviceIn :=  Pa_GetDefaultInPutDevice() ;
-          UOSDeviceCount := Pa_GetDeviceCount() ;
+        UOSDefaultDeviceOut := Pa_GetDefaultOutPutDevice();
+        UOSDefaultDeviceIn := Pa_GetDefaultInPutDevice();
+        UOSDeviceCount := Pa_GetDeviceCount();
 
       end
       else
@@ -2443,10 +2601,10 @@ begin
       begin
         Result := 0;
         LoadResult.PAloadERROR := 0;
-          UOSDefaultDeviceOut :=  Pa_GetDefaultOutPutDevice() ;
-          UOSDefaultDeviceIn :=  Pa_GetDefaultInPutDevice() ;
-          UOSDeviceCount := Pa_GetDeviceCount() ;
-       end
+        UOSDefaultDeviceOut := Pa_GetDefaultOutPutDevice();
+        UOSDefaultDeviceIn := Pa_GetDefaultInPutDevice();
+        UOSDeviceCount := Pa_GetDeviceCount();
+      end
       else
       begin
         Result := -1;
@@ -2488,11 +2646,12 @@ begin
         LoadResult.PAloadERROR := 1;
       end
       else
-      if Pa_Load(PA_FileName) then begin
-        LoadResult.PAloadERROR := 0 ;
-          UOSDefaultDeviceOut :=  Pa_GetDefaultOutPutDevice() ;
-          UOSDefaultDeviceIn :=  Pa_GetDefaultInPutDevice() ;
-          UOSDeviceCount := Pa_GetDeviceCount() ;
+      if Pa_Load(PA_FileName) then
+      begin
+        LoadResult.PAloadERROR := 0;
+        UOSDefaultDeviceOut := Pa_GetDefaultOutPutDevice();
+        UOSDefaultDeviceIn := Pa_GetDefaultInPutDevice();
+        UOSDeviceCount := Pa_GetDeviceCount();
 
       end
       else
@@ -2539,50 +2698,52 @@ begin
     Result := InitLib();
 end;
 
-procedure UOS_GetInfoDevice()  ;
+procedure UOS_GetInfoDevice();
 var
-x : integer;
-devinf : PPaDeviceInfo;
-apiinf : PPaHostApiInfo;
- begin
-  x := 0 ;
+  x: integer;
+  devinf: PPaDeviceInfo;
+  apiinf: PPaHostApiInfo;
+begin
+  x := 0;
   SetLength(UOSDeviceInfos, Pa_GetDeviceCount());
 
-  UOSDefaultDeviceOut :=  Pa_GetDefaultOutPutDevice() ;
-  UOSDefaultDeviceIn :=  Pa_GetDefaultInPutDevice() ;
+  UOSDefaultDeviceOut := Pa_GetDefaultOutPutDevice();
+  UOSDefaultDeviceIn := Pa_GetDefaultInPutDevice();
 
-  UOSDeviceCount := Pa_GetDeviceCount() ;
+  UOSDeviceCount := Pa_GetDeviceCount();
 
-  while x < Pa_GetDeviceCount()  do
+  while x < Pa_GetDeviceCount() do
   begin
-    UOSDeviceInfos[x].DeviceNum:= x;
+    UOSDeviceInfos[x].DeviceNum := x;
 
-   devinf := Pa_GetDeviceInfo(x) ;
-   apiinf := Pa_GetHostApiInfo(devinf^.hostApi);
+    devinf := Pa_GetDeviceInfo(x);
+    apiinf := Pa_GetHostApiInfo(devinf^.hostApi);
 
     UOSDeviceInfos[x].HostAPIName := apiinf^._name;
-    UOSDeviceInfos[x].DeviceName:= devinf^._name;
+    UOSDeviceInfos[x].DeviceName := devinf^._name;
 
     if x = UOSDefaultDeviceIn then
-    UOSDeviceInfos[x].DefaultDevIn:= true else
-    UOSDeviceInfos[x].DefaultDevIn:= false ;
+      UOSDeviceInfos[x].DefaultDevIn := True
+    else
+      UOSDeviceInfos[x].DefaultDevIn := False;
 
-      if x = UOSDefaultDeviceOut then
-    UOSDeviceInfos[x].DefaultDevOut:= true else
-    UOSDeviceInfos[x].DefaultDevOut:= false ;
+    if x = UOSDefaultDeviceOut then
+      UOSDeviceInfos[x].DefaultDevOut := True
+    else
+      UOSDeviceInfos[x].DefaultDevOut := False;
 
     UOSDeviceInfos[x].ChannelsIn := devinf^.maxInputChannels;
     UOSDeviceInfos[x].ChannelsOut := devinf^.maxOutPutChannels;
-    UOSDeviceInfos[x].SampleRate:= devinf^.defaultSampleRate ;
-    UOSDeviceInfos[x].LatencyHighIn:= devinf^.defaultHighInputLatency ;
-    UOSDeviceInfos[x].LatencyLowIn:= devinf^.defaultLowInputLatency ;
-    UOSDeviceInfos[x].LatencyHighOut:= devinf^.defaultHighOutputLatency ;
-    UOSDeviceInfos[x].LatencyLowOut:= devinf^.defaultLowOutputLatency ;
+    UOSDeviceInfos[x].SampleRate := devinf^.defaultSampleRate;
+    UOSDeviceInfos[x].LatencyHighIn := devinf^.defaultHighInputLatency;
+    UOSDeviceInfos[x].LatencyLowIn := devinf^.defaultLowInputLatency;
+    UOSDeviceInfos[x].LatencyHighOut := devinf^.defaultHighOutputLatency;
+    UOSDeviceInfos[x].LatencyLowOut := devinf^.defaultLowOutputLatency;
 
-   inc(x) ;
+    Inc(x);
   end;
 
- // := result ;
+  // := result ;
 end;
 
 constructor TUOS_Init.Create;

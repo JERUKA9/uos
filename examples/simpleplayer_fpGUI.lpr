@@ -2,7 +2,7 @@ program simpleplayer_fpGUI;
 
 {$mode objfpc}{$H+}
   {$DEFINE UseCThreads}
- 
+
 uses {$IFDEF UNIX} {$IFDEF UseCThreads}
   cthreads,
   cwstring, {$ENDIF} {$ENDIF}
@@ -18,6 +18,7 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
   fpg_RadioButton,
   fpg_trackbar,
   fpg_CheckBox,
+  fpg_Panel,
   fpg_base,
   fpg_main,
   fpg_form { you can add units after this };
@@ -55,7 +56,8 @@ type
     Label3: TfpgLabel;
     Label4: TfpgLabel;
     Label5: TfpgLabel;
-
+    vuleft: TfpgPanel;
+    vuright: TfpgPanel;
     {@VFD_HEAD_END: Simpleplayer}
   public
     procedure AfterCreate; override;
@@ -71,15 +73,16 @@ type
       Shift: TShiftState; const pos: TPoint);
     procedure btnTrackOffClick(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; const pos: TPoint);
-    
+
      {$IF FPC_FULLVERSION>=20701}
         {$else}
-     procedure CustomMsgReceived(var msg: TfpgMessageRec); message MSG_CUSTOM1;
-        {$ENDIF}   
+    procedure CustomMsgReceived(var msg: TfpgMessageRec); message MSG_CUSTOM1;
+        {$ENDIF}
     procedure ClosePlayer1;
     procedure ShowPosition;
     procedure changecheck(Sender: TObject);
     procedure VolumeChange(Sender: TObject; pos: integer);
+    procedure ShowVolume;
   end;
 
   {@VFD_NEWFORM_DECL}
@@ -90,7 +93,19 @@ var
   Init: TUOS_Init;
   Player1: TUOS_Player;
   ordir, opath: string;
-  Out1Index, In1Index, DSP1Index, DSP2Index: integer;
+  Out1Index, In1Index, DSP1Index, DSP2Index, DSP3Index: integer;
+
+  procedure TSimpleplayer.showvolume;
+  begin
+    if round(Player1.InputGetVolumeLeft(In1Index) * 96) >= 0 then
+      vuLeft.Height := round(Player1.InputGetVolumeLeft(In1Index) * 96);
+    if round(Player1.InputGetVolumeRight(In1Index) * 96) >= 0 then
+      vuRight.Height := round(Player1.InputGetVolumeRight(In1Index) * 96);
+    vuLeft.top := 276 - vuLeft.Height;
+    vuRight.top := 276 - vuRight.Height;
+    vuright.UpdateWindowPosition;
+    vuLeft.UpdateWindowPosition;
+  end;
 
   procedure TSimpleplayer.btnTrackOnClick(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; const pos: TPoint);
@@ -98,8 +113,8 @@ var
     TrackBar1.Tag := 1;
   end;
 
-  procedure TSimpleplayer.btnTrackoffClick(Sender: TObject; Button: TMouseButton;
-    Shift: TShiftState; const pos: TPoint);
+  procedure TSimpleplayer.btnTrackoffClick(Sender: TObject;
+    Button: TMouseButton; Shift: TShiftState; const pos: TPoint);
   begin
     Player1.Seek(In1Index, TrackBar1.position);
     TrackBar1.Tag := 0;
@@ -121,6 +136,10 @@ var
     btnStop.Enabled := True;
     btnPause.Enabled := False;
     btnresume.Enabled := True;
+    vuright.Height := 0;
+    vuleft.Height := 0;
+    vuright.UpdateWindowPosition;
+    vuLeft.UpdateWindowPosition;
   end;
 
   procedure TSimpleplayer.changecheck(Sender: TObject);
@@ -142,6 +161,10 @@ var
     if assigned(Player1) and (btnstart.Enabled = False) then
     begin
       player1.stop;
+      vuright.Height := 0;
+      vuleft.Height := 0;
+      vuright.UpdateWindowPosition;
+      vuLeft.UpdateWindowPosition;
       sleep(100);
     end;
     if btnLoad.Enabled = False then
@@ -180,7 +203,10 @@ var
     radiobutton1.Enabled := True;
     radiobutton2.Enabled := True;
     radiobutton3.Enabled := True;
-
+    vuright.Height := 0;
+    vuleft.Height := 0;
+    vuright.UpdateWindowPosition;
+    vuLeft.UpdateWindowPosition;
     btnStart.Enabled := True;
     btnStop.Enabled := False;
     btnPause.Enabled := False;
@@ -270,6 +296,10 @@ var
     ////////// AfterProc : procedure to do after the buffer is filled
     ////////// LoopProc : external procedure to do after the buffer is filled
 
+    DSP3Index := Player1.AddDSPIn(In1Index, nil, nil, @showvolume);
+    ///// add a DSP procedure for VU meters
+
+
     Player1.SetDSPIn(In1Index, DSP2Index, checkbox1.Checked);
     //// enable reverse to checkbox state;
 
@@ -308,27 +338,31 @@ var
   begin
     if (TrackBar1.Tag = 0) then
     begin
-      TrackBar1.Position := Player1.InputPosition(In1Index);
-      temptime := Player1.InputPositionTime(In1Index);  ////// Length of input in time
-      DecodeTime(temptime, ho, mi, se, ms);
-      lposition.Text := format('%.2d:%.2d:%.2d.%.3d', [ho, mi, se, ms]);
+      if Player1.InputPosition(In1Index) > 0 then
+      begin
+        TrackBar1.Position := Player1.InputPosition(In1Index);
+        temptime := Player1.InputPositionTime(In1Index);  ////// Length of input in time
+        DecodeTime(temptime, ho, mi, se, ms);
+        lposition.Text := format('%.2d:%.2d:%.2d.%.3d', [ho, mi, se, ms]);
+      end;
     end;
   end;
-  
+
    {$IF FPC_FULLVERSION>=20701}
         {$else}
   procedure TSimpleplayer.CustomMsgReceived(var msg: TfpgMessageRec);
   begin
     ShowPosition;
   end;
+
     {$ENDIF}
-  
+
   procedure TSimpleplayer.AfterCreate;
   begin
     {%region 'Auto-generated GUI code' -fold}
     {@VFD_BODY_BEGIN: Simpleplayer}
     Name := 'Simpleplayer';
-    SetPosition(320, 168, 502, 371);
+    SetPosition(320, 168, 502, 322);
     WindowTitle := 'Simple player ';
     Hint := '';
     WindowPosition := wpScreenCenter;
@@ -597,7 +631,7 @@ var
     with TrackBar2 do
     begin
       Name := 'TrackBar2';
-      SetPosition(16, 176, 32, 98);
+      SetPosition(4, 176, 32, 98);
       Hint := '';
       Orientation := orVertical;
       TabOrder := 23;
@@ -608,7 +642,7 @@ var
     with TrackBar3 do
     begin
       Name := 'TrackBar3';
-      SetPosition(60, 176, 28, 98);
+      SetPosition(72, 176, 28, 98);
       Hint := '';
       Orientation := orVertical;
       TabOrder := 24;
@@ -630,7 +664,7 @@ var
     with Label4 do
     begin
       Name := 'Label4';
-      SetPosition(8, 280, 40, 15);
+      SetPosition(-4, 280, 40, 15);
       Alignment := taCenter;
       FontDesc := '#Label1';
       Hint := '';
@@ -641,11 +675,35 @@ var
     with Label5 do
     begin
       Name := 'Label5';
-      SetPosition(56, 280, 36, 19);
+      SetPosition(68, 280, 36, 19);
       Alignment := taCenter;
       FontDesc := '#Label1';
       Hint := '';
       Text := 'Right';
+    end;
+
+    vuleft := TfpgPanel.Create(self);
+    with vuleft do
+    begin
+      Name := 'vuleft';
+      SetPosition(40, 180, 8, 96);
+      BackgroundColor := TfpgColor($00D51D);
+      FontDesc := '#Label1';
+      Hint := '';
+      Style := bsFlat;
+      Text := '';
+    end;
+
+    vuright := TfpgPanel.Create(self);
+    with vuright do
+    begin
+      Name := 'vuright';
+      SetPosition(60, 180, 8, 96);
+      BackgroundColor := TfpgColor($1DD523);
+      FontDesc := '#Label1';
+      Hint := '';
+      Style := bsFlat;
+      Text := '';
     end;
 
     {@VFD_BODY_END: Simpleplayer}
@@ -730,12 +788,17 @@ var
 {$endif}
 
             {$ENDIF}
-            
-            
+
+
     FilenameEdit4.Initialdir := ordir + 'sound';
     FilenameEdit1.Initialdir := ordir + 'lib';
     FilenameEdit2.Initialdir := ordir + 'lib';
     FilenameEdit3.Initialdir := ordir + 'lib';
+
+    vuLeft.Height := 0;
+    vuRight.Height := 0;
+    vuright.UpdateWindowPosition;
+    vuLeft.UpdateWindowPosition;
   end;
 
   procedure TSimpleplayer.UOS_logo(Sender: TObject);

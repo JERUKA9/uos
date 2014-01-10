@@ -85,7 +85,7 @@ object Form1: TForm1
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poDesktopCenter
-  LCLVersion = '1.0.12.0'
+  LCLVersion = '1.3'
   object Shape1: TShape
     Left = 10
     Height = 160
@@ -185,7 +185,7 @@ object Form1: TForm1
     Left = 278
     Height = 24
     Top = 245
-    Width = 79
+    Width = 75
     Caption = 'Reverse'
     OnChange = CheckBox1Change
     TabOrder = 6
@@ -212,9 +212,9 @@ object Form1: TForm1
   end
   object Label4: TLabel
     Left = 24
-    Height = 15
+    Height = 14
     Top = 286
-    Width = 29
+    Width = 27
     Alignment = taCenter
     Caption = 'Vol L'
     Font.Height = -11
@@ -280,9 +280,9 @@ object Form1: TForm1
     TabOrder = 12
   end
   object TrackBar3: TTrackBar
-    Left = 65
+    Left = 76
     Height = 128
-    Top = 154
+    Top = 156
     Width = 46
     Max = 100
     OnChange = TrackBar1Change
@@ -293,10 +293,10 @@ object Form1: TForm1
     TabOrder = 13
   end
   object Label5: TLabel
-    Left = 74
-    Height = 15
+    Left = 84
+    Height = 14
     Top = 286
-    Width = 31
+    Width = 28
     Alignment = taCenter
     Caption = 'Vol R'
     Font.Height = -11
@@ -319,14 +319,14 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 61
+    ClientHeight = 63
     ClientWidth = 124
     Color = clSilver
     ParentColor = False
     TabOrder = 14
     object RadioButton1: TRadioButton
       Left = 6
-      Height = 16
+      Height = 17
       Top = 6
       Width = 112
       Caption = 'Float 32 bit'
@@ -336,8 +336,8 @@ object Form1: TForm1
     end
     object RadioButton2: TRadioButton
       Left = 6
-      Height = 16
-      Top = 22
+      Height = 17
+      Top = 23
       Width = 112
       Caption = 'Int 32 bit'
       TabOrder = 1
@@ -345,7 +345,7 @@ object Form1: TForm1
     object RadioButton3: TRadioButton
       Left = 6
       Height = 17
-      Top = 38
+      Top = 40
       Width = 112
       Caption = 'Int 16 bit'
       TabOrder = 2
@@ -353,27 +353,41 @@ object Form1: TForm1
   end
   object llength: TLabel
     Left = 384
-    Height = 18
+    Height = 15
     Top = 222
-    Width = 85
+    Width = 84
     Caption = '00:00:00.000'
     ParentColor = False
   end
   object lposition: TLabel
     Left = 286
-    Height = 18
+    Height = 15
     Top = 222
-    Width = 85
+    Width = 84
     Caption = '00:00:00.000'
     ParentColor = False
   end
   object Label8: TLabel
     Left = 374
-    Height = 18
+    Height = 15
     Top = 222
-    Width = 7
+    Width = 4
     Caption = '/'
     ParentColor = False
+  end
+  object ShapeRight: TShape
+    Left = 76
+    Height = 100
+    Top = 180
+    Width = 8
+    Brush.Color = clLime
+  end
+  object ShapeLeft: TShape
+    Left = 56
+    Height = 100
+    Top = 180
+    Width = 8
+    Brush.Color = clLime
   end
   object OpenDialog1: TOpenDialog
     left = 76

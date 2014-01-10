@@ -41,6 +41,8 @@ type
     RadioButton3: TRadioButton;
     RadioGroup1: TRadioGroup;
     Shape1: TShape;
+    ShapeRight: TShape;
+    ShapeLeft: TShape;
     TrackBar2: TTrackBar;
     TrackBar1: TTrackBar;
     TrackBar3: TTrackBar;
@@ -60,10 +62,9 @@ type
       Shift: TShiftState; X, Y: integer);
     procedure TrackBar2MouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: integer);
-
     procedure ClosePlayer1;
     procedure ShowPosition;
-
+    procedure showvolume;
   private
     { private declarations }
   public
@@ -80,7 +81,7 @@ var
   Form1: TForm1;
   BufferBMP: TBitmap;
   Player1: TUOS_Player;
-  Out1Index, In1Index, DSP1Index, DSP2Index: integer;
+  Out1Index, In1Index, DSP1Index, DSP2Index, DSP3Index: integer;
   Init: TUOS_Init;
 
 implementation
@@ -88,6 +89,7 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
+
 
 procedure TForm1.ClosePlayer1;
 begin
@@ -98,6 +100,10 @@ begin
   Form1.trackbar2.Enabled := False;
   Form1.radiogroup1.Enabled := True;
   Form1.TrackBar2.Position := 0;
+    Form1.ShapeLeft.height := 0 ;
+   Form1.ShapeRight.height  := 0 ;
+    Form1.ShapeLeft.top := 280  ;
+   Form1.ShapeRight.top  := 280  ;
   form1.lposition.Caption := '00:00:00.000';
 end;
 
@@ -254,6 +260,10 @@ begin
   Player1.Pause;
   Button4.Enabled := True;
   Button5.Enabled := False;
+    Form1.ShapeLeft.height := 0 ;
+   Form1.ShapeRight.height  := 0 ;
+    Form1.ShapeLeft.top := 280  ;
+   Form1.ShapeRight.top  := 280 ;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
@@ -321,6 +331,9 @@ begin
   ////////// BeforeProc : procedure to do before the buffer is filled
   ////////// AfterProc : procedure to do after the buffer is filled
   ////////// LoopProc : external procedure to do after the buffer is filled
+
+  DSP3Index := Player1.AddDSPIn(In1Index, nil,  nil, @showvolume);
+    ///// add a DSP procedure for VU meters
 
   Player1.SetDSPIn(In1Index, DSP2Index, checkbox1.Checked);
   //// enable reverse to checkbox state;
@@ -436,6 +449,15 @@ begin
   end;
 end;
 
+procedure Tform1.showvolume;
+ begin
+    ShapeLeft.height := round(Player1.InputGetVolumeLeft(In1Index) * 116) ;
+    ShapeRight.height  := round(Player1.InputGetVolumeRight(In1Index)  * 116) ;
+    ShapeLeft.top := 280 - ShapeLeft.height ;
+    ShapeRight.top  := 280 - ShapeRight.height ;
+
+ end;
+
 function DSPReverseBefore(Data: TUOS_Data; fft: TUOS_FFT): TArFloat;
 begin
   if Data.position > Data.OutFrames div Data.Channels then
@@ -471,6 +493,10 @@ procedure TForm1.FormCreate(Sender: TObject);
 
 begin
   Form1.Height := 150;
+  ShapeLeft.Height:=0;
+  ShapeRight.Height:=0;
 end;
+
+
 
 end.
