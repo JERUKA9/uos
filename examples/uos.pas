@@ -9,7 +9,7 @@ unit uos;
 *          United procedures to access Open Sound (IN/OUT) libraries           *
 *                                                                              *
 *              With Big contributions of (in alphabetic order)                 *
-*       BigChimp, Blaazen, Dibo, KpjComp, Leledumbo, Lazarus forum, ...        *
+* BigChimp, Blaazen, Dibo, KpjComp, Leledumbo, Lazarus forum, Sandro Cumerlato *
 *                                                                              *
 *                 Fred van Stappen /  fiens@hotmail.com                        *
 *                                                                              *
@@ -26,8 +26,9 @@ unit uos;
 *  9 th changes: 2013-01-28 (FFT, Filters HighPass, LowPass, BandSelect,       *
 *                                    BandReject, BandPass)                     *
 * 10 th changes: 2013-02-02 (Dibo's time procedures, Max Karpushin add         * 
-*                                 reference counting in PortAudio)              *
+*                                 reference counting in PortAudio)             *
 * 11 th changes: 2013-05-03 (Fully FP/fpGUI/Lazarus compatible)                *
+* 12 th changes: 2014-10-01 (Added GetLevel procedure)                         *
 *                                                                              *
 ********************************************************************************}
 
