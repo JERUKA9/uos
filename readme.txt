@@ -1,4 +1,6 @@
-uos : United OpenLib of Sound. uos unifies the best open-source audio libraries.
+uos : United OpenLib of Sound.
+
+uos unifies the best open-source audio libraries.
 
 For fpc, fpGUI, Lazarus and Delphi.
 
@@ -14,7 +16,7 @@ With uos you can:
 
 . Listen to multiple inputs and outputs.
 
-uos uses the PortAudio, SndFile and Mpg123 audio libraries.
+uos uses the SoundTouch, PortAudio, SndFile and Mpg123 audio libraries.
 
 Included in the package:
 . Examples fpGUI, LCL(Lazarus) and console.
