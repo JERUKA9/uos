@@ -5,6 +5,7 @@
     <General>
       <Flags>
         <SaveOnlyProjectUnits Value="True"/>
+        <MainUnitHasTitleStatement Value="False"/>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
@@ -37,7 +38,7 @@
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
-        <Filename Value="simpleplayer_fpGUI.lpr"/>
+        <Filename Value="simpleplayer_fpGUI.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simpleplayer_fpGUI"/>
       </Unit0>

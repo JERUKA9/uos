@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -37,7 +37,7 @@
     </RequiredPackages>
     <Units Count="1">
       <Unit0>
-        <Filename Value="deviceinfos_fpGUI.lpr"/>
+        <Filename Value="deviceinfos_fpGUI.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="deviceinfos_fpGUI"/>
       </Unit0>
@@ -46,7 +46,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="SimplePlayer_FPG"/>
+      <Filename Value="Device_Infos"/>
     </Target>
     <SearchPaths>
       <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>

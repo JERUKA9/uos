@@ -9,7 +9,7 @@ unit main_mp;
 interface
 
 uses
-  uos, Forms, Dialogs, Graphics, StdCtrls, ExtCtrls;
+  uos, Forms, Dialogs, Graphics, StdCtrls, ExtCtrls, Classes;
 
 type
 
@@ -81,12 +81,13 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
 
+    procedure ClosePlayer0;
     procedure ClosePlayer1;
     procedure ClosePlayer2;
     procedure ClosePlayer3;
-    procedure ClosePlayer4;
 
   private
     { private declarations }
@@ -95,14 +96,14 @@ type
     { public declarations }
   end;
 
-procedure UOS_logo();
+procedure uos_logo();
 
 
 var
   Form1: TForm1;
   BufferBMP: TBitmap;
-  Player1, Player2, Player3, Player4: TUOS_Player;
-  testInit: TUOS_Init;
+  PlayerIndex0, PlayerIndex1, PlayerIndex2, PlayerIndex3: cardinal;
+
 
 implementation
 
@@ -110,28 +111,28 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.ClosePlayer1;
+procedure TForm1.ClosePlayer0;
 begin
   button16.Enabled := False;
   button15.Enabled := False;
   button3.Enabled := False;
 end;
 
-procedure TForm1.ClosePlayer2;
+procedure TForm1.ClosePlayer1;
 begin
   button17.Enabled := False;
   button18.Enabled := False;
   button6.Enabled := False;
 end;
 
-procedure TForm1.ClosePlayer3;
+procedure TForm1.ClosePlayer2;
 begin
   button19.Enabled := False;
   button20.Enabled := False;
   button9.Enabled := False;
 end;
 
-procedure TForm1.ClosePlayer4;
+procedure TForm1.ClosePlayer3;
 begin
   button21.Enabled := False;
   button22.Enabled := False;
@@ -139,91 +140,57 @@ begin
 end;
 
 procedure TForm1.FormActivate(Sender: TObject);
-{$IFDEF Darwin}
 var
+  ordir: string;
+{$IFDEF Darwin}
   opath: string;
             {$ENDIF}
 begin
-  UOS_logo();
-         {$IFDEF Windows}
+  uos_logo();
+  ordir := application.Location;
+                  {$IFDEF Windows}
      {$if defined(cpu64)}
-  edit1.Text := application.Location + 'lib\LibPortaudio-64.dll';
-{$else}
-  edit1.Text := application.Location + 'lib\LibPortaudio-32.dll';
+  Edit1.Text := ordir + 'lib\Windows\64bit\LibPortaudio-64.dll';
+  Edit2.Text := ordir + 'lib\Windows\64bit\LibSndFile-64.dll';
+  Edit3.Text := ordir + 'lib\Windows\64bit\LibMpg123-64.dll';
+   {$else}
+  Edit1.Text := ordir + 'lib\Windows\32bit\LibPortaudio-32.dll';
+  Edit2.Text := ordir + 'lib\Windows\32bit\LibSndFile-32.dll';
+  Edit3.Text := ordir + 'lib\Windows\32bit\LibMpg123-32.dll';
    {$endif}
-  edit4.Text := application.Location + 'sound\test.wav';
-  edit5.Text := application.Location + 'sound\test.mp3';
-  edit6.Text := application.Location + 'sound\test.flac';
-  edit7.Text := application.Location + 'sound\test.ogg';
- {$ENDIF}
+  {$ENDIF}
 
   {$IFDEF Darwin}
-  opath := application.Location;
-  opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-  edit1.Text := opath + '/lib/LibPortaudio-32.dylib';
-  edit4.Text := opath + 'sound/test.wav';
-  edit5.Text := opath + 'sound/test.mp3';
-  edit6.Text := opath + 'sound/test.flac';
-  edit7.Text := opath + 'sound/test.ogg';
-  {$ENDIF}
+  opath := ordir;
+  opath := copy(opath, 1, Pos('/uos', opath) - 1);
+  Edit1.Text := opath + '/lib/Mac/32bit/LibPortaudio-32.dylib';
+  Edit2.Text := opath + '/lib/Mac/32bit/LibSndFile-32.dylib';
+  Edit3.Text := opath + '/lib/Mac/32bit/LibMpg123-32.dylib';
+           {$ENDIF}
 
    {$IFDEF linux}
     {$if defined(cpu64)}
-  edit1.Text := application.Location + 'lib/LibPortaudio-64.so';
-{$else}
-  edit1.Text := application.Location + 'lib/LibPortaudio-32.so';
-{$endif}
-  edit4.Text := application.Location + 'sound/test.wav';
-  edit5.Text := application.Location + 'sound/test.mp3';
-  edit6.Text := application.Location + 'sound/test.flac';
-  edit7.Text := application.Location + 'sound/test.ogg';
-   {$ENDIF}
-
-    {$IFDEF Windows}
-       {$if defined(cpu64)}
-  edit2.Text := application.Location + 'lib\LibSndFile-64.dll';
-{$else}
-  edit2.Text := application.Location + 'lib\LibSndFile-32.dll';
-{$endif}
- {$ENDIF}
-
-  {$IFDEF Darwin}
-  opath := application.Location;
-  opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-  edit2.Text := opath + '/lib/LibSndFile-32.dylib';
-  {$ENDIF}
-
-   {$IFDEF linux}
-      {$if defined(cpu64)}
-  edit2.Text := application.Location + 'lib/LibSndFile-64.so';
-{$else}
-  edit2.Text := application.Location + 'lib/LibSndFile-32.so';
-{$endif}
+  Edit1.Text := ordir + 'lib/Linux/64bit/LibPortaudio-64.so';
+  Edit2.Text := ordir + 'lib/Linux/64bit/LibSndFile-64.so';
+  Edit3.Text := ordir + 'lib/Linux/64bit/LibMpg123-64.so';
+  {$else}
+  Edit1.Text := ordir + 'lib/Linux/32bit/LibPortaudio-32.so';
+  Edit2.Text := ordir + 'lib/Linux/32bit/LibSndFile-32.so';
+  Edit3.Text := ordir + 'lib/Linux/32bit/LibMpg123-32.so';
+ {$endif}
     {$ENDIF}
 
- {$IFDEF Windows}
-       {$if defined(cpu64)}
-  edit3.Text := application.Location + 'lib\LibMpg123-64.dll';
-{$else}
-  edit3.Text := application.Location + 'lib\LibMpg123-32.dll';
-{$endif}
- {$ENDIF}
-
-  {$IFDEF Darwin}
-  opath := application.Location;
-  opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-  edit3.Text := opath + '/lib/LibMpg123-32.dylib';
- {$ENDIF}
-
-   {$IFDEF linux}
-      {$if defined(cpu64)}
-  edit3.Text := application.Location + 'lib/LibMpg123-64.so';
-{$else}
-  edit3.Text := application.Location + 'lib/LibMpg123-32.so';
-{$endif}
-  {$ENDIF}
-
   opendialog1.Initialdir := application.Location + 'sound';
+
+  Edit4.Text := application.Location + 'sound' + directoryseparator + 'test.mp3';
+  Edit5.Text := application.Location + 'sound' + directoryseparator + 'test.ogg';
+  Edit6.Text := application.Location + 'sound' + directoryseparator + 'test.wav';
+  Edit7.Text := application.Location + 'sound' + directoryseparator + 'test.flac';
+
+end;
+
+procedure TForm1.FormClose(Sender: TObject);
+begin
 
 end;
 
@@ -235,18 +202,9 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 
 begin
-  testInit := TUOS_Init.Create;   //// Create Iibraries Loader-Init
-
-  testInit.PA_FileName := edit1.Text;
-  testInit.SF_FileName := edit2.Text;
-  testInit.MP_FileName := edit3.Text;
-  testInit.Flag := Loadall;
-
-  testInit.LoadLib;      ///// Load libraries
-
-  if (testInit.LoadResult.PAloaderror = 0) and (testInit.LoadResult.MPloaderror = 0) and
-    (testInit.LoadResult.Sfloaderror = 0) then
-
+  // Load the libraries
+  // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
+  if uos_LoadLib(edit1.Text, edit2.Text, edit3.Text, '') = 0 then
   begin
     form1.hide;
     form1.Position := podefault;
@@ -261,17 +219,17 @@ begin
   end
   else
   begin
-    if testInit.LoadResult.PAloaderror = 1 then
+    if uosLoadResult.PAloaderror = 1 then
       MessageDlg(edit1.Text + ' do not exist...', mtWarning, [mbYes], 0);
-    if testInit.LoadResult.PAloaderror = 2 then
+    if uosLoadResult.PAloaderror = 2 then
       MessageDlg(edit1.Text + ' do not load...', mtWarning, [mbYes], 0);
-    if testInit.LoadResult.SFloaderror = 1 then
+    if uosLoadResult.SFloaderror = 1 then
       MessageDlg(edit2.Text + ' do not exist...', mtWarning, [mbYes], 0);
-    if testInit.LoadResult.SFloaderror = 2 then
+    if uosLoadResult.SFloaderror = 2 then
       MessageDlg(edit2.Text + ' do not load...', mtWarning, [mbYes], 0);
-    if testInit.LoadResult.MPloaderror = 1 then
+    if uosLoadResult.MPloaderror = 1 then
       MessageDlg(edit3.Text + ' do not exist...', mtWarning, [mbYes], 0);
-    if testInit.LoadResult.MPloaderror = 2 then
+    if uosLoadResult.MPloaderror = 2 then
       MessageDlg(edit3.Text + ' do not load...', mtWarning, [mbYes], 0);
   end;
 
@@ -279,21 +237,21 @@ end;
 
 procedure TForm1.Button20Click(Sender: TObject);
 begin
-  Player3.RePlay;
+  uos_RePlay(PlayerIndex2);
   button20.Enabled := False;
   button19.Enabled := True;
 end;
 
 procedure TForm1.Button21Click(Sender: TObject);
 begin
-  Player4.Pause;
+  uos_Pause(PlayerIndex3);
   button22.Enabled := True;
   button21.Enabled := False;
 end;
 
 procedure TForm1.Button22Click(Sender: TObject);
 begin
-  Player4.RePlay;
+  uos_RePlay(PlayerIndex3);
   button22.Enabled := False;
   button21.Enabled := True;
 end;
@@ -308,26 +266,39 @@ end;
 procedure TForm1.Button11Click(Sender: TObject);
 
 begin
-  Player4 := TUOS_Player.Create(True, self);
-  Player4.AddIntoDevOut(-1, -1, -1, -1, 0);   //// add a Output with custom parameters
-  // Player4.AddIntoDevOut;   //// add a Output with default parameters
-  //////////// Device ( -1 is default device )
+  PlayerIndex3 := 3;
+
+  uos_CreatePlayer(PlayerIndex3);
+
+  uos_AddIntoDevOut(PlayerIndex3, -1, -1, -1, -1, 0, -1);
+  //// add a Output with custom parameters
+  //// add a Output into device with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// Device ( -1 is default Output device )
   //////////// Latency  ( -1 is latency suggested ) )
   //////////// SampleRate : delault : -1 (44100)
   //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
   //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Output Index in array
 
-  Player4.AddFromFile(Edit7.Text, -1, 0);
-  //// add a input from file with custom parameters
-  // Player4.AddFromFile(Edit7.Text);  //// add a input from file with default parameters
+
+  uos_AddFromFile(PlayerIndex3, Edit7.Text, -1, 0, -1);
+  //// add input from audio file with custom parameters
   ////////// FileName : filename of audio file
+  //////////// PlayerIndex : Index of a existing Player
   ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
   ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Input Index in array
 
-  Player4.EndProc := @ClosePlayer4;
   /////// procedure to execute when stream is terminated
+  uos_EndProc(PlayerIndex3, @ClosePlayer3);
+  ///// Assign the procedure of object to execute at end
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// ClosePlayer1 : procedure of object to execute inside the loop
 
-  Player4.Play;
+  uos_Play(PlayerIndex3);
   ////// Ok let start it
 
   button22.Enabled := False;
@@ -337,7 +308,7 @@ end;
 
 procedure TForm1.Button12Click(Sender: TObject);
 begin
-  Player4.Stop;
+  uos_Stop(PlayerIndex3);
 end;
 
 procedure TForm1.Button13Click(Sender: TObject);
@@ -356,7 +327,7 @@ end;
 
 procedure TForm1.Button15Click(Sender: TObject);
 begin
-  Player1.Pause;
+  uos_Pause(PlayerIndex0);
   button16.Enabled := True;
   button15.Enabled := False;
 end;
@@ -364,57 +335,70 @@ end;
 
 procedure TForm1.Button16Click(Sender: TObject);
 begin
-  Player1.RePlay;
+  uos_RePlay(PlayerIndex0);
   button16.Enabled := False;
   button15.Enabled := True;
 end;
 
 procedure TForm1.Button17Click(Sender: TObject);
 begin
-  Player2.Pause;
+  uos_Pause(PlayerIndex1);
   button18.Enabled := True;
   button17.Enabled := False;
 end;
 
 procedure TForm1.Button18Click(Sender: TObject);
 begin
-  Player2.RePlay;
+  uos_RePlay(PlayerIndex1);
   button18.Enabled := False;
   button17.Enabled := True;
 end;
 
 procedure TForm1.Button19Click(Sender: TObject);
 begin
-  Player3.Pause;
+  uos_Pause(PlayerIndex2);
   button20.Enabled := True;
   button19.Enabled := False;
 end;
 
-
 procedure TForm1.Button2Click(Sender: TObject);
 
 begin
-  Player1 := TUOS_Player.Create(True, self);
-  Player1.AddIntoDevOut(-1, -1, -1, -1, 0);   //// add a Output with custom parameters
-  // Player1.AddIntoDevOut;   //// add a Output with default parameters
-  //////////// Device ( -1 is default device )
+  PlayerIndex0 := 0;
+
+  uos_CreatePlayer(PlayerIndex0);
+
+  uos_AddIntoDevOut(PlayerIndex0, -1, -1, -1, -1, 0, -1);
+  //// add a Output with custom parameters
+  //// add a Output into device with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// Device ( -1 is default Output device )
   //////////// Latency  ( -1 is latency suggested ) )
   //////////// SampleRate : delault : -1 (44100)
   //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
   //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Output Index in array
 
-  Player1.AddFromFile(Edit4.Text, -1, 0);
-  //// add a input from file with custom parameters
-  // Player1.AddFromFile(Edit4.Text);  //// add a input from file with default parameters
+
+  uos_AddFromFile(PlayerIndex0, Edit4.Text, -1, 0, -1);
+  //// add input from audio file with custom parameters
   ////////// FileName : filename of audio file
+  //////////// PlayerIndex : Index of a existing Player
   ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
   ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Input Index in array
 
-  Player1.EndProc := @ClosePlayer1;
   /////// procedure to execute when stream is terminated
+  uos_EndProc(PlayerIndex0, @ClosePlayer0);
+  ///// Assign the procedure of object to execute at end
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// ClosePlayer1 : procedure of object to execute inside the loop
 
-  Player1.Play;
+  uos_Play(PlayerIndex0);
   ////// Ok let start it
+
 
   button15.Enabled := True;
   button3.Enabled := True;
@@ -422,7 +406,7 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 begin
-  Player1.Stop;
+  uos_Stop(PlayerIndex0);
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
@@ -434,37 +418,48 @@ end;
 procedure TForm1.Button5Click(Sender: TObject);
 
 begin
-  Player2 := TUOS_Player.Create(True, self);
-  Player2.AddIntoDevOut(-1, -1, -1, -1, 0);   //// add a Output with custom parameters
-  // Player2.AddIntoDevOut;   //// add a Output with default parameters
-  // Player2.AddIntoDevOut(-1, -1, -1, -1, 0);   //// add a Output with custom parameters
-  //////////// Device ( -1 is default device )
+  PlayerIndex1 := 1;
+
+  uos_CreatePlayer(PlayerIndex1);
+
+  uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, 0, -1);
+  //// add a Output with custom parameters
+  //// add a Output into device with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// Device ( -1 is default Output device )
   //////////// Latency  ( -1 is latency suggested ) )
   //////////// SampleRate : delault : -1 (44100)
   //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
   //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Output Index in array
 
-  Player2.AddFromFile(Edit5.Text, -1, 0);
-  //// add a input from file with custom parameters
-  // Player2.AddFromFile(Edit5.Text);  //// add a input from file with custom parameters
+
+  uos_AddFromFile(PlayerIndex1, Edit5.Text, -1, 0, -1);
+  //// add input from audio file with custom parameters
   ////////// FileName : filename of audio file
+  //////////// PlayerIndex : Index of a existing Player
   ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
   ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Input Index in array
 
-  Player2.EndProc := @ClosePlayer2;
   /////// procedure to execute when stream is terminated
+  uos_EndProc(PlayerIndex1, @ClosePlayer1);
+  ///// Assign the procedure of object to execute at end
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// ClosePlayer1 : procedure of object to execute inside the loop
 
-  Player2.Play;
+  uos_Play(PlayerIndex1);
   ////// Ok let start it
 
   button17.Enabled := True;
   button6.Enabled := True;
-
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
-  Player2.Stop;
+  uos_Stop(PlayerIndex1);
 end;
 
 procedure TForm1.Button7Click(Sender: TObject);
@@ -475,26 +470,40 @@ end;
 
 procedure TForm1.Button8Click(Sender: TObject);
 begin
-  Player3 := TUOS_Player.Create(True, self);
-  Player3.AddIntoDevOut(-1, -1, -1, -1, 0);   //// add a Output with custom parameters
-  // Player3.AddIntoDevOut;   //// add a Output with default parameters
-  //////////// Device ( -1 is default device )
+  PlayerIndex2 := 2;
+
+  uos_CreatePlayer(PlayerIndex2);
+
+  uos_AddIntoDevOut(PlayerIndex2, -1, -1, -1, -1, 0, -1);
+  //// add a Output with custom parameters
+  //// add a Output into device with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// Device ( -1 is default Output device )
   //////////// Latency  ( -1 is latency suggested ) )
   //////////// SampleRate : delault : -1 (44100)
   //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
   //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Output Index in array
 
-  Player3.AddFromFile(Edit6.Text, -1, 0);
-  //// add a input from file with custom parameters
-  // Player3.AddFromFile(Edit6.Text);  //// add a input from file with default parameters
+
+  uos_AddFromFile(PlayerIndex2, Edit6.Text, -1, 0, -1);
+  //// add input from audio file with custom parameters
   ////////// FileName : filename of audio file
+  //////////// PlayerIndex : Index of a existing Player
   ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
   ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Input Index in array
 
-  Player3.EndProc := @ClosePlayer3;
   /////// procedure to execute when stream is terminated
+  uos_EndProc(PlayerIndex2, @ClosePlayer2);
+  ///// Assign the procedure of object to execute at end
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// ClosePlayer1 : procedure of object to execute inside the loop
 
-  Player3.Play;
+  uos_Play(PlayerIndex2);
+  ////// Ok let start it
   ////// Ok let start it
   button19.Enabled := True;
   button9.Enabled := True;
@@ -502,10 +511,10 @@ end;
 
 procedure TForm1.Button9Click(Sender: TObject);
 begin
-  Player3.Stop;
+  uos_Stop(PlayerIndex2);
 end;
 
-procedure UOS_logo();
+procedure uos_logo();
 var
   xpos, ypos: integer;
   ratio: double;
@@ -560,24 +569,23 @@ begin
   end;
 end;
 
-procedure TForm1.FormClose(Sender: TObject);
-begin
-  if button3.Enabled = True then
-    player1.Stop;
-  if button6.Enabled = True then
-    player2.Stop;
-  if button9.Enabled = True then
-    player3.Stop;
-  if button12.Enabled = True then
-    player4.Stop;
-  if button1.Enabled = False then
-    testInit.UnloadLib();
-
-end;
-
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   form1.Height := 148;
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  if button3.Enabled = True then
+    uos_Stop(PlayerIndex0);
+  if button6.Enabled = True then
+    uos_Stop(PlayerIndex1);
+  if button9.Enabled = True then
+    uos_Stop(PlayerIndex2);
+  if button12.Enabled = True then
+    uos_Stop(PlayerIndex3);
+  if button1.Enabled = False then
+    uos_UnloadLib();
 end;
 
 end.

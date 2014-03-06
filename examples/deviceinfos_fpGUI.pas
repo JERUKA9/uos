@@ -2,7 +2,7 @@ program deviceinfos_fpGUI;
 
 {$mode objfpc}{$H+}
 
-uses 
+uses
   fpg_base,
   SysUtils,
   uos,
@@ -20,101 +20,99 @@ type
   TDevicesInfos = class(TfpgForm)
     procedure UOS_logo(Sender: TObject);
   private
-    {@VFD_HEAD_BEGIN: Simpleplayer}
+    {@VFD_HEAD_BEGIN: DevicesInfos}
     Custom1: TfpgWidget;
     Labelport: TfpgLabel;
     btnLoad: TfpgButton;
-     btnClose: TfpgButton;
     FilenameEdit1: TfpgFileNameEdit;
-     btnReLoad: TfpgButton;
-     Label1: TfpgLabel;
-      Label2: TfpgLabel;
-       Label3: TfpgLabel;
-        infos_grid: TfpgStringGrid;
+    btnReLoad: TfpgButton;
+    Label1: TfpgLabel;
+    Label2: TfpgLabel;
+    Label3: TfpgLabel;
+    infos_grid: TfpgStringGrid;
 
-    {@VFD_HEAD_END: Simpleplayer}
+    {@VFD_HEAD_END: DevicesInfos}
   public
     procedure AfterCreate; override;
 
     procedure btnLoadClick(Sender: TObject);
-      procedure btnCloseClick(Sender: TObject);
-       procedure btnReLoadClick(Sender: TObject);
-       procedure CheckInfos() ;
-   end;
+    procedure CloseClick(Sender: TObject);
+    procedure btnReLoadClick(Sender: TObject);
+    procedure CheckInfos();
+  end;
 
   {@VFD_NEWFORM_DECL}
 
   {@VFD_NEWFORM_IMPL}
 
 var
-  Init: TUOS_Init;
-   ordir : string;
+   ordir: string;
 
- procedure TDevicesInfos.CheckInfos() ;
-var
-x : integer;
-begin
+  procedure TDevicesInfos.CheckInfos();
+  var
+    x: integer;
+  begin
 
-UOS_GetInfoDevice() ;
+    UOS_GetInfoDevice();
 
-label1.text := 'Devices Count = ' + inttostr(UOSDeviceCount) ;
+    label1.Text := 'Devices Count = ' + IntToStr(UOSDeviceCount);
 
-label2.text := 'Def Dev IN = ' + inttostr(UOSDefaultDeviceIN) ;
+    label2.Text := 'Def Dev IN = ' + IntToStr(UOSDefaultDeviceIN);
 
-label3.text := 'Def Dev OUT = ' + inttostr(UOSDefaultDeviceOUT) ;
+    label3.Text := 'Def Dev OUT = ' + IntToStr(UOSDefaultDeviceOUT);
 
- infos_grid.rowcount := UOSDeviceCount   ;
- x := 0 ;
+    infos_grid.rowcount := UOSDeviceCount;
+    x := 0;
 
-  while x < UOSDeviceCount  do
-begin
+    while x < UOSDeviceCount do
+    begin
 
-infos_grid.Cells[0,x] := inttostr(UOSDeviceInfos[x].DeviceNum) ;
-infos_grid.Cells[1,x] := UOSDeviceInfos[x].DeviceName ;
-if UOSDeviceInfos[x].DefaultDevIn  = true then
-infos_grid.Cells[2,x] := 'Yes' else infos_grid.Cells[2,x] := 'No'  ;
+      infos_grid.Cells[0, x] := IntToStr(UOSDeviceInfos[x].DeviceNum);
+      infos_grid.Cells[1, x] := UOSDeviceInfos[x].DeviceName;
+      if UOSDeviceInfos[x].DefaultDevIn = True then
+        infos_grid.Cells[2, x] := 'Yes'
+      else
+        infos_grid.Cells[2, x] := 'No';
 
-if UOSDeviceInfos[x].DefaultDevOut  = true then
-infos_grid.Cells[3,x] := 'Yes' else infos_grid.Cells[3,x] := 'No'  ;
+      if UOSDeviceInfos[x].DefaultDevOut = True then
+        infos_grid.Cells[3, x] := 'Yes'
+      else
+        infos_grid.Cells[3, x] := 'No';
 
-  infos_grid.Cells[4,x] := inttostr(UOSDeviceInfos[x].ChannelsIn) ;
-  infos_grid.Cells[5,x] := inttostr(UOSDeviceInfos[x].ChannelsOut) ;
-  infos_grid.Cells[6,x] := floattostrf(UOSDeviceInfos[x].SampleRate,ffFixed,15,0);
-  infos_grid.Cells[7,x] := floattostrf(UOSDeviceInfos[x].LatencyHighIn,ffFixed,15,8) ;
-  infos_grid.Cells[8,x] := floattostrf(UOSDeviceInfos[x].LatencyHighOut,ffFixed,15,8) ;
-  infos_grid.Cells[9,x] := floattostrf(UOSDeviceInfos[x].LatencyLowIn,ffFixed,15,8) ;
-  infos_grid.Cells[10,x] := floattostrf(UOSDeviceInfos[x].LatencyLowOut,ffFixed,15,8) ;
-  infos_grid.Cells[11,x] := UOSDeviceInfos[x].HostAPIName ;
-   inc(x);
-end;
+      infos_grid.Cells[4, x] := IntToStr(UOSDeviceInfos[x].ChannelsIn);
+      infos_grid.Cells[5, x] := IntToStr(UOSDeviceInfos[x].ChannelsOut);
+      infos_grid.Cells[6, x] := floattostrf(UOSDeviceInfos[x].SampleRate, ffFixed, 15, 0);
+      infos_grid.Cells[7, x] := floattostrf(UOSDeviceInfos[x].LatencyHighIn, ffFixed, 15, 8);
+      infos_grid.Cells[8, x] := floattostrf(UOSDeviceInfos[x].LatencyHighOut, ffFixed, 15, 8);
+      infos_grid.Cells[9, x] := floattostrf(UOSDeviceInfos[x].LatencyLowIn, ffFixed, 15, 8);
+      infos_grid.Cells[10, x] := floattostrf(UOSDeviceInfos[x].LatencyLowOut, ffFixed, 15, 8);
+      infos_grid.Cells[11, x] := UOSDeviceInfos[x].HostAPIName;
+      infos_grid.Cells[12, x] := UOSDeviceInfos[x].DeviceType;
+      Inc(x);
+    end;
   end;
 
 
-  procedure TDevicesInfos.btnCloseClick(Sender: TObject);
+  procedure TDevicesInfos.CloseClick(Sender: TObject);
   begin
-       if btnLoad.Enabled = False then
-      Init.UnloadLib();
+    if btnLoad.Enabled = False then
+      uos_UnloadLib();
   end;
 
   procedure TDevicesInfos.btnLoadClick(Sender: TObject);
-  var
-    str: string;
-  begin
-    Init := TUOS_Init.Create;   //// Create Iibraries Loader-Init
-
-    Init.PA_FileName := FilenameEdit1.FileName;
-    Init.Flag := LoadPA;
-
-    if Init.LoadLib = 0 then
-    begin
+   begin
+      // Load the library
+  // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
+   if uos_LoadLib( FilenameEdit1.FileName, '', '', '') = 0 then
+      begin
       hide;
       Height := 385;
       btnReLoad.Enabled := True;
       btnLoad.Enabled := False;
       FilenameEdit1.ReadOnly := True;
-       UpdateWindowPosition;
+      UpdateWindowPosition;
       btnLoad.Text := 'PortAudio library is loaded...';
-       CheckInfos() ;
+      CheckInfos();
       WindowPosition := wpScreenCenter;
       Show;
     end;
@@ -123,23 +121,26 @@ end;
   procedure TDevicesInfos.btnReLoadClick(Sender: TObject);
 
   begin
-   CheckInfos();
+    CheckInfos();
   end;
 
 
   procedure TDevicesInfos.AfterCreate;
   begin
     {%region 'Auto-generated GUI code' -fold}
-    {@VFD_BODY_BEGIN: Simpleplayer}
+
+
+    {@VFD_BODY_BEGIN: DevicesInfos}
+
     Name := 'DevicesInfos';
     SetPosition(320, 168, 502, 385);
     WindowTitle := 'Devices Infos ';
     Hint := '';
     WindowPosition := wpScreenCenter;
     BackgroundColor := clmoneygreen;
-    Ondestroy := @btnCloseClick;
+    Ondestroy := @CloseClick;
 
-     infos_grid := TfpgStringGrid.Create(self);
+    infos_grid := TfpgStringGrid.Create(self);
     with infos_grid do
     begin
       Name := 'infos_grid';
@@ -154,16 +155,17 @@ end;
       AddColumn('Dev', 40);
       AddColumn('Name', 200);
       AddColumn('Default IN', 80);
-       AddColumn('Default OUT', 80);
+      AddColumn('Default OUT', 80);
       AddColumn('Chan IN', 60);
-       AddColumn('Chan OUT', 60);
+      AddColumn('Chan OUT', 60);
       AddColumn('S Rate', 63);
       AddColumn('Latency High In', 120);
-       AddColumn('Latency High Out', 120);
-        AddColumn('Latency Low In', 120);
-         AddColumn('Latency Low Out', 120);
-          AddColumn('Host API', 80);
-  
+      AddColumn('Latency High Out', 120);
+      AddColumn('Latency Low In', 120);
+      AddColumn('Latency Low Out', 120);
+      AddColumn('Host API', 80);
+      AddColumn('Type', 80);
+
       DefaultRowHeight := 24;
     end;
 
@@ -260,8 +262,9 @@ end;
     end;
 
 
-    {@VFD_BODY_END: Simpleplayer}
+    {@VFD_BODY_END: DevicesInfos}
     {%endregion}
+
 
     //////////////////////
 
@@ -269,9 +272,9 @@ end;
     Height := 157;
              {$IFDEF Windows}
      {$if defined(cpu64)}
-    FilenameEdit1.FileName := ordir + 'lib\LibPortaudio-64.dll';
+    FilenameEdit1.FileName := ordir + 'lib\Windows\64bit\LibPortaudio-64.dll';
 {$else}
-    FilenameEdit1.FileName := ordir + 'lib\LibPortaudio-32.dll';
+    FilenameEdit1.FileName := ordir + 'lib\Windows\32bit\LibPortaudio-32.dll';
    {$endif}
 
  {$ENDIF}
@@ -279,24 +282,24 @@ end;
   {$IFDEF Darwin}
     opath := ordir;
     opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-    FilenameEdit1.FileName := opath + '/lib/LibPortaudio-32.dylib';
+    FilenameEdit1.FileName := opath + '/lib/Mac/32bit/LibPortaudio-32.dylib';
 
             {$ENDIF}
 
    {$IFDEF linux}
     {$if defined(cpu64)}
-    FilenameEdit1.FileName := ordir + 'lib/LibPortaudio-64.so';
+    FilenameEdit1.FileName := ordir + '/lib/Linux/64bit/LibPortaudio-64.so';
 {$else}
-    FilenameEdit1.FileName := ordir + 'lib/LibPortaudio-32.so';
+    FilenameEdit1.FileName := ordir + '/lib/Linux/32bit/LibPortaudio-32.so';
 {$endif}
 
             {$ENDIF}
     //////////////////////////////////////////////////////////////////////////
 
     FilenameEdit1.Initialdir := ordir + 'lib';
-    
+
      {$IF DEFINED(fpGUI)}
- windowtitle := 'fpgui';
+    windowtitle := 'fpgui';
   {$endif}
 
   end;
@@ -334,5 +337,5 @@ end;
   end;
 
 begin
-    MainProc;
+   MainProc;
 end.

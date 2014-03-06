@@ -1,4 +1,4 @@
-uos : United OpenLib of Sound. UOS unifies the best open-source audio libraries.
+uos : United OpenLib of Sound. uos unifies the best open-source audio libraries.
 
 For fpc, fpGUI, Lazarus and Delphi.
 

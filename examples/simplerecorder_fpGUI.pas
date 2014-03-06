@@ -25,7 +25,7 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
 type
 
   TSimplerecorder = class(TfpgForm)
-    procedure UOS_logo(Sender: TObject);
+    procedure uos_logo(Sender: TObject);
   private
     {@VFD_HEAD_BEGIN: Simpleplayer}
     Custom1: TfpgWidget;
@@ -66,93 +66,97 @@ type
   {@VFD_NEWFORM_IMPL}
 
 var
-  Init: TUOS_Init;
-  Player1: TUOS_Player;
+  PlayerIndex1: cardinal ;
   ordir, opath: string;
-  Out1Index, In1Index, DSP1Index, DSP2Index: integer;
-
+  In1Index : integer;
 
   procedure TSimplerecorder.btnPlaySavedClick(Sender: TObject);
   begin
-    Player1 := TUOS_Player.Create(True, self);     //// Create the player
+     PlayerIndex1 := 0 ; // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
+                       // If PlayerIndex exists already, it will be overwritten...
 
-    Out1Index := Player1.AddIntoDevOut(-1, -1, -1, -1, 2);
-    //// add a Output into device with custom parameters
+   uos_CreatePlayer(PlayerIndex1);
+  //// Create the player.
+  //// PlayerIndex : from 0 to what your computer can do !
+  //// If PlayerIndex exists already, it will be overwriten...
+
+
+   uos_AddIntoDevOut(PlayerIndex1); //// add a Output into OUT device with default parameters
+    //  uos_AddIntoDevOut(0, -1, -1, -1, -1, 0,-1);   //// add a Output into device with custom parameters
+    //////////// PlayerIndex : Index of a existing Player
     //////////// Device ( -1 is default Output device )
     //////////// Latency  ( -1 is latency suggested ) )
     //////////// SampleRate : delault : -1 (44100)
     //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
     //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+    //////////// FramesCount : -1 default : 65536
 
-    In1Index := Player1.AddFromFile(filenameEdit4.filename, -1, 2);
-    //// add input from audio file with custom parameters
-    ////////// FileName : filename of audio file
-    ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
-    ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  In1Index :=uos_AddFromFile(PlayerIndex1, filenameedit4.FileName); //// add input from audio file with default parameters
+  // In1Index := Player1.AddFromFile(0, Edit3.Text, -1, 0);  //// add input from audio file with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
+  ////////// FileName : filename of audio file
+  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
+  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
 
-    DSP1Index := Player1.AddDSPVolumeIn(In1Index, 1, 1);  ///// DSP Volume changer
+  uos_AddDSPVolumeIn(PlayerIndex1, In1Index, 1, 1);
+    ///// DSP Volume changer
+    //////////// PlayerIndex : Index of a existing Player
     ////////// In1Index : InputIndex of a existing input
     ////////// VolLeft : Left volume
     ////////// VolRight : Right volume
-    //  result : -1 nothing created, otherwise index of DSPIn in array
 
-    Player1.SetDSPVolumeIn(In1Index, DSP1Index, (100 - TrackBar2.position) / 100,
-      (100 - TrackBar3.position) / 100, True); /// Set volume
-    ////////// In1Index : InputIndex of a existing Input
-    ////////// DSPIndex : DSPIndex of a existing DSP
-    ////////// VolLeft : Left volume
-    ////////// VolRight : Right volume
-    ////////// Enable : Enabled
+   uos_SetDSPVolumeIn(PlayerIndex1, In1Index, (100 - TrackBar2.position) / 100,
+        (100 - TrackBar3.position) / 100, True); /// Set volume
 
-    Player1.EndProc := @ClosePlayer1;
-    /////// procedure to execute when stream is terminated
+   /////// procedure to execute when stream is terminated
+   uos_EndProc(PlayerIndex1, @ClosePlayer1);
+   ///// Assign the procedure of object to execute at end
+   //////////// PlayerIndex : Index of a existing Player
+   //////////// ClosePlayer1 : procedure of object to execute inside the loop
 
+   uos_Play(PlayerIndex1);  /////// everything is ready to play...
 
-    btnStart.Enabled := False;
+   btnStart.Enabled := False;
     btnStop.Enabled := False;
     button4.Enabled := False;
     button5.Enabled := True;
-    Player1.Play;  /////// everything is ready, here we are, lets play it...
+
   end;
 
   procedure TSimplerecorder.VolumeChange(Sender: TObject; pos: integer);
   begin
-    if assigned(Player1) and (btnstart.Enabled = False) then
-      Player1.SetDSPVolumeIn(In1Index, DSP1Index, (100 - TrackBar2.position) / 100,
+    if (btnstart.Enabled = False) then
+      uos_SetDSPVolumeIn(PlayerIndex1, In1Index, (100 - TrackBar2.position) / 100,
         (100 - TrackBar3.position) / 100, True);
-  end;
+    end;
 
 
   procedure TSimplerecorder.btnCloseClick(Sender: TObject);
   begin
-    if assigned(Player1) and (btnstart.Enabled = False) then
+    if (btnstart.Enabled = False) then
     begin
-      player1.stop;
+      uos_stop(PlayerIndex1);
       sleep(100);
     end;
     if btnLoad.Enabled = False then
-      Init.UnloadLib();
+      uos_UnloadLib();
   end;
 
   procedure TSimplerecorder.btnLoadClick(Sender: TObject);
   var
     str: string;
   begin
-    Init := TUOS_Init.Create;   //// Create Iibraries Loader-Init
 
-    Init.PA_FileName := FilenameEdit1.FileName;
-    Init.SF_FileName := FilenameEdit2.FileName;
-    Init.Flag := LoadPA_SF;
-
-    if Init.LoadLib = 0 then
-    begin
+    // Load the libraries
+    // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
+    if uos_LoadLib( FilenameEdit1.FileName,  FilenameEdit2.FileName, '', '') = 0 then
+  begin
       hide;
       Height := 305;
       btnStart.Enabled := True;
       btnLoad.Enabled := False;
       FilenameEdit1.ReadOnly := True;
       FilenameEdit2.ReadOnly := True;
-
       UpdateWindowPosition;
       btnLoad.Text := 'PortAudio and SndFile libraries are loaded...';
       WindowPosition := wpScreenCenter;
@@ -166,12 +170,11 @@ var
     btnStop.Enabled := False;
     button4.Enabled := True;
     button5.Enabled := False;
-
   end;
 
   procedure TSimplerecorder.btnStopClick(Sender: TObject);
   begin
-    player1.Stop;
+    uos_Stop(PlayerIndex1);
     sleep(100);
     closeplayer1;
   end;
@@ -184,63 +187,71 @@ var
     if (checkbox1.Checked = True) or (checkbox2.Checked = True) then
     begin
 
-      Player1 := TUOS_Player.Create(True, self);     //// Create the player
+    PlayerIndex1 := 0 ; // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
+                       // If PlayerIndex exists already, it will be overwritten...
 
-      Out1Index := Player1.AddIntoFile(filenameEdit4.filename);
-      //// add Output into wav file (save record)  with default parameters
-      // Out1Index := Player1.AddIntoFile('test.wav', -1, -1, -1);   //// add a Output into wav file (save record) with custom parameters
-      //////////// Filename : name of new file for recording
-      //////////// SampleRate : delault : -1 (44100)
-      //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
-      //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+     uos_CreatePlayer(PlayerIndex1);
+  //// Create the player.
+  //// PlayerIndex : from 0 to what your computer can do !
+  //// If PlayerIndex exists already, it will be overwriten...
 
-      if checkbox1.Checked = True then
-        Out2Index := Player1.AddIntoDevOut;
-      //// add a Output into OUT device with default parameters
-      // Out1Index := Player1.AddIntoDevOut(-1, -1, -1, -1,0);   //// add a Output into device with custom parameters
-      //////////// Device ( -1 is default Output device )
-      //////////// Latency  ( -1 is latency suggested ) )
-      //////////// SampleRate : delault : -1 (44100)
-      //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
-      //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+    uos_AddIntoFile(PlayerIndex1, filenameEdit4.filename);
+    //// add Output into wav file (save record)  with default parameters
+    // uos_AddIntoDevOut(0, 'test.wav', -1, -1, -1);   //// add a Output into wav file (save record) with custom parameters
+    //////////// PlayerIndex : Index of a existing Player
+    //////////// Filename : name of new file for recording
+    //////////// SampleRate : delault : -1 (44100)
+    //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
+    //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+    //////////// FramesCount : -1 default : 65536
 
-      In1Index := Player1.AddFromDevIn;
-      /// add Input from mic into IN device with default parameters
-      //   In1Index := Player1.AddFromDevIn(-1, -1, -1, -1, -1,0);   //// add input from mic with custom parameters
-      //////////// Device ( -1 is default Input device )
-      //////////// Latency  ( -1 is latency suggested ) )
-      //////////// SampleRate : delault : -1 (44100)
-      //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
-      //////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
-      //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+    if checkbox1.Checked = True then
+      uos_AddIntoDevOut(PlayerIndex1);
+    //// add a Output into OUT device with default parameters
+    // Out2Index := uos_AddIntoDevOut(0, -1, -1, -1, -1, 0,-1);   //// add a Output into device with custom parameters
+    //////////// PlayerIndex : Index of a existing Player
+    //////////// Device ( -1 is default Output device )
+    //////////// Latency  ( -1 is latency suggested ) )
+    //////////// SampleRate : delault : -1 (44100)
+    //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
+    //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+    //////////// FramesCount : -1 default : 65536
 
-      DSP1Index := Player1.AddDSPVolumeIn(In1Index, 1, 1);  ///// DSP Volume changer
-      ////////// In1Index : InputIndex of a existing input
-      ////////// VolLeft : Left volume
-      ////////// VolRight : Right volume
-      //  result : -1 nothing created, otherwise index of DSPIn in array
+    In1Index :=uos_AddFromDevIn(PlayerIndex1);
+    /// add Input from mic into IN device with default parameters
+    //   In1Index := uos_AddFromDevIn(0, -1, -1, -1, -1, -1, 0, -1);   //// add input from mic with custom parameters
+    //////////// PlayerIndex : Index of a existing Player
+    //////////// Device ( -1 is default Input device )
+    //////////// Latency  ( -1 is latency suggested ) )
+    //////////// SampleRate : delault : -1 (44100)
+    //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
+    //////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
+    //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+    //////////// FramesCount : -1 default : 4096   ( > = safer, < =  better latency )
 
-      Player1.SetDSPVolumeIn(In1Index, DSP1Index, (100 - TrackBar2.position) / 100,
-        (100 - TrackBar3.position) / 100, True); /// Set volume
-      ////////// In1Index : InputIndex of a existing Input
-      ////////// DSPIndex : DSPIndex of a existing DSP
-      ////////// VolLeft : Left volume
-      ////////// VolRight : Right volume
-      ////////// Enable : Enabled
+    uos_AddDSPVolumeIn(PlayerIndex1, In1Index, 1, 1);
+    ///// DSP Volume changer
+    //////////// PlayerIndex : Index of a existing Player
+    ////////// In1Index : InputIndex of a existing input
+    ////////// VolLeft : Left volume
+    ////////// VolRight : Right volume
 
-      Player1.EndProc := @ClosePlayer1;
-      /////// procedure to execute when stream is terminated
+    uos_SetDSPVolumeIn(PlayerIndex1,  In1Index, (100 - TrackBar2.position) / 100,
+        (100 - TrackBar3.position) / 100, True);  /// Set volume
+
+   /////// procedure to execute when stream is terminated
+     uos_EndProc(PlayerIndex1, @ClosePlayer1);
+   ///// Assign the procedure of object to execute at end
+   //////////// PlayerIndex : Index of a existing Player
+   //////////// ClosePlayer1 : procedure of object to execute inside the loop
+
+    uos_Play(PlayerIndex1);  /////// everything is ready to play...
 
       CheckBox1.Enabled := True;
-      // radiogroup1.Enabled:=false;
-
-      // application.ProcessMessages;
       btnStart.Enabled := False;
       btnStop.Enabled := True;
       button5.Enabled := False;
       button4.Enabled := False;
-
-      Player1.Play;  /////// everything is ready, here we are, lets play it...
 
     end;
 
@@ -264,7 +275,7 @@ var
     begin
       Name := 'Custom1';
       SetPosition(10, 8, 115, 115);
-      OnPaint := @UOS_logo;
+      OnPaint := @uos_logo;
     end;
 
     Labelport := TfpgLabel.Create(self);
@@ -507,53 +518,32 @@ var
     Height := 157;
              {$IFDEF Windows}
      {$if defined(cpu64)}
-    FilenameEdit1.FileName := ordir + 'lib\LibPortaudio-64.dll';
+    FilenameEdit1.FileName := ordir + 'lib\Windows\64bit\LibPortaudio-64.dll';
+    FilenameEdit2.FileName := ordir + 'lib\Windows\64bit\LibSndFile-64.dll';
 {$else}
-    FilenameEdit1.FileName := ordir + 'lib\LibPortaudio-32.dll';
+   FilenameEdit1.FileName := ordir + 'lib\Windows\32bit\LibPortaudio-32.dll';
+   FilenameEdit2.FileName := ordir + 'lib\Windows\32bit\LibSndFile-32.dll';
    {$endif}
     FilenameEdit4.FileName := ordir + 'sound\testrecord.wav';
  {$ENDIF}
 
   {$IFDEF Darwin}
     opath := ordir;
-    opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-    FilenameEdit1.FileName := opath + '/lib/LibPortaudio-32.dylib';
+    opath := copy(opath, 1, Pos('/uos', opath) - 1);
+    FilenameEdit1.FileName := opath + '/lib/Mac/32bit/LibPortaudio-32.dylib';
+    FilenameEdit2.FileName := opath + '/lib/Mac/32bit/LibSndFile-32.dylib';
     FilenameEdit4.FileName := opath + 'sound/testrecord.wav';
             {$ENDIF}
 
    {$IFDEF linux}
     {$if defined(cpu64)}
-    FilenameEdit1.FileName := ordir + 'lib/LibPortaudio-64.so';
+    FilenameEdit1.FileName := ordir + 'lib/Linux/64bit/LibPortaudio-64.so';
+    FilenameEdit2.FileName := ordir + 'lib/Linux/64bit/LibSndFile-64.so';
 {$else}
-    FilenameEdit1.FileName := ordir + 'lib/LibPortaudio-32.so';
+    FilenameEdit1.FileName := ordir + 'lib/Linux/32bit/LibPortaudio-32.so';
+      FilenameEdit2.FileName := ordir + 'lib/Linux/32bit/LibSndFile-32.so';
 {$endif}
-
-    FilenameEdit4.FileName := ordir + 'sound/testrecord.wav';
-            {$ENDIF}
-    //////////////////////////////////////////////////////////////////////////
-
-    {$IFDEF Windows}
-       {$if defined(cpu64)}
-    FilenameEdit2.FileName := ordir + 'lib\LibSndFile-64.dll';
-{$else}
-    FilenameEdit2.FileName := ordir + 'lib\LibSndFile-32.dll';
-{$endif}
-
- {$ENDIF}
-
-  {$IFDEF Darwin}
-    opath := ordir;
-    opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-    FilenameEdit2.FileName := opath + '/lib/LibSndFile-32.dylib';
-            {$ENDIF}
-
-   {$IFDEF linux}
-      {$if defined(cpu64)}
-    FilenameEdit2.FileName := ordir + 'lib/LibSndFile-64.so';
-{$else}
-    FilenameEdit2.FileName := ordir + 'lib/LibSndFile-32.so';
-{$endif}
-
+     FilenameEdit4.FileName := ordir + 'sound/testrecord.wav';
             {$ENDIF}
     //////////////////////////////////////////////////////////////////////////
 
@@ -563,7 +553,7 @@ var
 
   end;
 
-  procedure TSimplerecorder.UOS_logo(Sender: TObject);
+  procedure TSimplerecorder.uos_logo(Sender: TObject);
   var
     xpos, ypos, pbwidth, pbheight: integer;
     ratio: double;
@@ -577,7 +567,7 @@ var
     begin
       Canvas.GradientFill(GetClientRect, clgreen, clBlack, gdVertical);
       Canvas.TextColor := clWhite;
-      Canvas.DrawText(60, 20, 'UOS');
+      Canvas.DrawText(60, 20, 'uos');
     end;
   end;
 

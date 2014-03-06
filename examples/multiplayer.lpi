@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -129,7 +129,6 @@ install:
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -142,7 +141,7 @@ install:
         <Filename Value="multiplayer.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="multiplayer"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="7" Y="7"/>
@@ -156,10 +155,11 @@ install:
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_mp"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="465"/>
-        <CursorPos X="42" Y="475"/>
+        <TopLine Value="1"/>
+        <CursorPos X="75" Y="574"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -337,10 +337,10 @@ install:
       <Unit23>
         <Filename Value="uos.pas"/>
         <UnitName Value="uos"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="110"/>
-        <CursorPos X="36" Y="129"/>
+        <TopLine Value="3413"/>
+        <CursorPos X="5" Y="327"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit23>
@@ -383,9 +383,9 @@ install:
         <Filename Value="main_sp.pas"/>
         <UnitName Value="main_sp"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="345"/>
-        <CursorPos X="1" Y="365"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="380"/>
+        <CursorPos X="27" Y="395"/>
+        <UsageCount Value="11"/>
       </Unit28>
       <Unit29>
         <Filename Value="../lazarus32/packager/registration/fcllaz.pas"/>
@@ -406,13 +406,10 @@ install:
       <Unit31>
         <Filename Value="multiplayer_fpGUI.lpr"/>
         <UnitName Value="multiplayer_fpGUI"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
+        <TopLine Value="513"/>
+        <CursorPos X="85" Y="530"/>
         <UsageCount Value="10"/>
-        <Loaded Value="True"/>
       </Unit31>
     </Units>
   </ProjectOptions>
@@ -472,4 +469,5 @@ install:
       </Item3>
     </Exceptions>
   </Debugging>
+  <EditorMacros Count="0"/>
 </CONFIG>

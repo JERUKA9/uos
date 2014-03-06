@@ -82,10 +82,10 @@ object Form1: TForm1
     0000
   }
   OnActivate = FormActivate
-  OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poDesktopCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object Shape3: TShape
     Left = 8
     Height = 65
@@ -122,7 +122,7 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 100
+    ClientHeight = 102
     ClientWidth = 152
     TabOrder = 16
     object RadioButton1: TRadioButton
@@ -150,7 +150,7 @@ object Form1: TForm1
     object RadioButton3: TRadioButton
       Tag = 4
       Left = 6
-      Height = 22
+      Height = 23
       Top = 50
       Width = 140
       Caption = 'HighPass'
@@ -160,8 +160,8 @@ object Form1: TForm1
     object RadioButton4: TRadioButton
       Tag = 5
       Left = 6
-      Height = 22
-      Top = 72
+      Height = 23
+      Top = 73
       Width = 140
       Caption = 'LowPass'
       OnChange = RadioButton1Change
@@ -247,7 +247,7 @@ object Form1: TForm1
     Left = 24
     Height = 24
     Top = 252
-    Width = 136
+    Width = 126
     Caption = 'Enable Equalizer'
     Checked = True
     OnChange = CheckBox1Change
@@ -395,7 +395,7 @@ object Form1: TForm1
   end
   object Edit5: TEdit
     Left = 382
-    Height = 27
+    Height = 25
     Top = 166
     Width = 80
     TabOrder = 14
@@ -415,7 +415,7 @@ object Form1: TForm1
   end
   object Edit6: TEdit
     Left = 382
-    Height = 27
+    Height = 25
     Top = 212
     Width = 80
     TabOrder = 15
@@ -437,7 +437,7 @@ object Form1: TForm1
     Left = 374
     Height = 24
     Top = 246
-    Width = 110
+    Width = 100
     Caption = 'Enable Filter'
     OnChange = RadioButton1Change
     TabOrder = 17

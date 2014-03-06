@@ -132,17 +132,15 @@ install:
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="37">
+    <Units Count="50">
       <Unit0>
         <Filename Value="simpleplayer.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="simpleplayer"/>
-        <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="13" Y="9"/>
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="main_sp.pas"/>
@@ -151,10 +149,10 @@ install:
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_sp"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="57"/>
-        <CursorPos X="78" Y="63"/>
+        <TopLine Value="303"/>
+        <CursorPos X="57" Y="317"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -335,8 +333,8 @@ install:
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1416"/>
-        <CursorPos X="76" Y="1422"/>
+        <TopLine Value="2738"/>
+        <CursorPos X="71" Y="2746"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit23>
@@ -445,135 +443,232 @@ install:
       <Unit36>
         <Filename Value="uos_portaudio.pas"/>
         <UnitName Value="uos_portaudio"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="245"/>
         <CursorPos X="26" Y="262"/>
         <UsageCount Value="16"/>
-        <Loaded Value="True"/>
       </Unit36>
+      <Unit37>
+        <Filename Value="simpleplayer_fpGUI.lpr"/>
+        <UnitName Value="simpleplayer_fpGUI"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="263"/>
+        <CursorPos X="29" Y="270"/>
+        <UsageCount Value="11"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="/media/fred/Windows7/uos/examples/main_sp.pas"/>
+        <UnitName Value="main_sp"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="108"/>
+        <CursorPos X="37" Y="119"/>
+        <UsageCount Value="10"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="uos_soundtouch.pas"/>
+        <UnitName Value="uos_soundtouch"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="10" Y="7"/>
+        <UsageCount Value="13"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="uos_soundtouchok.pas"/>
+        <UnitName Value="uos_soundtouch"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="92"/>
+        <CursorPos X="40" Y="101"/>
+        <UsageCount Value="10"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="../../uos-master/examples/uos.pas"/>
+        <UnitName Value="uos"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="66" Y="517"/>
+        <UsageCount Value="12"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="../../uos2/src/uos.pas"/>
+        <UnitName Value="uos"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1906"/>
+        <CursorPos X="38" Y="1917"/>
+        <UsageCount Value="10"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="/usr/share/lazarus/1.2RC2/ide/compiler.pp"/>
+        <UnitName Value="Compiler"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="30"/>
+        <CursorPos X="6" Y="33"/>
+        <UsageCount Value="10"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="../../libuos/src/libuos.pas"/>
+        <UnitName Value="libuos"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3"/>
+        <CursorPos X="32" Y="24"/>
+        <UsageCount Value="16"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="simpleplayer_fpGUI.pas"/>
+        <UnitName Value="simpleplayer_fpGUI"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="97"/>
+        <CursorPos X="123" Y="13"/>
+        <UsageCount Value="11"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="../../codetyphon/fpcsrc/rtl/objpas/sysutils/filutilh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="10" Y="143"/>
+        <UsageCount Value="11"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="../../lazarus/fpc/2.6.2/source/rtl/win/sysutils.pp"/>
+        <UnitName Value="sysutils"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="11"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="../../lazarus/components/lazutils/fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="24"/>
+        <CursorPos X="65" Y="29"/>
+        <UsageCount Value="11"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="../../codetyphon/typhon/components/lazutils/fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="201"/>
+        <CursorPos X="19" Y="217"/>
+        <UsageCount Value="10"/>
+      </Unit49>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="uos.pas"/>
-        <Caret Line="4" Column="108" TopLine="1"/>
+        <Caret Line="2424" Column="37" TopLine="2402"/>
       </Position1>
       <Position2>
         <Filename Value="uos.pas"/>
-        <Caret Line="453" Column="26" TopLine="437"/>
+        <Caret Line="2523" Column="31" TopLine="2501"/>
       </Position2>
       <Position3>
         <Filename Value="uos.pas"/>
-        <Caret Line="616" Column="62" TopLine="604"/>
+        <Caret Line="2580" Column="33" TopLine="2558"/>
       </Position3>
       <Position4>
         <Filename Value="uos.pas"/>
-        <Caret Line="806" Column="50" TopLine="788"/>
+        <Caret Line="2582" Column="33" TopLine="2560"/>
       </Position4>
       <Position5>
         <Filename Value="uos.pas"/>
-        <Caret Line="1359" Column="71" TopLine="1338"/>
+        <Caret Line="2619" Column="61" TopLine="2597"/>
       </Position5>
       <Position6>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="446" Column="27" TopLine="443"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2702" Column="36" TopLine="2680"/>
       </Position6>
       <Position7>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="499" Column="1" TopLine="480"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2694" Column="65" TopLine="2681"/>
       </Position7>
       <Position8>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="61" Column="106" TopLine="49"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2702" Column="36" TopLine="2681"/>
       </Position8>
       <Position9>
         <Filename Value="uos.pas"/>
-        <Caret Line="1328" Column="20" TopLine="1315"/>
+        <Caret Line="2703" Column="36" TopLine="2681"/>
       </Position9>
       <Position10>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="4" Column="103" TopLine="1"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2750" Column="38" TopLine="2728"/>
       </Position10>
       <Position11>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="67" Column="25" TopLine="50"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2761" Column="82" TopLine="2739"/>
       </Position11>
       <Position12>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="335" Column="65" TopLine="318"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2763" Column="82" TopLine="2741"/>
       </Position12>
       <Position13>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="452" Column="28" TopLine="434"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2765" Column="82" TopLine="2743"/>
       </Position13>
       <Position14>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="67" Column="25" TopLine="57"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2770" Column="38" TopLine="2748"/>
       </Position14>
       <Position15>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="335" Column="65" TopLine="318"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="845" Column="77" TopLine="828"/>
       </Position15>
       <Position16>
-        <Filename Value="main_sp.pas"/>
-        <Caret Line="452" Column="28" TopLine="434"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2993" Column="105" TopLine="2986"/>
       </Position16>
       <Position17>
         <Filename Value="uos.pas"/>
-        <Caret Line="1327" Column="92" TopLine="1320"/>
+        <Caret Line="64" Column="36" TopLine="56"/>
       </Position17>
       <Position18>
         <Filename Value="uos.pas"/>
-        <Caret Line="1655" Column="54" TopLine="1637"/>
+        <Caret Line="2675" Column="17" TopLine="2670"/>
       </Position18>
       <Position19>
         <Filename Value="uos.pas"/>
-        <Caret Line="2241" Column="35" TopLine="2241"/>
+        <Caret Line="3709" Column="22" TopLine="3701"/>
       </Position19>
       <Position20>
         <Filename Value="uos.pas"/>
-        <Caret Line="1353" Column="12" TopLine="1333"/>
+        <Caret Line="3728" Column="22" TopLine="3720"/>
       </Position20>
       <Position21>
         <Filename Value="uos.pas"/>
-        <Caret Line="1333" Column="12" TopLine="1323"/>
+        <Caret Line="3751" Column="22" TopLine="3743"/>
       </Position21>
       <Position22>
-        <Filename Value="uos.pas"/>
-        <Caret Line="1348" Column="37" TopLine="1320"/>
+        <Filename Value="main_sp.pas"/>
+        <Caret Line="11" Column="44" TopLine="2"/>
       </Position22>
       <Position23>
         <Filename Value="uos.pas"/>
-        <Caret Line="1338" Column="13" TopLine="1328"/>
+        <Caret Line="166" Column="9" TopLine="146"/>
       </Position23>
       <Position24>
         <Filename Value="uos.pas"/>
-        <Caret Line="1333" Column="15" TopLine="1237"/>
+        <Caret Line="169" Column="9" TopLine="149"/>
       </Position24>
       <Position25>
         <Filename Value="uos.pas"/>
-        <Caret Line="1242" Column="58" TopLine="1222"/>
+        <Caret Line="1707" Column="31" TopLine="1687"/>
       </Position25>
       <Position26>
         <Filename Value="uos.pas"/>
-        <Caret Line="1339" Column="8" TopLine="1326"/>
+        <Caret Line="1716" Column="31" TopLine="1696"/>
       </Position26>
       <Position27>
         <Filename Value="uos.pas"/>
-        <Caret Line="619" Column="35" TopLine="602"/>
+        <Caret Line="35" Column="120" TopLine="32"/>
       </Position27>
       <Position28>
         <Filename Value="uos.pas"/>
-        <Caret Line="728" Column="84" TopLine="707"/>
+        <Caret Line="2688" Column="44" TopLine="2668"/>
       </Position28>
       <Position29>
         <Filename Value="uos.pas"/>
-        <Caret Line="1399" Column="35" TopLine="1399"/>
+        <Caret Line="2746" Column="69" TopLine="2726"/>
       </Position29>
-      <Position30>
-        <Filename Value="uos.pas"/>
-        <Caret Line="1392" Column="5" TopLine="1386"/>
-      </Position30>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -592,8 +687,8 @@ install:
     <Linking>
       <Debugging>
         <GenerateDebugInfo Value="False"/>
-        <UseLineInfoUnit Value="False"/>
         <StripSymbols Value="True"/>
+        <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>
       <Options>

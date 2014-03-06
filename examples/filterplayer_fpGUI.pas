@@ -26,7 +26,7 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
 type
 
   TFilterplayer = class(TfpgForm)
-    procedure UOS_logo(Sender: TObject);
+    procedure uos_logo(Sender: TObject);
   private
     {@VFD_HEAD_BEGIN: Filterplayer}
     Custom1: TfpgWidget;
@@ -86,15 +86,15 @@ type
   {@VFD_NEWFORM_IMPL}
 
 var
-  Init: TUOS_Init;
-  Player1: TUOS_Player;
+
+  PlayerIndex1: cardinal;
   ordir, opath: string;
   Out1Index, In1Index, EQIndex1, EQIndex2, EQIndex3, FTIndex1: integer;
 
 
   procedure TFilterplayer.btnResumeClick(Sender: TObject);
   begin
-    Player1.RePlay;
+    uos_RePlay(PlayerIndex1);
     btnStart.Enabled := False;
     btnStop.Enabled := True;
     btnPause.Enabled := True;
@@ -103,7 +103,7 @@ var
 
   procedure TFilterplayer.btnPauseClick(Sender: TObject);
   begin
-    Player1.Pause;
+    uos_Pause(PlayerIndex1);
     btnStart.Enabled := False;
     btnStop.Enabled := True;
     btnPause.Enabled := False;
@@ -113,28 +113,23 @@ var
 
   procedure TFilterplayer.btnCloseClick(Sender: TObject);
   begin
-    if assigned(Player1) and (btnstart.Enabled = False) then
+    if (btnstart.Enabled = False) then
     begin
-      player1.stop;
+      uos_stop(PlayerIndex1);
       sleep(100);
     end;
     if btnLoad.Enabled = False then
-      Init.UnloadLib();
+      uos_UnloadLib();
   end;
 
   procedure TFilterplayer.btnLoadClick(Sender: TObject);
   var
     str: string;
   begin
-    Init := TUOS_Init.Create;   //// Create Iibraries Loader-Init
-
-    Init.PA_FileName := FilenameEdit1.FileName;
-    Init.MP_FileName := FilenameEdit3.FileName;
-    Init.SF_FileName := FilenameEdit2.FileName;
-    Init.Flag := LoadAll;
-
-    if Init.LoadLib = 0 then
-    begin
+      // Load the libraries
+    // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
+    if uos_LoadLib(FilenameEdit1.FileName, FilenameEdit2.FileName, FilenameEdit3.FileName, '') = 0 then
+  begin
       hide;
       Height := 345;
       btnStart.Enabled := True;
@@ -159,12 +154,11 @@ var
     btnStop.Enabled := False;
     btnPause.Enabled := False;
     btnresume.Enabled := False;
-
-  end;
+   end;
 
   procedure TFilterplayer.btnStopClick(Sender: TObject);
   begin
-    player1.Stop;
+    uos_Stop(PlayerIndex1);
     closeplayer1;
   end;
 
@@ -173,35 +167,47 @@ var
     EqGain: double;
     typfilt: shortint;
   begin
-    Player1 := TUOS_Player.Create(True, self);     //// Create the player
 
-    Out1Index := Player1.AddIntoDevOut(-1, -1, -1, -1, 0);
-    //// add a Output into device with custom parameters
-    //////////// Device ( -1 is default Output device )
-    //////////// Latency  ( -1 is latency suggested ) )
-    //////////// SampleRate : delault : -1 (44100)
-    //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
-    //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+   PlayerIndex1 := 0 ; // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
+                       // If PlayerIndex exists already, it will be overwritten...
+   uos_CreatePlayer(PlayerIndex1);
+  //// Create the player.
+  //// PlayerIndex : from 0 to what your computer can do !
+  //// If PlayerIndex exists already, it will be overwriten...
 
-    In1Index := Player1.AddFromFile(FilenameEdit4.filename, -1, 0);
-    //// add input from audio file with custom parameters
-    ////////// FileName : filename of audio file
-    ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
-    ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
 
-    EQIndex1 := Player1.AddFilterIn(In1Index, 1, 1000, 1, 1, True, nil);
-    ////////// In1Index : InputIndex of a existing Input
-    ////////// LowFrequency : Lowest frequency of filter
-    ////////// HighFrequency : Highest frequency of filter
-    ////////// Gain : gain to apply to filter ( 1 = no gain )
-    ////////// TypeFilter: Type of filter : default = -1 = fBandSelect (fBandAll = 0, fBandSelect = 1, fBandReject = 2
-    /////////////////////////// fBandPass = 3, fHighPass = 4, fLowPass = 5)
-    ////////// AlsoBuf : The filter alter buffer aswell ( otherwise, only result is filled in fft.data )
-    ////////// LoopProc : External procedure to execute after filter
-    //  result : -1 nothing created, otherwise index of DSPIn in array
+   Out1Index :=uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, 0, -1);
+  //// add a Output into device with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// Device ( -1 is default Output device )
+  //////////// Latency  ( -1 is latency suggested ) )
+  //////////// SampleRate : delault : -1 (44100)
+  //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
+  //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+  //////////// FramesCount : default : -1 (= 65536)
 
-    EQIndex2 := Player1.AddFilterIn(In1Index, 1000, 8000, 1, 1, True, nil);
-    EQIndex3 := Player1.AddFilterIn(In1Index, 8000, 22000, 1, 1, True, nil);
+    In1Index := uos_AddFromFile(PlayerIndex1, FilenameEdit4.filename, -1, 0, -1);
+      //// add input from audio file with custom parameters
+      //////////// PlayerIndex : Index of a existing Player
+      ////////// FileName : filename of audio file
+      ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
+      ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+      ////////// FramesCount : default : -1 (= 65536)
+
+      EQIndex1 := uos_AddFilterIn(PlayerIndex1, In1Index, 1, 1000, 1, 1, True, nil);
+      //////////// PlayerIndex : Index of a existing Player
+      ////////// In1Index : InputIndex of a existing Input
+      ////////// LowFrequency : Lowest frequency of filter
+      ////////// HighFrequency : Highest frequency of filter
+      ////////// Gain : gain to apply to filter ( 1 = no gain )
+      ////////// TypeFilter: Type of filter : default = -1 = fBandSelect (fBandAll = 0, fBandSelect = 1, fBandReject = 2
+      /////////////////////////// fBandPass = 3, fHighPass = 4, fLowPass = 5)
+      ////////// AlsoBuf : The filter alter buffer aswell ( otherwise, only result is filled in fft.data )
+      ////////// LoopProc : External procedure to execute after filter
+      //  result : -1 nothing created, otherwise index of DSPIn in array
+
+      EQIndex2 := uos_AddFilterIn(PlayerIndex1, In1Index, 1000, 8000, 1, 1, True, nil);
+      EQIndex3 := uos_AddFilterIn(PlayerIndex1, In1Index, 8000, 22000, 1, 1, True, nil);
 
     if radiobutton1.Checked = True then
       typfilt := 2;
@@ -212,25 +218,30 @@ var
     if radiobutton4.Checked = True then
       typfilt := 5;
 
-    FTIndex1 := Player1.AddFilterIn(In1Index, StrToInt(edit2.Text), StrToInt(edit1.Text),
-      1, typfilt, True, nil);
+    FTIndex1 := uos_AddFilterIn(PlayerIndex1, In1Index, StrToInt(edit2.Text), StrToInt(edit1.Text),
+    1, typfilt, True, nil);
 
-    Player1.SetFilterIn(In1Index, FTIndex1, -1, -1, -1, -1, True, checkbox2.Checked, nil);
-    ////////// InputIndex : InputIndex of a existing Input
-    ////////// DSPInIndex : DSPInIndex of existing DSPIn
-    ////////// LowFrequency : Lowest frequency of filter ( default = -1 : current LowFrequency )
-    ////////// HighFrequency : Highest frequency of filter ( default = -1 : current HighFrequency )
-    ////////// Gain   : Gain to apply ( -1 = current gain)  ( 0 = silence, 1 = no gain, < 1 = less gain, > 1 = more gain)
-    ////////// TypeFilter: Type of filter : ( default = -1 = current filter ) (fBandAll = 0, fBandSelect = 1, fBandReject = 2
-    /////////////////////////// fBandPass = 3, fHighPass = 4, fLowPass = 5)
-    ////////// AlsoBuf : The filter alter buffer aswell ( otherwise, only result is filled in fft.data )
-    ////////// Enable :  Filter enabled
+    uos_SetFilterIn(PlayerIndex1, In1Index, FTIndex1, -1, -1, -1, -1, True, checkbox2.Checked, nil);
+  //////////// PlayerIndex : Index of a existing Player
+  ////////// InputIndex : InputIndex of a existing Input
+  ////////// DSPInIndex : DSPInIndex of existing DSPIn
+  ////////// LowFrequency : Lowest frequency of filter ( default = -1 : current LowFrequency )
+  ////////// HighFrequency : Highest frequency of filter ( default = -1 : current HighFrequency )
+  ////////// Gain   : Gain to apply ( -1 = current gain)  ( 0 = silence, 1 = no gain, < 1 = less gain, > 1 = more gain)
+  ////////// TypeFilter: Type of filter : ( default = -1 = current filter ) (fBandAll = 0, fBandSelect = 1, fBandReject = 2
+  /////////////////////////// fBandPass = 3, fHighPass = 4, fLowPass = 5)
+  ////////// AlsoBuf : The filter alter buffer aswell ( otherwise, only result is filled in fft.data )
+  ////////// Enable :  Filter enabled
 
-    Player1.EndProc := @ClosePlayer1;
-    /////// procedure to execute when stream is terminated
+  uos_EndProc(PlayerIndex1, @ClosePlayer1);
+   ///// Assign the procedure of object to execute at end
+   //////////// PlayerIndex : Index of a existing Player
+   //////////// ClosePlayer1 : procedure of object to execute inside the loop
+  /////// procedure to execute when stream is terminated
 
-    Player1.Play;  /////// everything is ready, here we are, lets play it...
-    btnStart.Enabled := False;
+  uos_Play(PlayerIndex1);  /////// everything is ready, here we are, lets play it...
+
+  btnStart.Enabled := False;
     btnPause.Enabled := True;
     btnResume.Enabled := False;
     btnStop.Enabled := True;
@@ -242,11 +253,11 @@ var
 
   procedure TFilterplayer.CheckBox1Change(Sender: TObject);
   begin
-    if assigned(Player1) and (btnstart.Enabled = False) then
+    if (btnstart.Enabled = False) then
     begin
-      Player1.SetFilterIn(In1Index, EQIndex1, -1, -1, -1, -1, True, checkbox1.Checked, nil);
-      Player1.SetFilterIn(In1Index, EQIndex2, -1, -1, -1, -1, True, checkbox1.Checked, nil);
-      Player1.SetFilterIn(In1Index, EQIndex3, -1, -1, -1, -1, True, checkbox1.Checked, nil);
+      uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex1, -1, -1, -1, -1, True, checkbox1.Checked, nil);
+      uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex2, -1, -1, -1, -1, True, checkbox1.Checked, nil);
+      uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex3, -1, -1, -1, -1, True, checkbox1.Checked, nil);
     end;
   end;
 
@@ -262,8 +273,8 @@ var
       typfilt := 4;
     if radiobutton4.Checked = True then
       typfilt := 5;
-    if assigned(Player1) and (btnstart.Enabled = False) then
-      Player1.SetFilterIn(In1Index, FTIndex1, StrToInt(edit2.Text), StrToInt(edit1.Text),
+    if (btnstart.Enabled = False) then
+      uos_SetFilterIn(PlayerIndex1, In1Index, FTIndex1, StrToInt(edit2.Text), StrToInt(edit1.Text),
         1, typfilt, True, checkbox2.Checked, nil);
 
   end;
@@ -279,8 +290,8 @@ var
       gain := 1 + ((200 - TrackBar3.Position) / 25)
     else
       gain := (TrackBar3.Position) / 100;
-    if assigned(Player1) and (btnStart.Enabled = False) then
-      Player1.SetFilterIn(In1Index, EQIndex3, -1, -1, Gain, -1, True,
+    if  (btnStart.Enabled = False) then
+    uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex3, -1, -1, Gain, -1, True,
         checkbox1.Checked, nil);
   end;
 
@@ -295,8 +306,8 @@ var
       gain := 1 + ((200 - TrackBar2.Position) / 25)
     else
       gain := (TrackBar2.Position) / 100;
-    if assigned(Player1) and (btnStart.Enabled = False) then
-      Player1.SetFilterIn(In1Index, EQIndex2, -1, -1, Gain, -1, True,
+    if (btnStart.Enabled = False) then
+     uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex2, -1, -1, Gain, -1, True,
         checkbox1.Checked, nil);
   end;
 
@@ -311,8 +322,8 @@ var
       gain := 1 + ((200 - TrackBar1.Position) / 25)
     else
       gain := (TrackBar1.Position) / 100;
-    if assigned(Player1) and (btnStart.Enabled = False) then
-      Player1.SetFilterIn(In1Index, EQIndex1, -1, -1, Gain, -1, True,
+    if (btnStart.Enabled = False) then
+     uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex1, -1, -1, Gain, -1, True,
         checkbox1.Checked, nil);
   end;
 
@@ -333,15 +344,8 @@ var
   end;
 
 
-  // constructor TFilterplayer.Create(AOwner: TComponent);
-  //begin
-  // inherited Create(AOwner);
-  // borderless and steals focus like a normal form
-  // Include(FWindowAttributes, waBorderLess);
-  // end;
-
   procedure TFilterplayer.AfterCreate;
-  begin
+   begin
     {%region 'Auto-generated GUI code' -fold}
     {@VFD_BODY_BEGIN: Filterplayer}
     Name := 'Filterplayer';
@@ -357,7 +361,7 @@ var
     begin
       Name := 'Custom1';
       SetPosition(10, 8, 115, 115);
-      OnPaint := @UOS_logo;
+      OnPaint := @uos_logo;
     end;
 
     Labelport := TfpgLabel.Create(self);
@@ -724,78 +728,39 @@ var
     ordir := IncludeTrailingBackslash(ExtractFilePath(ParamStr(0)));
     RadioButton1.Checked := True;
     Height := 157;
-             {$IFDEF Windows}
+                  {$IFDEF Windows}
      {$if defined(cpu64)}
-    FilenameEdit1.FileName := ordir + 'lib\LibPortaudio-64.dll';
-{$else}
-    FilenameEdit1.FileName := ordir + 'lib\LibPortaudio-32.dll';
-   {$endif}
+    FilenameEdit1.FileName := ordir + 'lib\Windows\64bit\LibPortaudio-64.dll';
+    FilenameEdit2.FileName := ordir + 'lib\Windows\64bit\LibSndFile-64.dll';
+    FilenameEdit3.FileName := ordir + 'lib\Windows\64bit\LibMpg123-64.dll';
+   {$else}
+    FilenameEdit1.FileName := ordir + 'lib\Windows\32bit\LibPortaudio-32.dll';
+    FilenameEdit2.FileName := ordir + 'lib\Windows\32bit\LibSndFile-32.dll';
+    FilenameEdit3.FileName := ordir + 'lib\Windows\32bit\LibMpg123-32.dll';
+    {$endif}
     FilenameEdit4.FileName := ordir + 'sound\test.mp3';
  {$ENDIF}
 
   {$IFDEF Darwin}
     opath := ordir;
-    opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-    FilenameEdit1.FileName := opath + '/lib/LibPortaudio-32.dylib';
+    opath := copy(opath, 1, Pos('/uos', opath) - 1);
+    FilenameEdit1.FileName := opath + '/lib/Mac/32bit/LibPortaudio-32.dylib';
+    FilenameEdit2.FileName := opath + '/lib/Mac/32bit/LibSndFile-32.dylib';
+    FilenameEdit3.FileName := opath + '/lib/Mac/32bit/LibMpg123-32.dylib';
     FilenameEdit4.FileName := opath + 'sound/test.mp3';
             {$ENDIF}
 
    {$IFDEF linux}
     {$if defined(cpu64)}
-    FilenameEdit1.FileName := ordir + 'lib/LibPortaudio-64.so';
-{$else}
-    FilenameEdit1.FileName := ordir + 'lib/LibPortaudio-32.so';
-{$endif}
-
+    FilenameEdit1.FileName := ordir + 'lib/Linux/64bit/LibPortaudio-64.so';
+    FilenameEdit2.FileName := ordir + 'lib/Linux/64bit/LibSndFile-64.so';
+    FilenameEdit3.FileName := ordir + 'lib/Linux/64bit/LibMpg123-64.so';
+   {$else}
+    FilenameEdit1.FileName := ordir + 'lib/Linux/32bit/LibPortaudio-32.so';
+    FilenameEdit2.FileName := ordir + 'lib/Linux/32bit/LibSndFile-32.so';
+    FilenameEdit3.FileName := ordir + 'lib/Linux/32bit/LibMpg123-32.so';
+   {$endif}
     FilenameEdit4.FileName := ordir + 'sound/test.mp3';
-            {$ENDIF}
-    //////////////////////////////////////////////////////////////////////////
-
-    {$IFDEF Windows}
-       {$if defined(cpu64)}
-    FilenameEdit2.FileName := ordir + 'lib\LibSndFile-64.dll';
-{$else}
-    FilenameEdit2.FileName := ordir + 'lib\LibSndFile-32.dll';
-{$endif}
-
- {$ENDIF}
-
-  {$IFDEF Darwin}
-    opath := ordir;
-    opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-    FilenameEdit2.FileName := opath + '/lib/LibSndFile-32.dylib';
-            {$ENDIF}
-
-   {$IFDEF linux}
-      {$if defined(cpu64)}
-    FilenameEdit2.FileName := ordir + 'lib/LibSndFile-64.so';
-{$else}
-    FilenameEdit2.FileName := ordir + 'lib/LibSndFile-32.so';
-{$endif}
-
-            {$ENDIF}
-    //////////////////////////////////////////////////////////////////////////
- {$IFDEF Windows}
-       {$if defined(cpu64)}
-    FilenameEdit3.FileName := ordir + 'lib\LibMpg123-64.dll';
-{$else}
-    FilenameEdit3.FileName := ordir + 'lib\LibMpg123-32.dll';
-{$endif}
- {$ENDIF}
-
-  {$IFDEF Darwin}
-    opath := ordir;
-    opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-    FilenameEdit3.FileName := opath + '/lib/LibMpg123-32.dylib';
-            {$ENDIF}
-
-   {$IFDEF linux}
-      {$if defined(cpu64)}
-    FilenameEdit3.FileName := ordir + 'lib/LibMpg123-64.so';
-{$else}
-    FilenameEdit3.FileName := ordir + 'lib/LibMpg123-32.so';
-{$endif}
-
             {$ENDIF}
     FilenameEdit4.Initialdir := ordir + 'sound';
     FilenameEdit1.Initialdir := ordir + 'lib';
@@ -803,7 +768,7 @@ var
     FilenameEdit3.Initialdir := ordir + 'lib';
   end;
 
-  procedure TFilterplayer.UOS_logo(Sender: TObject);
+  procedure TFilterplayer.uos_logo(Sender: TObject);
   var
     xpos, ypos, pbwidth, pbheight: integer;
     ratio: double;
@@ -817,7 +782,7 @@ var
     begin
       Canvas.GradientFill(GetClientRect, clgreen, clBlack, gdVertical);
       Canvas.TextColor := clWhite;
-      Canvas.DrawText(60, 20, 'UOS');
+      Canvas.DrawText(60, 20, 'uos');
     end;
   end;
 

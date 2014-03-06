@@ -58,30 +58,27 @@ type
     procedure Button6Click(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
     procedure FormActivate(Sender: TObject);
-    procedure FormClose(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject);
     procedure TrackBar1Change(Sender: TObject);
     procedure TrackBar2Change(Sender: TObject);
     procedure ClosePlayer1;
     procedure TrackBar3Change(Sender: TObject);
-    procedure TrackBar3MouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: integer);
   private
     { private declarations }
   public
     { public declarations }
   end;
 
-procedure UOS_logo();
+procedure uos_logo();
 
 var
   Form1: TForm1;
   BufferBMP: TBitmap;
-  Player1: TUOS_Player;
+  PlayerIndex1: cardinal;
   Out1Index, In1Index, EQIndex1, EQIndex2, EQIndex3, FTIndex1: integer;
-  Init: TUOS_Init;
 
 implementation
 
@@ -109,97 +106,55 @@ begin
   else
     gain := TrackBar3.Position / 100;
 
-  if assigned(Player1) and (button3.Enabled = False) then
-    Player1.SetFilterIn(In1Index, EQIndex3, -1, -1, Gain, -1, True,
+  if (button3.Enabled = False) then
+    uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex3, -1, -1, Gain, -1, True,
       checkbox1.Checked, nil);
 end;
 
-procedure TForm1.TrackBar3MouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: integer);
-begin
-
-end;
-
 procedure TForm1.FormActivate(Sender: TObject);
-{$IFDEF Darwin}
 var
+  ordir: string;
+{$IFDEF Darwin}
   opath: string;
-            {$ENDIF}
+{$ENDIF}
 begin
-  UOS_logo();
-      {$IFDEF Windows}
+  ordir := application.Location;
+  uos_logo();
+            {$IFDEF Windows}
      {$if defined(cpu64)}
-  edit1.Text := application.Location + 'lib\LibPortaudio-64.dll';
-{$else}
-  edit1.Text := application.Location + 'lib\LibPortaudio-32.dll';
-   {$endif}
-  Edit4.Text := application.Location + 'sound\test.ogg';
+  Edit1.Text := ordir + 'lib\Windows\64bit\LibPortaudio-64.dll';
+  Edit2.Text := ordir + 'lib\Windows\64bit\LibSndFile-64.dll';
+  Edit3.Text := ordir + 'lib\Windows\64bit\LibMpg123-64.dll';
+   {$else}
+  Edit1.Text := ordir + 'lib\Windows\32bit\LibPortaudio-32.dll';
+  Edit2.Text := ordir + 'lib\Windows\32bit\LibSndFile-32.dll';
+  Edit3.Text := ordir + 'lib\Windows\32bit\LibMpg123-32.dll';
+    {$endif}
+  Edit4.Text := ordir + 'sound\test.mp3';
  {$ENDIF}
 
   {$IFDEF Darwin}
-  opath := application.Location;
-  opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-  edit1.Text := opath + '/lib/LibPortaudio-32.dylib';
-  Edit4.Text := opath + 'sound/test.ogg';
+  opath := ordir;
+  opath := copy(opath, 1, Pos('/uos', opath) - 1);
+  Edit1.Text := opath + '/lib/Mac/32bit/LibPortaudio-32.dylib';
+  Edit2.Text := opath + '/lib/Mac/32bit/LibSndFile-32.dylib';
+  Edit3.Text := opath + '/lib/Mac/32bit/LibMpg123-32.dylib';
+  Edit4.Text := opath + 'sound/test.mp3';
             {$ENDIF}
 
    {$IFDEF linux}
     {$if defined(cpu64)}
-  edit1.Text := application.Location + 'lib/LibPortaudio-64.so';
-{$else}
-  edit1.Text := application.Location + 'lib/LibPortaudio-32.so';
-{$endif}
-
-  Edit4.Text := application.Location + 'sound/test.ogg';
-            {$ENDIF}
-  //////////////////////////////////////////////////////////////////////////
-
-    {$IFDEF Windows}
-       {$if defined(cpu64)}
-  edit2.Text := application.Location + 'lib\LibSndFile-64.dll';
-{$else}
-  edit2.Text := application.Location + 'lib\LibSndFile-32.dll';
-{$endif}
-
- {$ENDIF}
-
-  {$IFDEF Darwin}
-  opath := application.Location;
-  opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-  edit2.Text := opath + '/lib/LibSndFile-32.dylib';
+  Edit1.Text := ordir + 'lib/Linux/64bit/LibPortaudio-64.so';
+  Edit2.Text := ordir + 'lib/Linux/64bit/LibSndFile-64.so';
+  Edit3.Text := ordir + 'lib/Linux/64bit/LibMpg123-64.so';
+  {$else}
+  Edit1.Text := ordir + 'lib/Linux/32bit/LibPortaudio-32.so';
+  Edit2.Text := ordir + 'lib/Linux/32bit/LibSndFile-32.so';
+  Edit3.Text := ordir + 'lib/Linux/32bit/LibMpg123-32.so';
+  {$endif}
+  Edit4.Text := ordir + 'sound/test.mp3';
             {$ENDIF}
 
-   {$IFDEF linux}
-      {$if defined(cpu64)}
-  edit2.Text := application.Location + 'lib/LibSndFile-64.so';
-{$else}
-  edit2.Text := application.Location + 'lib/LibSndFile-32.so';
-{$endif}
-
-            {$ENDIF}
-  //////////////////////////////////////////////////////////////////////////
- {$IFDEF Windows}
-       {$if defined(cpu64)}
-  edit3.Text := application.Location + 'lib\LibMpg123-64.dll';
-{$else}
-  edit3.Text := application.Location + 'lib\LibMpg123-32.dll';
-{$endif}
- {$ENDIF}
-
-  {$IFDEF Darwin}
-  opath := application.Location;
-  opath := copy(opath, 1, Pos('/UOS', opath) - 1);
-  edit3.Text := opath + '/lib/LibMpg123-32.dylib';
-            {$ENDIF}
-
-   {$IFDEF linux}
-      {$if defined(cpu64)}
-  edit3.Text := application.Location + 'lib/LibMpg123-64.so';
-{$else}
-  edit3.Text := application.Location + 'lib/LibMpg123-32.so';
-{$endif}
-
-            {$ENDIF}
   opendialog1.Initialdir := application.Location + 'sound';
 end;
 
@@ -220,8 +175,9 @@ begin
     typfilt := 4;
   if radiobutton4.Checked = True then
     typfilt := 5;
-  if assigned(Player1) and (button3.Enabled = False) then
-    Player1.SetFilterIn(In1Index, FTIndex1, StrToInt(edit6.Text), StrToInt(edit5.Text),
+  if (button3.Enabled = False) then
+    uos_SetFilterIn(PlayerIndex1, In1Index, FTIndex1, StrToInt(edit6.Text),
+      StrToInt(edit5.Text),
       1, typfilt, True, checkbox2.Checked, nil);
 
 end;
@@ -239,8 +195,8 @@ begin
     gain := 1 + ((100 - TrackBar1.Position) / 20)
   else
     gain := TrackBar1.Position / 100;
-  if assigned(Player1) and (button3.Enabled = False) then
-    Player1.SetFilterIn(In1Index, EQIndex1, -1, -1, Gain, -1, True,
+  if (button3.Enabled = False) then
+    uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex1, -1, -1, Gain, -1, True,
       checkbox1.Checked, nil);
 end;
 
@@ -256,24 +212,17 @@ begin
     gain := 1 + ((100 - TrackBar2.Position) / 25)
   else
     gain := TrackBar2.Position / 100;
-  if assigned(Player1) and (button3.Enabled = False) then
-    Player1.SetFilterIn(In1Index, EQIndex2, -1, -1, Gain, -1, True,
+  if (button3.Enabled = False) then
+    uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex2, -1, -1, Gain, -1, True,
       checkbox1.Checked, nil);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  Init := TUOS_Init.Create;   //// Create Iibraries Loader-Init
 
-  Init.PA_FileName := edit1.Text;
-  Init.SF_FileName := edit2.Text;
-  Init.MP_FileName := edit3.Text;
-  Init.Flag := LoadAll;
-
-  Init.LoadLib;
-
-  if (Init.LoadResult.PAloaderror = 0) and (Init.LoadResult.MPloaderror = 0) and
-    (Init.LoadResult.Sfloaderror = 0) then
+  // Load the libraries
+  // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
+  if uos_LoadLib(edit1.Text, edit2.Text, edit3.Text, '') = 0 then
   begin
     form1.hide;
     button1.Caption := 'PortAudio, SndFile and Mpg123 libraries are loaded...';
@@ -287,31 +236,32 @@ begin
   end
   else
   begin
-    if Init.LoadResult.PAloaderror = 1 then
+    if uosLoadResult.PAloaderror = 1 then
       MessageDlg(edit1.Text + ' do not exist...', mtWarning, [mbYes], 0);
-    if Init.LoadResult.PAloaderror = 2 then
+    if uosLoadResult.PAloaderror = 2 then
       MessageDlg(edit1.Text + ' do not load...', mtWarning, [mbYes], 0);
-    if Init.LoadResult.SFloaderror = 1 then
+    if uosLoadResult.SFloaderror = 1 then
       MessageDlg(edit2.Text + ' do not exist...', mtWarning, [mbYes], 0);
-    if Init.LoadResult.SFloaderror = 2 then
+    if uosLoadResult.SFloaderror = 2 then
       MessageDlg(edit2.Text + ' do not load...', mtWarning, [mbYes], 0);
-    if Init.LoadResult.MPloaderror = 1 then
+    if uosLoadResult.MPloaderror = 1 then
       MessageDlg(edit3.Text + ' do not exist...', mtWarning, [mbYes], 0);
-    if Init.LoadResult.MPloaderror = 2 then
+    if uosLoadResult.MPloaderror = 2 then
       MessageDlg(edit3.Text + ' do not load...', mtWarning, [mbYes], 0);
   end;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
 begin
-  Player1.Pause;
+  uos_Pause(PlayerIndex1);
   Button4.Enabled := True;
   Button5.Enabled := False;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 begin
-  Player1.RePlay;
+  uos_RePlay(PlayerIndex1);
+  ;
   Button4.Enabled := False;
   Button5.Enabled := True;
   Button6.Enabled := True;
@@ -322,23 +272,34 @@ var
   EqGain: double;
   typfilt: shortint;
 begin
-  Player1 := TUOS_Player.Create(True, self);     //// Create the player
+  PlayerIndex1 := 0;
+  // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
+  // If PlayerIndex exists already, it will be overwritten...
+  uos_CreatePlayer(PlayerIndex1);
+  //// Create the player.
+  //// PlayerIndex : from 0 to what your computer can do !
+  //// If PlayerIndex exists already, it will be overwriten...
 
-  Out1Index := Player1.AddIntoDevOut(-1, -1, -1, -1, 0);
+  Out1Index := uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, 0, -1);
   //// add a Output into device with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
   //////////// Device ( -1 is default Output device )
   //////////// Latency  ( -1 is latency suggested ) )
   //////////// SampleRate : delault : -1 (44100)
   //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
   //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
+  //////////// FramesCount : default : -1 (= 65536)
 
-  In1Index := Player1.AddFromFile(Edit4.Text, -1, 0);
+  In1Index := uos_AddFromFile(PlayerIndex1, Edit4.Text, -1, 0, -1);
   //// add input from audio file with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
   ////////// FileName : filename of audio file
   ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
   ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  ////////// FramesCount : default : -1 (= 65536)
 
-  EQIndex1 := Player1.AddFilterIn(In1Index, 1, 1000, 1, 1, True, nil);
+  EQIndex1 := uos_AddFilterIn(PlayerIndex1, In1Index, 1, 1000, 1, 1, True, nil);
+  //////////// PlayerIndex : Index of a existing Player
   ////////// In1Index : InputIndex of a existing Input
   ////////// LowFrequency : Lowest frequency of filter
   ////////// HighFrequency : Highest frequency of filter
@@ -349,8 +310,8 @@ begin
   ////////// LoopProc : External procedure to execute after filter
   //  result : -1 nothing created, otherwise index of DSPIn in array
 
-  EQIndex2 := Player1.AddFilterIn(In1Index, 1000, 8000, 1, 1, True, nil);
-  EQIndex3 := Player1.AddFilterIn(In1Index, 8000, 22000, 1, 1, True, nil);
+  EQIndex2 := uos_AddFilterIn(PlayerIndex1, In1Index, 1000, 8000, 1, 1, True, nil);
+  EQIndex3 := uos_AddFilterIn(PlayerIndex1, In1Index, 8000, 22000, 1, 1, True, nil);
 
   if radiobutton1.Checked = True then
     typfilt := 2;
@@ -361,10 +322,12 @@ begin
   if radiobutton4.Checked = True then
     typfilt := 5;
 
-  FTIndex1 := Player1.AddFilterIn(In1Index, StrToInt(edit6.Text), StrToInt(edit5.Text),
-    1, typfilt, True, nil);
+  FTIndex1 := uos_AddFilterIn(PlayerIndex1, In1Index, StrToInt(edit6.Text),
+    StrToInt(edit5.Text), 1, typfilt, True, nil);
 
-  Player1.SetFilterIn(In1Index, FTIndex1, -1, -1, -1, -1, True, checkbox2.Checked, nil);
+  uos_SetFilterIn(PlayerIndex1, In1Index, FTIndex1, -1, -1, -1, -1,
+    True, checkbox2.Checked, nil);
+  //////////// PlayerIndex : Index of a existing Player
   ////////// InputIndex : InputIndex of a existing Input
   ////////// DSPInIndex : DSPInIndex of existing DSPIn
   ////////// LowFrequency : Lowest frequency of filter ( default = -1 : current LowFrequency )
@@ -383,7 +346,8 @@ begin
     EqGain := 1 + ((100 - TrackBar1.Position) div 25)
   else
     EqGain := TrackBar1.Position div 100;
-  Player1.SetFilterIn(In1Index, EQIndex1, -1, -1, EqGain, -1, True,
+
+  uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex1, -1, -1, EqGain, -1, True,
     checkbox1.Checked, nil);
 
   if TrackBar2.Position = 100 then
@@ -393,7 +357,7 @@ begin
     EqGain := 1 + ((100 - TrackBar2.Position) div 25)
   else
     EqGain := TrackBar2.Position div 100;
-  Player1.SetFilterIn(In1Index, EQIndex2, -1, -1, EqGain, -1, True,
+  uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex2, -1, -1, EqGain, -1, True,
     checkbox1.Checked, nil);
 
   if TrackBar3.Position = 100 then
@@ -403,13 +367,16 @@ begin
     EqGain := 1 + ((100 - TrackBar3.Position) div 25)
   else
     EqGain := TrackBar3.Position div 100;
-  Player1.SetFilterIn(In1Index, EQIndex3, -1, -1, EqGain, -1, True,
+  uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex3, -1, -1, EqGain, -1, True,
     checkbox1.Checked, nil);
 
-  Player1.EndProc := @ClosePlayer1;
+  uos_EndProc(PlayerIndex1, @ClosePlayer1);
+  ///// Assign the procedure of object to execute at end
+  //////////// PlayerIndex : Index of a existing Player
+  //////////// ClosePlayer1 : procedure of object to execute inside the loop
   /////// procedure to execute when stream is terminated
 
-  Player1.Play;  /////// everything is ready, here we are, lets play it...
+  uos_Play(PlayerIndex1);  /////// everything is ready, here we are, lets play it...
 
   trackbar2.Enabled := True;
   Button3.Enabled := False;
@@ -421,7 +388,7 @@ end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
-  Player1.Stop;
+  uos_Stop(PlayerIndex1);
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -432,19 +399,18 @@ end;
 
 procedure TForm1.CheckBox1Change(Sender: TObject);
 begin
-  if assigned(Player1) and (button3.Enabled = False) then
-    if assigned(Player1) and (button3.Enabled = False) then
-    begin
-      Player1.SetFilterIn(In1Index, EQIndex1, -1, -1, -1, -1, True,
-        checkbox1.Checked, nil);
-      Player1.SetFilterIn(In1Index, EQIndex2, -1, -1, -1, -1, True,
-        checkbox1.Checked, nil);
-      Player1.SetFilterIn(In1Index, EQIndex3, -1, -1, -1, -1, True,
-        checkbox1.Checked, nil);
-    end;
+  if (button3.Enabled = False) then
+  begin
+    uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex1, -1, -1, -1, -1, True,
+      checkbox1.Checked, nil);
+    uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex2, -1, -1, -1, -1, True,
+      checkbox1.Checked, nil);
+    uos_SetFilterIn(PlayerIndex1, In1Index, EQIndex3, -1, -1, -1, -1, True,
+      checkbox1.Checked, nil);
+  end;
 end;
 
-procedure UOS_logo();
+procedure uos_logo();
 var
   xpos, ypos: integer;
   ratio: double;
@@ -499,20 +465,20 @@ begin
   end;
 end;
 
-procedure TForm1.FormClose(Sender: TObject);
+procedure TForm1.FormCreate(Sender: TObject);
 begin
-  if assigned(Player1) and (button3.Enabled = False) then
+  Form1.Height := 150;
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  if (button3.Enabled = False) then
   begin
     button6.Click;
     sleep(500);
   end;
   if button1.Enabled = False then
-    Init.UnloadLib();
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-  Form1.Height := 150;
+    uos_UnloadLib();
 end;
 
 end.

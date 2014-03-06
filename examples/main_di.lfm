@@ -82,10 +82,10 @@ object Form1: TForm1
     0000
   }
   OnActivate = FormActivate
-  OnClose = FormClose
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poDesktopCenter
-  LCLVersion = '1.0.12.0'
+  LCLVersion = '1.3'
   object Shape1: TShape
     Left = 10
     Height = 192
@@ -118,14 +118,14 @@ object Form1: TForm1
   object PaintBox1: TPaintBox
     Left = 17
     Height = 105
-    Top = 8
+    Top = 2
     Width = 105
     OnPaint = PaintBox1Paint
   end
   object Button1: TButton
     Left = 18
-    Height = 20
-    Top = 122
+    Height = 28
+    Top = 116
     Width = 554
     Caption = 'Load that library'
     OnClick = Button1Click
@@ -136,7 +136,7 @@ object Form1: TForm1
     Height = 164
     Top = 164
     Width = 550
-    ColCount = 12
+    ColCount = 13
     FixedCols = 0
     TabOrder = 2
     ColWidths = (
@@ -152,9 +152,10 @@ object Form1: TForm1
       106
       121
       142
+      64
     )
     Cells = (
-      12
+      13
       0
       0
       'Dev '
@@ -191,6 +192,9 @@ object Form1: TForm1
       11
       0
       'Host API'
+      12
+      0
+      'Type'
     )
   end
   object Button2: TButton
@@ -204,25 +208,25 @@ object Form1: TForm1
   end
   object Label2: TLabel
     Left = 12
-    Height = 18
+    Height = 15
     Top = 356
-    Width = 121
+    Width = 118
     Caption = 'Device Count =  99'
     ParentColor = False
   end
   object Label3: TLabel
     Left = 152
-    Height = 18
+    Height = 15
     Top = 356
-    Width = 152
+    Width = 146
     Caption = 'Default Device  IN =  99'
     ParentColor = False
   end
   object Label4: TLabel
     Left = 320
-    Height = 18
+    Height = 15
     Top = 356
-    Width = 166
+    Width = 158
     Caption = 'Default Device OUT  =  99'
     ParentColor = False
   end
