@@ -151,10 +151,11 @@ install:
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_di"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="21" Y="237"/>
+        <TopLine Value="138"/>
+        <CursorPos X="38" Y="149"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -332,11 +333,10 @@ install:
       <Unit23>
         <Filename Value="uos.pas"/>
         <UnitName Value="uos"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="3647"/>
-        <CursorPos X="15" Y="3662"/>
+        <TopLine Value="3925"/>
+        <CursorPos X="35" Y="3651"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit23>
@@ -499,7 +499,7 @@ install:
         <DefaultSyntaxHighlighter Value="XML"/>
       </Unit42>
     </Units>
-    <JumpHistory Count="27" HistoryIndex="26">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
         <Filename Value="uos.pas"/>
         <Caret Line="2536" Column="18" TopLine="2518"/>
@@ -608,6 +608,10 @@ install:
         <Filename Value="main_di.pas"/>
         <Caret Line="31" Column="5" TopLine="24"/>
       </Position27>
+      <Position28>
+        <Filename Value="main_di.pas"/>
+        <Caret Line="237" Column="21" TopLine="1"/>
+      </Position28>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>

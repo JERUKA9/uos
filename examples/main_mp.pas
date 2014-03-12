@@ -204,7 +204,7 @@ procedure TForm1.Button1Click(Sender: TObject);
 begin
   // Load the libraries
   // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
-  if uos_LoadLib(edit1.Text, edit2.Text, edit3.Text, '') = 0 then
+  if uos_LoadLib(Pchar(edit1.Text), pchar(edit2.Text), pchar(edit3.Text), nil) = 0 then
   begin
     form1.hide;
     form1.Position := podefault;
@@ -283,7 +283,7 @@ begin
   //  result : -1 nothing created, otherwise Output Index in array
 
 
-  uos_AddFromFile(PlayerIndex3, Edit7.Text, -1, 0, -1);
+  uos_AddFromFile(PlayerIndex3, pchar(Edit7.Text), -1, 0, -1);
   //// add input from audio file with custom parameters
   ////////// FileName : filename of audio file
   //////////// PlayerIndex : Index of a existing Player
@@ -381,7 +381,7 @@ begin
   //  result : -1 nothing created, otherwise Output Index in array
 
 
-  uos_AddFromFile(PlayerIndex0, Edit4.Text, -1, 0, -1);
+  uos_AddFromFile(PlayerIndex0, pchar(Edit4.Text), -1, 0, -1);
   //// add input from audio file with custom parameters
   ////////// FileName : filename of audio file
   //////////// PlayerIndex : Index of a existing Player
@@ -435,7 +435,7 @@ begin
   //  result : -1 nothing created, otherwise Output Index in array
 
 
-  uos_AddFromFile(PlayerIndex1, Edit5.Text, -1, 0, -1);
+  uos_AddFromFile(PlayerIndex1, pchar(Edit5.Text), -1, 0, -1);
   //// add input from audio file with custom parameters
   ////////// FileName : filename of audio file
   //////////// PlayerIndex : Index of a existing Player
@@ -487,7 +487,7 @@ begin
   //  result : -1 nothing created, otherwise Output Index in array
 
 
-  uos_AddFromFile(PlayerIndex2, Edit6.Text, -1, 0, -1);
+  uos_AddFromFile(PlayerIndex2, pchar(Edit6.Text), -1, 0, -1);
   //// add input from audio file with custom parameters
   ////////// FileName : filename of audio file
   //////////// PlayerIndex : Index of a existing Player

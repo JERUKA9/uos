@@ -71,14 +71,15 @@ var
     PlayerIndex1 := 0;
 
     // Load the libraries
-    // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
-    res := uos_LoadLib(PA_FileName, SF_FileName, '', '');
+    // function uos_LoadLib(PortAudioFileName: Pchar; SndFileFileName: Pchar; Mpg123FileName: Pchar; SoundTouchFileName: Pchar) : integer;
+
+   res := uos_LoadLib(Pchar(PA_FileName), Pchar(SF_FileName), nil, nil) ;
 
     writeln('Result of loading (if 0 => ok ) : ' + IntToStr(res));
 
     uos_CreatePlayer(PlayerIndex1); //// Create the player
     uos_AddIntoDevOut(PlayerIndex1);   //// add a Output Device with default parameters
-    uos_AddFromFile(PlayerIndex1, sndfilename);
+    uos_AddFromFile(PlayerIndex1, pchar(sndfilename));
     uos_Play(PlayerIndex1);
    end;
 

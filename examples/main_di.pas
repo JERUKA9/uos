@@ -141,9 +141,9 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   // Load the library
-  // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
+  // function uos_LoadLib(PortAudioFileName: PChar; SndFileFileName: PChar; Mpg123FileName: PChar; SoundTouchFileName: PChar) : integer;
 
-  if uos_LoadLib(edit1.Text, '', '', '') = 0 then
+  if uos_LoadLib(pchar(edit1.Text), nil, nil, nil) = 0 then
   begin
     form1.hide;
     button1.Caption := 'PortAudio is loaded...';

@@ -45,6 +45,7 @@ implementation
 
 procedure TForm1.CreateMorsePlayer();
 var
+filetoplay, fileerror : string;
 chara : string;
 player : cardinal;
 begin
@@ -52,15 +53,20 @@ if i <= length(Memo1.Text) then
 begin
 chara := copy(Memo1.Text,i,1);
 
+fileerror := ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator +'0.mp3' ;
+
 if odd(i) then player := 0 else player := 1;  ///// to switch between player1 <> player2
 
     if chara <> ' ' then
    begin
    uos_CreatePlayer(player);
   uos_AddIntoDevOut(player);
-     if fileexists(ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator + lowercase(chara) + '.mp3') then
-  uos_AddFromFile(player,ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator + lowercase(chara) + '.mp3') else
-  uos_AddFromFile(player,ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator +'0.mp3') ;  /// if not existing char
+
+  filetoplay := ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator + lowercase(chara) + '.mp3' ;
+
+       if fileexists(pchar(filetoplay)) then
+  uos_AddFromFile(player,pchar(filetoplay)) else
+  uos_AddFromFile(player,pchar(fileerror)) ;  /// if not existing char
   if length(Memo1.text) > i then  uos_EndProc(player, @CreateMorsePlayer);        /// assign EndProc
      sleep(strtoint(interchar.Text)) ;     ///// the pause between each character
     uos_Play(player);
@@ -121,9 +127,9 @@ begin
    {$endif}
    {$ENDIF}
 
+uos_LoadLib(Pchar(PA_FileName), nil, pchar(MP_FileName), nil);
 
-    uos_LoadLib(PA_FileName,'',MP_FileName,'');
-end;
+   end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin

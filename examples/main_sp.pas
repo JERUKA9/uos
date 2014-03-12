@@ -230,10 +230,10 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   // Load the libraries
-  // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
+  // function uos_LoadLib(PortAudioFileName: Pchar; SndFileFileName: Pchar; Mpg123FileName: Pchar; SoundTouchFileName: Pchar) : integer;
   // You may load one or more libraries . When you want... :
 
-if uos_LoadLib(edit1.Text, edit2.Text, edit3.Text, edit5.Text) = 0 then
+if uos_LoadLib(Pchar(edit1.Text), pchar(edit2.Text), pchar(edit3.Text), pchar(edit5.Text)) = 0 then
   begin
     form1.hide;
     button1.Caption :=
@@ -245,6 +245,7 @@ if uos_LoadLib(edit1.Text, edit2.Text, edit3.Text, edit5.Text) = 0 then
     edit5.ReadOnly := True;
     form1.Height := 418;
     form1.Position := poScreenCenter;
+    form1.Caption := 'Simple Player.    uos version ' + inttostr(uos_getversion());
     form1.Show;
   end
   else
@@ -314,7 +315,7 @@ begin
 
     // In1Index := uos_AddFromFile(PlayerIndex1, Edit4.Text);
     //// add input from audio file with default parameters
-    In1Index := uos_AddFromFile(PlayerIndex1, Edit4.Text, -1, samformat, -1);
+    In1Index := uos_AddFromFile(PlayerIndex1, pchar(Edit4.Text), -1, samformat, -1);
     //// add input from audio file with custom parameters
     ////////// FileName : filename of audio file
     //////////// PlayerIndex : Index of a existing Player

@@ -227,9 +227,8 @@ var
     str: string;
   begin
     // Load the libraries
-    // function uos_LoadLib(PortAudioFileName: string; SndFileFileName: string; Mpg123FileName: string; SoundTouchFileName: string) : integer;
-    if uos_LoadLib(FilenameEdit1.FileName, FilenameEdit2.FileName,
-      FilenameEdit3.FileName, FilenameEdit5.FileName) = 0 then
+    // function uos_LoadLib(PortAudioFileName: Pchar; SndFileFileName: Pchar; Mpg123FileName: Pchar; SoundTouchFileName: Pchar) : integer;
+if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pchar(FilenameEdit3.FileName), Pchar(FilenameEdit5.FileName)) = 0 then
     begin
       hide;
       Height := 403;
@@ -243,6 +242,7 @@ var
       btnLoad.Text :=
         'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...';
       WindowPosition := wpScreenCenter;
+      WindowTitle := 'Simple Player.    uos version ' + inttostr(uos_getversion());
       Show;
     end;
   end;
@@ -314,7 +314,7 @@ var
     // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
     // If PlayerIndex exists already, it will be overwritten...
 
-    {$IF FPC_FULLVERSION >= 20701}
+    {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
      uos_CreatePlayer(PlayerIndex1);
      {$else}
     uos_CreatePlayer(PlayerIndex1,self);
@@ -327,7 +327,7 @@ var
     //// add a Output into device with default parameters
 
 
-    In1Index := uos_AddFromFile(PlayerIndex1, filenameEdit4.filename, -1, samformat, -1);
+    In1Index := uos_AddFromFile(PlayerIndex1, pchar(filenameEdit4.filename), -1, samformat, -1);
     //// add input from audio file with custom parameters
     ////////// FileName : filename of audio file
     //////////// PlayerIndex : Index of a existing Player
