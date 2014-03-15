@@ -9,7 +9,7 @@ unit main_fp;
 interface
 
 uses
-  uos, Forms, Dialogs, SysUtils, Graphics,
+  uos_flat, Forms, Dialogs, SysUtils, Graphics,
   StdCtrls, ComCtrls, ExtCtrls, Classes, Controls;
 
 type

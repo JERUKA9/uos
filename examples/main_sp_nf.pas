@@ -1,14 +1,14 @@
 
 /////////////////// Demo how to use United Openlib of Sound ////////////////////
 
-unit main_sp;
+unit main_sp_nf;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  uos_flat, Forms, Dialogs, SysUtils, fileutil, Graphics, ctypes,
+  uos, Forms, Dialogs, SysUtils, fileutil, Graphics, ctypes,
   StdCtrls, ComCtrls, ExtCtrls, Classes, Controls;
 
 type
@@ -82,16 +82,17 @@ type
   end;
 
 ////// This is the "standart" DSP procedure look.
-function DSPReverseBefore(Data: TuosF_Data; fft: TuosF_FFT): TDArFloat;
-function DSPReverseAfter(Data: TuosF_Data; fft: TuosF_FFT): TDArFloat;
+function DSPReverseBefore(Data: Tuos_Data; fft: Tuos_FFT): TDArFloat;
+function DSPReverseAfter(Data: Tuos_Data; fft: Tuos_FFT): TDArFloat;
 
 procedure uos_logo();
 
 var
   Form1: TForm1;
   BufferBMP: TBitmap;
-  PlayerIndex1: cardinal;
-  Out1Index, In1Index, DSP1Index, Plugin1Index: cardinal;
+   PlayerIndex1: Tuos_Player;
+ // ordir, opath: string;
+  Out1Index, In1Index, DSP1Index, DSP2Index, Plugin1Index: cardinal;
 
 implementation
 
@@ -118,7 +119,7 @@ begin
 
   if radiogroup1.Enabled = False then   /// player1 was created
   begin
-    uos_SetPluginSoundTouch(PlayerIndex1, Plugin1Index, tempo, rate, checkbox2.Checked);
+    PlayerIndex1.SetPluginSoundTouch(Plugin1Index, tempo, rate, checkbox2.Checked);
   end;
 end;
 
@@ -128,7 +129,7 @@ begin
   TrackBar5.Position := 50;
   if radiogroup1.Enabled = False then   /// player1 was created
   begin
-    uos_SetPluginSoundTouch(PlayerIndex1, Plugin1Index, 1, 1, checkbox2.Checked);
+   PlayerIndex1.SetPluginSoundTouch(Plugin1Index, 1, 1, checkbox2.Checked);
   end;
 
 end;
@@ -210,7 +211,7 @@ end;
 procedure TForm1.TrackBar1Change(Sender: TObject);
 begin
   if (button3.Enabled = False) then
-    uos_SetDSPVolumeIn(PlayerIndex1, In1Index, TrackBar1.position / 100,
+    PlayerIndex1.SetDSPVolumeIn(In1Index, DSP2Index, TrackBar1.position / 100,
       TrackBar3.position / 100, True);
 end;
 
@@ -223,7 +224,7 @@ end;
 procedure TForm1.TrackBar2MouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 begin
-  uos_Seek(PlayerIndex1, In1Index, TrackBar2.position);
+  PlayerIndex1.Seek(In1Index, TrackBar2.position);
   TrackBar2.Tag := 0;
 end;
 
@@ -255,7 +256,7 @@ end;
 
 procedure TForm1.Button5Click(Sender: TObject);
 begin
-  uos_Pause(PlayerIndex1);
+  PlayerIndex1.Pause();
   Button4.Enabled := True;
   Button5.Enabled := False;
   Form1.ShapeLeft.Height := 0;
@@ -270,7 +271,7 @@ begin
   Button5.Enabled := True;
   Button6.Enabled := True;
   application.ProcessMessages;
-  uos_RePlay(PlayerIndex1);
+  PlayerIndex1.RePlay();
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -283,9 +284,6 @@ begin
   if fileexists(Edit4.Text) then
   begin
 
-    PlayerIndex1 := 0;
-    // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
-    // If PlayerIndex exists already, it will be overwritten...
 
     if radiobutton1.Checked = True then
       samformat := 0;
@@ -296,14 +294,15 @@ begin
 
     radiogroup1.Enabled := False;
 
-    uos_CreatePlayer(PlayerIndex1);
-    //// Create the player.
-    //// PlayerIndex : from 0 to what your computer can do !
-    //// If PlayerIndex exists already, it will be overwriten...
+   {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
+   PlayerIndex1 := Tuos_Player.Create(true);
+     {$else}
+    PlayerIndex1 := Tuos_Player.Create(true,self);
+    {$endif}
 
     // In1Index := uos_AddFromFile(PlayerIndex1, Edit4.Text);
     //// add input from audio file with default parameters
-    In1Index := uos_AddFromFile(PlayerIndex1, pchar(Edit4.Text), -1, samformat, -1);
+    In1Index := PlayerIndex1.AddFromFile(pchar(Edit4.Text), -1, samformat, -1);
     //// add input from audio file with custom parameters
     ////////// FileName : filename of audio file
     //////////// PlayerIndex : Index of a existing Player
@@ -314,7 +313,7 @@ begin
 
     // Out1Index := uos_AddIntoDevOut(PlayerIndex1) ;
     //// add a Output into device with default parameters
-    Out1Index := uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, In1Index), -1, samformat, -1);
+    Out1Index :=  PlayerIndex1.AddIntoDevOut( -1, -1, PlayerIndex1.StreamIn[In1Index].Data.SampleRate, -1, samformat, -1);
     //// add a Output into device with custom parameters
     //////////// PlayerIndex : Index of a existing Player
     //////////// Device ( -1 is default Output device )
@@ -325,23 +324,23 @@ begin
     //////////// FramesCount : default : -1 (65536)
     //  result : -1 nothing created, otherwise Output Index in array
 
-    uos_InputSetLevelEnable(PlayerIndex1, In1Index, true) ;
-    ///// set calculation of level/volume to true (usefull for showvolume procedure)
+    PlayerIndex1.StreamIn[In1Index].Data.levelEnable:=true ;
+   ///// set calculation of level/volume to true (usefull for showvolume procedure)
 
-    uos_LoopProcIn(PlayerIndex1, In1Index, @LoopProcPlayer1);
-    ///// Assign the procedure of object to execute inside the loop for a Input
+    PlayerIndex1.StreamIn[In1Index].LoopProc := @LoopProcPlayer1;
+   ///// Assign the procedure of object to execute inside the loop for a Input
     //////////// PlayerIndex : Index of a existing Player
     //////////// InIndex : Index of a existing Input
     //////////// LoopProcPlayer1 : procedure of object to execute inside the loop
 
-    uos_AddDSPVolumeIn(PlayerIndex1, In1Index, 1, 1);
+    DSP2Index := PlayerIndex1.AddDSPVolumeIn(In1Index, 1, 1);
     ///// DSP Volume changer
     ////////// PlayerIndex1 : Index of a existing Player
     ////////// In1Index : InputIndex of a existing input
     ////////// VolLeft : Left volume  ( from 0 to 1 => gain > 1 )
     ////////// VolRight : Right volume
 
-    uos_SetDSPVolumeIn(PlayerIndex1, In1Index, TrackBar1.position / 100,
+    PlayerIndex1.SetDSPVolumeIn(In1Index,DSP2Index, TrackBar1.position / 100,
       TrackBar3.position / 100, True); /// Set volume
     ////////// PlayerIndex1 : Index of a existing Player
     ////////// In1Index : InputIndex of a existing Input
@@ -349,9 +348,9 @@ begin
     ////////// VolRight : Right volume
     ////////// Enable : Enabled
 
-    DSP1Index := uos_AddDSPIn(PlayerIndex1, In1Index, @DSPReverseBefore,
+      DSP1Index := PlayerIndex1.AddDSPIn(In1Index, @DSPReverseBefore,
       @DSPReverseAfter, nil);
-    ///// add a custom DSP procedure for input
+   ///// add a custom DSP procedure for input
     ////////// PlayerIndex1 : Index of a existing Player
     ////////// In1Index: InputIndex of existing input
     ////////// BeforeProc : procedure to do before the buffer is filled
@@ -359,18 +358,18 @@ begin
     ////////// LoopProc : external procedure to do after the buffer is filled
     //////// result = DSPIndex of the custom  DSP
 
-    uos_SetDSPIn(PlayerIndex1, In1Index, DSP1Index, checkbox1.Checked);
+    PlayerIndex1.SetDSPIn(In1Index, DSP1Index, checkbox1.Checked);
     //// set the parameters of custom DSP;
 
-    Plugin1Index := uos_AddPlugin(PlayerIndex1, 'soundtouch', -1, -1);
+    Plugin1Index := PlayerIndex1.AddPlugin('soundtouch', -1, -1);
     ///// add SoundTouch plugin with default samplerate(44100) / channels(2 = stereo)
 
     ChangePlugSet(self); //// Change plugin settings
 
-    trackbar2.Max := uos_InputLength(PlayerIndex1, In1Index);
+    trackbar2.Max := PlayerIndex1.InputLength( In1Index);
     ////// Length of Input in samples
 
-    temptime := uos_InputLengthTime(PlayerIndex1, In1Index);
+    temptime := PlayerIndex1.InputLengthTime(In1Index);
     ////// Length of input in time
 
     DecodeTime(temptime, ho, mi, se, ms);
@@ -378,7 +377,7 @@ begin
     llength.Caption := format('%d:%d:%d.%d', [ho, mi, se, ms]);
 
     /////// procedure to execute when stream is terminated
-    uos_EndProc(PlayerIndex1, @ClosePlayer1);
+    PlayerIndex1.EndProc := @ClosePlayer1;
     ///// Assign the procedure of object to execute at end
     //////////// PlayerIndex : Index of a existing Player
     //////////// ClosePlayer1 : procedure of object to execute inside the loop
@@ -393,7 +392,7 @@ begin
 
     application.ProcessMessages;
 
-    uos_Play(PlayerIndex1);  /////// everything is ready, here we are, lets play it...
+     PlayerIndex1.Play();  /////// everything is ready, here we are, lets play it...
 
   end
   else
@@ -403,7 +402,7 @@ end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 begin
-  uos_Stop(PlayerIndex1);
+  PlayerIndex1.Stop();
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
@@ -415,7 +414,7 @@ end;
 procedure TForm1.CheckBox1Change(Sender: TObject);
 begin
   if (button3.Enabled = False) then
-    uos_SetDSPIn(PlayerIndex1, In1Index, DSP1Index, checkbox1.Checked);
+  PlayerIndex1.SetDSPIn(In1Index, DSP1Index, checkbox1.Checked);
 end;
 
 procedure uos_logo();
@@ -480,8 +479,8 @@ var
 begin
   if form1.TrackBar2.Tag = 0 then
   begin
-    form1.TrackBar2.Position := uos_InputPosition(PlayerIndex1, In1Index);
-    temptime := uos_InputPositionTime(PlayerIndex1, In1Index);
+    form1.TrackBar2.Position := PlayerIndex1.InputPosition(In1Index);
+    temptime := PlayerIndex1.InputPositionTime(In1Index);
     ////// Length of input in time
     DecodeTime(temptime, ho, mi, se, ms);
     form1.lposition.Caption := format('%.2d:%.2d:%.2d.%.3d', [ho, mi, se, ms]);
@@ -490,8 +489,8 @@ begin
 
 procedure Tform1.ShowLevel;
 begin
-  ShapeLeft.Height := round(uos_InputGetLevelLeft(PlayerIndex1, In1Index) * 146);
-  ShapeRight.Height := round(uos_InputGetLevelRight(PlayerIndex1, In1Index) * 146);
+  ShapeLeft.Height := round(PlayerIndex1.InputGetLevelLeft(In1Index) * 146);
+  ShapeRight.Height := round(PlayerIndex1.InputGetLevelRight( In1Index) * 146);
   ShapeLeft.top := 354 - ShapeLeft.Height;
   ShapeRight.top := 354 - ShapeRight.Height;
 end;
@@ -502,13 +501,13 @@ begin
  ShowLevel ;
 end;
 //{
-function DSPReverseBefore(Data: TuosF_Data; fft: TuosF_FFT): TDArFloat;
+function DSPReverseBefore(Data: Tuos_Data; fft: Tuos_FFT): TDArFloat;
 begin
   if Data.position > Data.OutFrames div Data.ratio then
-    uos_Seek(PlayerIndex1, In1Index, Data.position - (Data.OutFrames div (Data.Ratio)));
+ PlayerIndex1.Seek(In1Index, Data.position - (Data.OutFrames div (Data.Ratio)));
 end;
 
-function DSPReverseAfter(Data: TuosF_Data; fft: TuosF_FFT): TDArFloat;
+function DSPReverseAfter(Data: Tuos_Data; fft: Tuos_FFT): TDArFloat;
 var
   x: integer;
   arfl: TDArFloat;

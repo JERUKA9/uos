@@ -7,7 +7,7 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
   cthreads,
   cwstring, {$ENDIF} {$ENDIF}
   SysUtils,
-  uos,
+  uos_flat,
   ctypes,
   Math,
   Classes,
@@ -140,6 +140,8 @@ var
       UpdateWindowPosition;
       btnLoad.Text := 'PortAudio, SndFile and Mpg123 libraries are loaded...';
       WindowPosition := wpScreenCenter;
+       fpgapplication.ProcessMessages;
+      sleep(500);
       Show;
     end;
   end;

@@ -9,7 +9,7 @@ unit main_di;
 interface
 
 uses
-  uos, Forms, Dialogs, SysUtils, Graphics,
+  uos_flat, Forms, Dialogs, SysUtils, Graphics,
   StdCtrls, ExtCtrls, Grids, Classes;
 
 type
@@ -104,9 +104,11 @@ begin
   label4.Caption := 'Default Device OUT = ' + IntToStr(uosDefaultDeviceOUT);
 
   stringgrid1.rowcount := uosDeviceCount + 1;
+
+
   x := 1;
 
-  while x < uosDeviceCount + 1 do
+  while x < uosDeviceCount + 1  do
   begin
 
     stringgrid1.Cells[0, x] := IntToStr(uosDeviceInfos[x - 1].DeviceNum);
@@ -134,6 +136,7 @@ begin
     stringgrid1.Cells[12, x] := uosDeviceInfos[x - 1].DeviceType;
     Inc(x);
   end;
+
 end;
 
 
@@ -150,7 +153,7 @@ begin
     button1.Enabled := False;
     edit1.ReadOnly := True;
 
-    CheckInfos();
+     CheckInfos();
     form1.Height := 388;
     form1.Position := poScreenCenter;
     form1.Show;

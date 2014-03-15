@@ -6,7 +6,7 @@ interface
 
 uses
   SysUtils, Forms, StdCtrls,
-  Buttons, uos, Classes;
+  Buttons, uos_flat, Classes;
 
 type
 

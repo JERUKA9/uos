@@ -10,7 +10,7 @@ uses {$IFDEF UNIX}
   Classes,
   SysUtils,
   CustApp,
-  uos,
+  uos_flat,
   ctypes { you can add units after this };
 
 type

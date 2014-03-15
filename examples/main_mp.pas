@@ -9,7 +9,7 @@ unit main_mp;
 interface
 
 uses
-  uos, Forms, Dialogs, Graphics, StdCtrls, ExtCtrls, Classes;
+  uos_flat, Forms, Dialogs, Graphics, StdCtrls, ExtCtrls, Classes;
 
 type
 

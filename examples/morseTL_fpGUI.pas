@@ -8,7 +8,7 @@ uses
   cthreads,
   cwstring, {$ENDIF}
    SysUtils, Classes, fpg_base, fpg_main, fpg_form, fpg_button,
-  fpg_label, fpg_edit, fpg_memo, uos;
+  fpg_label, fpg_edit, fpg_memo, uos_flat;
 
 type
 

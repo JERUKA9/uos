@@ -5,7 +5,7 @@ program deviceinfos_fpGUI;
 uses
   fpg_base,
   SysUtils,
-  uos,
+  uos_flat,
   Classes,
   fpg_button,
   fpg_widget,
@@ -114,6 +114,8 @@ var
       btnLoad.Text := 'PortAudio library is loaded...';
       CheckInfos();
       WindowPosition := wpScreenCenter;
+      fpgapplication.ProcessMessages;
+      sleep(500);
       Show;
     end;
   end;
