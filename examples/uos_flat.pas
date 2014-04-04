@@ -1,5 +1,5 @@
 unit uos_flat;
-
+{.$DEFINE library}   // uncomment it for building uos library
    // This is the "Flat Layer" of uos => for universal procedures.
 
 {*******************************************************************************
@@ -41,7 +41,12 @@ uses
   
   Classes, ctypes, Math, SysUtils, uos;
 
-
+  type
+   {$IF not DEFINED(Library)}
+  TProc = procedure of object;
+   {$else}
+  TProc = procedure ;
+    {$endif}
   type
   TDArFloat = array of cfloat;
   type
@@ -102,14 +107,14 @@ function uos_AddFromFile(PlayerIndex: LongInt; Filename: PChar): LongInt;
             /////// Add a input from audio file with default parameters
             //////////// PlayerIndex : Index of a existing Player
             ////////// FileName : filename of audio file
-            ////////// OutputIndex : Output index of used output// -1: all output, -2: no output, other LongInt refer to a existing OutputIndex  (if multi-output then OutName = name of each output separeted by ';')
+            ////////// OutputIndex : Output index of used output// -1: all output, -2: no output, other cint32 refer to a existing OutputIndex  (if multi-output then OutName = name of each output separeted by ';')
             //////////// SampleFormat : default : -1 (1:Int16) (0: Float32, 1:Int32, 2:Int16)
             //////////// FramesCount : default : -1 (65536)
             //  result : Input Index in array  -1 = error
             //////////// example : InputIndex1 := uos_AddFromFile(0, edit5.Text,-1,0);
 
-function uos_AddIntoFile(PlayerIndex: LongInt; Filename: PChar; SampleRate: LongInt;
-                 Channels: LongInt; SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
+function uos_AddIntoFile(PlayerIndex: cint32; Filename: PChar; SampleRate: cint32;
+                 Channels: cint32; SampleFormat: cint32 ; FramesCount: cint32): cint32;
                /////// Add a Output into audio wav file with custom parameters
                //////////// PlayerIndex : Index of a existing Player
                ////////// FileName : filename of saved audio wav file
@@ -119,51 +124,51 @@ function uos_AddIntoFile(PlayerIndex: LongInt; Filename: PChar; SampleRate: Long
                //////////// FramesCount : default : -1 (= 65536)
                //  result :Output Index in array  -1 = error
                //////////// example : OutputIndex1 := uos_AddIntoFile(0,edit5.Text,-1,-1, 0, -1);
-function uos_AddIntoFile(PlayerIndex: LongInt; Filename: PChar): LongInt;
+function uos_AddIntoFile(PlayerIndex: cint32; Filename: PChar): cint32;
                /////// Add a Output into audio wav file with Default parameters
               //////////// PlayerIndex : Index of a existing Player
               ////////// FileName : filename of saved audio wav file
 
-function uos_AddFromDevIn(PlayerIndex: LongInt; Device: LongInt; Latency: CDouble;
-             SampleRate: LongInt; Channels: LongInt; OutputIndex: LongInt;
-             SampleFormat: LongInt; FramesCount : LongInt): LongInt;
+function uos_AddFromDevIn(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
+             SampleRate: cint32; Channels: cint32; OutputIndex: cint32;
+             SampleFormat: cint32; FramesCount : cint32): cint32;
               ////// Add a Input from Device Input with custom parameters
               //////////// PlayerIndex : Index of a existing Player
                //////////// Device ( -1 is default Input device )
                //////////// Latency  ( -1 is latency suggested ) )
                //////////// SampleRate : delault : -1 (44100)
                //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
-               //////////// OutputIndex : Output index of used output// -1: all output, -2: no output, other LongInt refer to a existing OutputIndex  (if multi-output then OutName = name of each output separeted by ';')
+               //////////// OutputIndex : Output index of used output// -1: all output, -2: no output, other cint32 refer to a existing OutputIndex  (if multi-output then OutName = name of each output separeted by ';')
                //////////// SampleFormat : default : -1 (1:Int16) (0: Float32, 1:Int32, 2:Int16)
                //////////// FramesCount : default : -1 (65536)
                //  result :  Output Index in array
                /// example : OutputIndex1 := uos_AddFromDevIn(-1,-1,-1,-1,-1,-1);
-function uos_AddFromDevIn(PlayerIndex: LongInt): LongInt;
+function uos_AddFromDevIn(PlayerIndex: cint32): cint32;
               ////// Add a Input from Device Input with custom parameters
               ///////// PlayerIndex : Index of a existing Player
 
-procedure uos_BeginProc(PlayerIndex: LongInt; Proc: TProc);
+procedure uos_BeginProc(PlayerIndex: cint32; Proc: TProc);
             ///// Assign the procedure of object to execute  at begining, before loop
             //////////// PlayerIndex : Index of a existing Player
             //////////// InIndex : Index of a existing Input
 
-procedure uos_EndProc(PlayerIndex: LongInt; Proc: TProc);
+procedure uos_EndProc(PlayerIndex: cint32; Proc: TProc);
             ///// Assign the procedure of object to execute  at end, after loop
             //////////// PlayerIndex : Index of a existing Player
             //////////// InIndex : Index of a existing Input
 
 
-procedure uos_LoopProcIn(PlayerIndex: LongInt; InIndex: LongInt; Proc: TProc);
+procedure uos_LoopProcIn(PlayerIndex: cint32; InIndex: cint32; Proc: TProc);
             ///// Assign the procedure of object to execute inside the loop
             //////////// PlayerIndex : Index of a existing Player
             //////////// InIndex : Index of a existing Input
 
-procedure uos_LoopProcOut(PlayerIndex: LongInt; OutIndex: LongInt; Proc: TProc);
+procedure uos_LoopProcOut(PlayerIndex: cint32; OutIndex: cint32; Proc: TProc);
               ///// Assign the procedure of object to execute inside the loop
             //////////// PlayerIndex : Index of a existing Player
             //////////// OutIndex : Index of a existing Output
 
-procedure uos_AddDSPVolumeIn(PlayerIndex: LongInt; InputIndex: LongInt; VolLeft: double;
+procedure uos_AddDSPVolumeIn(PlayerIndex: cint32; InputIndex: cint32; VolLeft: double;
                  VolRight: double) ;
                ///// DSP Volume changer
                //////////// PlayerIndex : Index of a existing Player
@@ -172,7 +177,7 @@ procedure uos_AddDSPVolumeIn(PlayerIndex: LongInt; InputIndex: LongInt; VolLeft:
                ////////// VolRight : Right volume
                ////////// example  uos_AddDSPVolumeIn(0,InputIndex1,1,1);
 
-procedure uos_AddDSPVolumeOut(PlayerIndex: LongInt; OutputIndex: LongInt; VolLeft: double;
+procedure uos_AddDSPVolumeOut(PlayerIndex: cint32; OutputIndex: cint32; VolLeft: double;
                  VolRight: double) ;
                ///// DSP Volume changer
                //////////// PlayerIndex : Index of a existing Player
@@ -182,7 +187,7 @@ procedure uos_AddDSPVolumeOut(PlayerIndex: LongInt; OutputIndex: LongInt; VolLef
                //  result : -1 nothing created, otherwise index of DSPIn in array
                ////////// example  DSPIndex1 := uos_AddDSPVolumeOut(o,oututIndex1,1,1);
 
-procedure uos_SetDSPVolumeIn(PlayerIndex: LongInt; InputIndex: LongInt;
+procedure uos_SetDSPVolumeIn(PlayerIndex: cint32; InputIndex: cint32;
                  VolLeft: double; VolRight: double; Enable: boolean);
                ////////// InputIndex : InputIndex of a existing Input
                //////////// PlayerIndex : Index of a existing Player
@@ -191,7 +196,7 @@ procedure uos_SetDSPVolumeIn(PlayerIndex: LongInt; InputIndex: LongInt;
                ////////// Enable : Enabled
                ////////// example  uos_SetDSPVolumeIn(0,InputIndex1,DSPIndex1,1,0.8,True);
 
-procedure uos_SetDSPVolumeOut(PlayerIndex: LongInt; OutputIndex: LongInt;
+procedure uos_SetDSPVolumeOut(PlayerIndex: cint32; OutputIndex: cint32;
                  VolLeft: double; VolRight: double; Enable: boolean);
                ////////// OutputIndex : OutputIndex of a existing Output
                //////////// PlayerIndex : Index of a existing Player
@@ -200,8 +205,8 @@ procedure uos_SetDSPVolumeOut(PlayerIndex: LongInt; OutputIndex: LongInt;
                ////////// Enable : Enabled
                ////////// example  uos_SetDSPVolumeOut(0,outputIndex1,DSPIndex1,1,0.8,True);
 
-function uos_AddDSPin(PlayerIndex: LongInt; InputIndex: LongInt; BeforeProc: TFunc;
-                    AfterProc: TFunc; LoopProc: TProc): LongInt;
+function uos_AddDSPin(PlayerIndex: cint32; InputIndex: cint32; BeforeProc: TFunc;
+                    AfterProc: TFunc; LoopProc: TProc): cint32;
                   ///// add a DSP procedure for input
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// InputIndex : Input Index of a existing input
@@ -211,15 +216,15 @@ function uos_AddDSPin(PlayerIndex: LongInt; InputIndex: LongInt; BeforeProc: TFu
                   //  result : -1 nothing created, otherwise index of DSPin in array  (DSPinIndex)
                   ////////// example : DSPinIndex1 := uos_AddDSPin(0,InputIndex1,@beforereverse,@afterreverse,nil);
 
-procedure uos_SetDSPin(PlayerIndex: LongInt; InputIndex: LongInt; DSPinIndex: LongInt; Enable: boolean);
+procedure uos_SetDSPin(PlayerIndex: cint32; InputIndex: cint32; DSPinIndex: cint32; Enable: boolean);
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// InputIndex : Input Index of a existing input
                   ////////// DSPIndexIn : DSP Index of a existing DSP In
                   ////////// Enable :  DSP enabled
                   ////////// example : uos_SetDSPin(0,InputIndex1,DSPinIndex1,True);
 
-function uos_AddDSPout(PlayerIndex: LongInt; OutputIndex: LongInt; BeforeProc: TFunc;
-                    AfterProc: TFunc; LoopProc: TProc): LongInt;    //// usefull if multi output
+function uos_AddDSPout(PlayerIndex: cint32; OutputIndex: cint32; BeforeProc: TFunc;
+                    AfterProc: TFunc; LoopProc: TProc): cint32;    //// usefull if multi output
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// OutputIndex : OutputIndex of a existing Output
                   ////////// BeforeProc : procedure to do before the buffer is filled
@@ -228,16 +233,16 @@ function uos_AddDSPout(PlayerIndex: LongInt; OutputIndex: LongInt; BeforeProc: T
                   //  result : index of DSPout in array
                   ////////// example :DSPoutIndex1 := uos_AddDSPout(0,OutputIndex1,@volumeproc,nil,nil);
 
-procedure uos_SetDSPout(PlayerIndex: LongInt; OutputIndex: LongInt; DSPoutIndex: LongInt; Enable: boolean);
+procedure uos_SetDSPout(PlayerIndex: cint32; OutputIndex: cint32; DSPoutIndex: cint32; Enable: boolean);
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// OutputIndex : OutputIndex of a existing Output
                   ////////// DSPoutIndex : DSPoutIndex of existing DSPout
                   ////////// Enable :  DSP enabled
                   ////////// example : uos_SetDSPout(0,OutputIndex1,DSPoutIndex1,True);
 
-function uos_AddFilterIn(PlayerIndex: LongInt; InputIndex: LongInt; LowFrequency: LongInt;
-                    HighFrequency: LongInt; Gain: cfloat; TypeFilter: LongInt;
-                    AlsoBuf: boolean; LoopProc: TProc): LongInt ;
+function uos_AddFilterIn(PlayerIndex: cint32; InputIndex: cint32; LowFrequency: cint32;
+                    HighFrequency: cint32; Gain: cfloat; TypeFilter: cint32;
+                    AlsoBuf: boolean; LoopProc: TProc): cint32 ;
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// InputIndex : InputIndex of a existing Input
                   ////////// LowFrequency : Lowest frequency of filter
@@ -250,9 +255,9 @@ function uos_AddFilterIn(PlayerIndex: LongInt; InputIndex: LongInt; LowFrequency
                   //  result : index of DSPIn in array   -1 = error
                   ////////// example :FilterInIndex1 := uos_AddFilterIn(0,InputIndex1,6000,16000,1,2,true,nil);
 
-procedure uos_SetFilterIn(PlayerIndex: LongInt; InputIndex: LongInt; FilterIndex: LongInt;
-                    LowFrequency: LongInt; HighFrequency: LongInt; Gain: cfloat;
-                    TypeFilter: LongInt; AlsoBuf: boolean; Enable: boolean; LoopProc: TProc);
+procedure uos_SetFilterIn(PlayerIndex: cint32; InputIndex: cint32; FilterIndex: cint32;
+                    LowFrequency: cint32; HighFrequency: cint32; Gain: cfloat;
+                    TypeFilter: cint32; AlsoBuf: boolean; Enable: boolean; LoopProc: TProc);
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// InputIndex : InputIndex of a existing Input
                   ////////// DSPInIndex : DSPInIndex of existing DSPIn
@@ -266,9 +271,9 @@ procedure uos_SetFilterIn(PlayerIndex: LongInt; InputIndex: LongInt; FilterIndex
                   ////////// Enable :  Filter enabled
                   ////////// example : uos_SetFilterIn(0,InputIndex1,FilterInIndex1,-1,-1,-1,False,True,nil);
 
-function uos_AddFilterOut(PlayerIndex: LongInt; OutputIndex: LongInt; LowFrequency: LongInt;
-                    HighFrequency: LongInt; Gain: cfloat; TypeFilter: LongInt;
-                    AlsoBuf: boolean; LoopProc: TProc): LongInt;
+function uos_AddFilterOut(PlayerIndex: cint32; OutputIndex: cint32; LowFrequency: cint32;
+                    HighFrequency: cint32; Gain: cfloat; TypeFilter: cint32;
+                    AlsoBuf: boolean; LoopProc: TProc): cint32;
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// OutputIndex : OutputIndex of a existing Output
                   ////////// LowFrequency : Lowest frequency of filter
@@ -281,9 +286,9 @@ function uos_AddFilterOut(PlayerIndex: LongInt; OutputIndex: LongInt; LowFrequen
                   //  result : index of DSPOut in array  -1 = error
                   ////////// example :FilterOutIndex1 := uos_AddFilterOut(0,OutputIndex1,6000,16000,1,true,nil);
 
-procedure uos_SetFilterOut(PlayerIndex: LongInt; OutputIndex: LongInt; FilterIndex: LongInt;
-                    LowFrequency: LongInt; HighFrequency: LongInt; Gain: cfloat;
-                    TypeFilter: LongInt; AlsoBuf: boolean; Enable: boolean; LoopProc: TProc);
+procedure uos_SetFilterOut(PlayerIndex: cint32; OutputIndex: cint32; FilterIndex: cint32;
+                    LowFrequency: cint32; HighFrequency: cint32; Gain: cfloat;
+                    TypeFilter: cint32; AlsoBuf: boolean; Enable: boolean; LoopProc: TProc);
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// OutputIndex : OutputIndex of a existing Output
                   ////////// FilterIndex : DSPOutIndex of existing DSPOut
@@ -297,94 +302,94 @@ procedure uos_SetFilterOut(PlayerIndex: LongInt; OutputIndex: LongInt; FilterInd
                   ////////// LoopProc : External procedure to execute after DSP done
                   ////////// example : uos_SetFilterOut(0,OutputIndex1,FilterOutIndex1,1000,1500,-1,True,True,nil);
 
-function uos_AddPlugin(PlayerIndex: LongInt; PlugName: PChar; SampleRate: LongInt;
-                       Channels: LongInt): LongInt ;
+function uos_AddPlugin(PlayerIndex: cint32; PlugName: PChar; SampleRate: cint32;
+                       Channels: cint32): cint32 ;
                      /////// Add a plugin , result is PluginIndex
                      //////////// PlayerIndex : Index of a existing Player
                      //////////// SampleRate : delault : -1 (44100)
                      //////////// Channels : delault : -1 (2:stereo) (1:mono, 2:stereo, ...)
                      ////// Till now, only 'soundtouch' PlugName is registred.
 
-procedure uos_SetPluginSoundTouch(PlayerIndex: LongInt; PluginIndex: LongInt; Tempo: cfloat;
+procedure uos_SetPluginSoundTouch(PlayerIndex: cint32; PluginIndex: cint32; Tempo: cfloat;
                        Pitch: cfloat; Enable: boolean);
                      ////////// PluginIndex : PluginIndex Index of a existing Plugin.
                      //////////// PlayerIndex : Index of a existing Player
 
-function uos_GetStatus(PlayerIndex: LongInt) : LongInt ;
+function uos_GetStatus(PlayerIndex: cint32) : cint32 ;
              /////// Get the status of the player : -1 => error,  0 => has stopped, 1 => is running, 2 => is paused.
 
-procedure uos_Seek(PlayerIndex: LongInt; InputIndex: LongInt; pos: Tsf_count_t);
+procedure uos_Seek(PlayerIndex: cint32; InputIndex: cint32; pos: Tsf_count_t);
                      //// change position in sample
 
-procedure uos_SeekSeconds(PlayerIndex: LongInt; InputIndex: LongInt; pos: cfloat);
+procedure uos_SeekSeconds(PlayerIndex: cint32; InputIndex: cint32; pos: cfloat);
                      //// change position in seconds
 
-procedure uos_SeekTime(PlayerIndex: LongInt; InputIndex: LongInt; pos: TTime);
+procedure uos_SeekTime(PlayerIndex: cint32; InputIndex: cint32; pos: TTime);
                      //// change position in time format
 
-function uos_InputLength(PlayerIndex: LongInt; InputIndex: LongInt): longint;
+function uos_InputLength(PlayerIndex: cint32; InputIndex: cint32): cint32;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : Length of Input in samples
 
-function uos_InputLengthSeconds(PlayerIndex: LongInt; InputIndex: LongInt): cfloat;
+function uos_InputLengthSeconds(PlayerIndex: cint32; InputIndex: cint32): cfloat;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : Length of Input in seconds
 
-function uos_InputLengthTime(PlayerIndex: LongInt; InputIndex: LongInt): TTime;
+function uos_InputLengthTime(PlayerIndex: cint32; InputIndex: cint32): TTime;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : Length of Input in time format
 
-function uos_InputPosition(PlayerIndex: LongInt; InputIndex: LongInt): longint;
+function uos_InputPosition(PlayerIndex: cint32; InputIndex: cint32): cint32;
                      ////////// InputIndex : InputIndex of existing input
                      ////// result : current postion in sample
 
-procedure uos_InputSetLevelEnable(PlayerIndex: LongInt; InputIndex: LongInt ; enable : boolean);
+procedure uos_InputSetLevelEnable(PlayerIndex: cint32; InputIndex: cint32 ; enable : boolean);
                    ///////// enable/disable level(volume) calculation (default is false/disable)
 
-function uos_InputGetLevelLeft(PlayerIndex: LongInt; InputIndex: LongInt): double;
+function uos_InputGetLevelLeft(PlayerIndex: cint32; InputIndex: cint32): double;
                      ////////// InputIndex : InputIndex of existing input
                      ////// result : left level(volume) from 0 to 1
 
-function uos_InputGetLevelRight(PlayerIndex: LongInt; InputIndex: LongInt): double;
+function uos_InputGetLevelRight(PlayerIndex: cint32; InputIndex: cint32): double;
                      ////////// InputIndex : InputIndex of existing input
                      ////// result : right level(volume) from 0 to 1
 
-function uos_InputPositionSeconds(PlayerIndex: LongInt; InputIndex: LongInt): cfloat;
+function uos_InputPositionSeconds(PlayerIndex: cint32; InputIndex: cint32): cfloat;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : current postion of Input in seconds
 
-function uos_InputPositionTime(PlayerIndex: LongInt; InputIndex: LongInt): TTime;
+function uos_InputPositionTime(PlayerIndex: cint32; InputIndex: cint32): TTime;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : current postion of Input in time format
 
-function uos_InputGetSampleRate(PlayerIndex: LongInt; InputIndex: LongInt): LongInt;
+function uos_InputGetSampleRate(PlayerIndex: cint32; InputIndex: cint32): cint32;
                    ////////// InputIndex : InputIndex of existing input
                   ////// result : default sample rate
 
-function uos_InputGetChannels(PlayerIndex: LongInt; InputIndex: LongInt): LongInt;
+function uos_InputGetChannels(PlayerIndex: cint32; InputIndex: cint32): cint32;
                   ///////// InputIndex : InputIndex of existing input
                   ////// result : default channels
 
-procedure uos_Play(PlayerIndex: LongInt) ;        ///// Start playing
+procedure uos_Play(PlayerIndex: cint32) ;        ///// Start playing
 
-procedure uos_RePlay(PlayerIndex: LongInt);                ///// Resume playing after pause
+procedure uos_RePlay(PlayerIndex: cint32);                ///// Resume playing after pause
 
-procedure uos_Stop(PlayerIndex: LongInt);                  ///// Stop playing and free thread
+procedure uos_Stop(PlayerIndex: cint32);                  ///// Stop playing and free thread
 
-procedure uos_Pause(PlayerIndex: LongInt);                 ///// Pause playing
+procedure uos_Pause(PlayerIndex: cint32);                 ///// Pause playing
 
-function uos_GetVersion() : LongInt ;             //// version of uos
+function uos_GetVersion() : cint32 ;             //// version of uos
 
 var
   uosDeviceInfos: array of Tuos_DeviceInfos;
   uosLoadResult: Tuos_LoadResult;
-  uosDeviceCount: LongInt;
-  uosDefaultDeviceIn: LongInt;
-  uosDefaultDeviceOut: LongInt;
+  uosDeviceCount: cint32;
+  uosDefaultDeviceIn: cint32;
+  uosDefaultDeviceOut: cint32;
 
 implementation
 
-procedure uos_AddDSPVolumeIn(PlayerIndex: LongInt; InputIndex: LongInt; VolLeft: double;
+procedure uos_AddDSPVolumeIn(PlayerIndex: cint32; InputIndex: cint32; VolLeft: double;
                  VolRight: double);
 begin
     if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -399,7 +404,7 @@ end;
                //  result : -1 nothing created, otherwise index of DSPIn in array
                ////////// example  DSPIndex1 := AddDSPVolumeIn(0,InputIndex1,1,1);
 
-procedure uos_AddDSPVolumeOut(PlayerIndex: LongInt; OutputIndex: LongInt; VolLeft: double;
+procedure uos_AddDSPVolumeOut(PlayerIndex: cint32; OutputIndex: cint32; VolLeft: double;
                  VolRight: double);
 begin
     if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -414,7 +419,7 @@ end;
                //  result : -1 nothing created, otherwise index of DSPIn in array
                ////////// example  DSPIndex1 := AddDSPVolumeOut(0,InputIndex1,1,1);
 
-procedure uos_SetDSPVolumeIn(PlayerIndex: LongInt; InputIndex: LongInt;
+procedure uos_SetDSPVolumeIn(PlayerIndex: cint32; InputIndex: cint32;
                  VolLeft: double; VolRight: double; Enable: boolean);
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -428,7 +433,7 @@ end;
                ////////// Enable : Enabled
                ////////// example  SetDSPVolumeIn(0,InputIndex1,1,0.8,True);
 
-procedure uos_SetDSPVolumeOut(PlayerIndex: LongInt; OutputIndex: LongInt;
+procedure uos_SetDSPVolumeOut(PlayerIndex: cint32; OutputIndex: cint32;
                  VolLeft: double; VolRight: double; Enable: boolean);
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -444,8 +449,8 @@ end;
 
 
 
-function uos_AddDSPin(PlayerIndex: LongInt; InputIndex: LongInt; BeforeProc: TFunc;
-                    AfterProc: TFunc; LoopProc: TProc): LongInt;
+function uos_AddDSPin(PlayerIndex: cint32; InputIndex: cint32; BeforeProc: TFunc;
+                    AfterProc: TFunc; LoopProc: TProc): cint32;
                   ///// add a DSP procedure for input
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// InputIndex : Input Index of a existing input
@@ -461,7 +466,7 @@ begin
 result := uosPlayers[PlayerIndex].AddDSPin(InputIndex, BeforeProc, AfterProc, LoopProc) ;
 end;
 
-procedure uos_SetDSPin(PlayerIndex: LongInt; InputIndex: LongInt; DSPinIndex: LongInt; Enable: boolean);
+procedure uos_SetDSPin(PlayerIndex: cint32; InputIndex: cint32; DSPinIndex: cint32; Enable: boolean);
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// InputIndex : Input Index of a existing input
                   ////////// DSPIndexIn : DSP Index of a existing DSP In
@@ -473,8 +478,8 @@ begin
 uosPlayers[PlayerIndex].SetDSPin(InputIndex, DSPinIndex, Enable) ;
 end;
 
-function uos_AddDSPout(PlayerIndex: LongInt; OutputIndex: LongInt; BeforeProc: TFunc;
-                    AfterProc: TFunc; LoopProc: TProc): LongInt;    //// usefull if multi output
+function uos_AddDSPout(PlayerIndex: cint32; OutputIndex: cint32; BeforeProc: TFunc;
+                    AfterProc: TFunc; LoopProc: TProc): cint32;    //// usefull if multi output
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// OutputIndex : OutputIndex of a existing Output
                   ////////// BeforeProc : procedure to do before the buffer is filled
@@ -489,7 +494,7 @@ begin
 result := uosPlayers[PlayerIndex].AddDSPout(OutputIndex, BeforeProc, AfterProc, LoopProc) ;
 end;
 
-procedure uos_SetDSPout(PlayerIndex: LongInt; OutputIndex: LongInt; DSPoutIndex: LongInt; Enable: boolean);
+procedure uos_SetDSPout(PlayerIndex: cint32; OutputIndex: cint32; DSPoutIndex: cint32; Enable: boolean);
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// OutputIndex : OutputIndex of a existing Output
                   ////////// DSPoutIndex : DSPoutIndex of existing DSPout
@@ -501,9 +506,9 @@ begin
 uosPlayers[PlayerIndex].SetDSPout(OutputIndex, DSPoutIndex, Enable) ;
 end;
 
-function uos_AddFilterIn(PlayerIndex: LongInt; InputIndex: LongInt; LowFrequency: LongInt;
-                    HighFrequency: LongInt; Gain: cfloat; TypeFilter: LongInt;
-                    AlsoBuf: boolean; LoopProc: TProc): LongInt;
+function uos_AddFilterIn(PlayerIndex: cint32; InputIndex: cint32; LowFrequency: cint32;
+                    HighFrequency: cint32; Gain: cfloat; TypeFilter: cint32;
+                    AlsoBuf: boolean; LoopProc: TProc): cint32;
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// InputIndex : InputIndex of a existing Input
                   ////////// LowFrequency : Lowest frequency of filter
@@ -523,9 +528,9 @@ result := uosPlayers[PlayerIndex].AddFilterIn(InputIndex, LowFrequency, HighFreq
                     AlsoBuf, LoopProc) ;
 end;
 
-procedure uos_SetFilterIn(PlayerIndex: LongInt; InputIndex: LongInt; FilterIndex: LongInt;
-                    LowFrequency: LongInt; HighFrequency: LongInt; Gain: cfloat;
-                    TypeFilter: LongInt; AlsoBuf: boolean; Enable: boolean; LoopProc: TProc);
+procedure uos_SetFilterIn(PlayerIndex: cint32; InputIndex: cint32; FilterIndex: cint32;
+                    LowFrequency: cint32; HighFrequency: cint32; Gain: cfloat;
+                    TypeFilter: cint32; AlsoBuf: boolean; Enable: boolean; LoopProc: TProc);
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// InputIndex : InputIndex of a existing Input
                   ////////// DSPInIndex : DSPInIndex of existing DSPIn
@@ -545,9 +550,9 @@ if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
                     TypeFilter, AlsoBuf, Enable, LoopProc);
 end;
 
-function uos_AddFilterOut(PlayerIndex: LongInt; OutputIndex: LongInt; LowFrequency: LongInt;
-                    HighFrequency: LongInt; Gain: cfloat; TypeFilter: LongInt;
-                    AlsoBuf: boolean; LoopProc: TProc): LongInt;
+function uos_AddFilterOut(PlayerIndex: cint32; OutputIndex: cint32; LowFrequency: cint32;
+                    HighFrequency: cint32; Gain: cfloat; TypeFilter: cint32;
+                    AlsoBuf: boolean; LoopProc: TProc): cint32;
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// OutputIndex : OutputIndex of a existing Output
                   ////////// LowFrequency : Lowest frequency of filter
@@ -567,9 +572,9 @@ result := uosPlayers[PlayerIndex].AddFilterout(OutputIndex, LowFrequency, HighFr
                     AlsoBuf, LoopProc) ;
 end;
 
-procedure uos_SetFilterOut(PlayerIndex: LongInt; OutputIndex: LongInt; FilterIndex: LongInt;
-                    LowFrequency: LongInt; HighFrequency: LongInt; Gain: cfloat;
-                    TypeFilter: LongInt; AlsoBuf: boolean; Enable: boolean; LoopProc: TProc);
+procedure uos_SetFilterOut(PlayerIndex: cint32; OutputIndex: cint32; FilterIndex: cint32;
+                    LowFrequency: cint32; HighFrequency: cint32; Gain: cfloat;
+                    TypeFilter: cint32; AlsoBuf: boolean; Enable: boolean; LoopProc: TProc);
                   //////////// PlayerIndex : Index of a existing Player
                   ////////// OutputIndex : OutputIndex of a existing Output
                   ////////// FilterIndex : DSPOutIndex of existing DSPOut
@@ -591,16 +596,16 @@ end;
 
 
 
-function uos_AddFromDevIn(PlayerIndex: LongInt; Device: LongInt; Latency: CDouble;
-             SampleRate: LongInt; Channels: LongInt; OutputIndex: LongInt;
-             SampleFormat: LongInt; FramesCount : LongInt): LongInt;
+function uos_AddFromDevIn(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
+             SampleRate: cint32; Channels: cint32; OutputIndex: cint32;
+             SampleFormat: cint32; FramesCount : cint32): cint32;
               ////// Add a Input from Device Input with custom parameters
               //////////// PlayerIndex : Index of a existing Player
                //////////// Device ( -1 is default Input device )
                //////////// Latency  ( -1 is latency suggested ) )
                //////////// SampleRate : delault : -1 (44100)
                //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
-               //////////// OutputIndex : Output index of used output// -1: all output, -2: no output, other LongInt refer to a existing OutputIndex  (if multi-output then OutName = name of each output separeted by ';')
+               //////////// OutputIndex : Output index of used output// -1: all output, -2: no output, other cint32 refer to a existing OutputIndex  (if multi-output then OutName = name of each output separeted by ';')
                //////////// SampleFormat : default : -1 (1:Int16) (0: Float32, 1:Int32, 2:Int16)
                //////////// FramesCount : default : -1 (65536)
                //  result : Output Index in array , -1 is error
@@ -613,7 +618,7 @@ begin
              SampleFormat, FramesCount) ;
 end;
 
-function uos_AddFromDevIn(PlayerIndex: LongInt): LongInt;
+function uos_AddFromDevIn(PlayerIndex: cint32): cint32;
               ////// Add a Input from Device Input with custom parameters
               ///////// PlayerIndex : Index of a existing Player
 begin
@@ -623,8 +628,8 @@ begin
 end;
 
 
-function uos_AddIntoFile(PlayerIndex: LongInt; Filename: PChar; SampleRate: LongInt;
-                 Channels: LongInt; SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
+function uos_AddIntoFile(PlayerIndex: cint32; Filename: PChar; SampleRate: cint32;
+                 Channels: cint32; SampleFormat: cint32 ; FramesCount: cint32): cint32;
                /////// Add a Output into audio wav file with custom parameters
                //////////// PlayerIndex : Index of a existing Player
                ////////// FileName : filename of saved audio wav file
@@ -641,7 +646,7 @@ begin
  Result :=  uosPlayers[PlayerIndex].AddIntoFile(Filename, SampleRate, Channels, SampleFormat, FramesCount);
 end;
 
-function uos_AddIntoFile(PlayerIndex: LongInt;  Filename: PChar): LongInt;
+function uos_AddIntoFile(PlayerIndex: cint32;  Filename: PChar): cint32;
                /////// Add a Output into audio wav file with Default parameters
               //////////// PlayerIndex : Index of a existing Player
               ////////// FileName : filename of saved audio wav file
@@ -653,8 +658,8 @@ end;
 
 
 
-function uos_AddIntoDevOut(PlayerIndex: LongInt; Device: LongInt; Latency: CDouble;
-            SampleRate: LongInt; Channels: LongInt; SampleFormat: LongInt ; FramesCount: LongInt ): LongInt;
+function uos_AddIntoDevOut(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
+            SampleRate: cint32; Channels: cint32; SampleFormat: cint32 ; FramesCount: cint32 ): cint32;
           ////// Add a Output into Device Output with custom parameters
 begin
   result := -1 ;
@@ -672,7 +677,7 @@ end;
           //  result : -1 nothing created, otherwise Output Index in array
           /// example : OutputIndex1 := uos_AddIntoDevOut(0,-1,-1,-1,-1,0,-1);
 
-function uos_AddIntoDevOut(PlayerIndex: LongInt): LongInt;
+function uos_AddIntoDevOut(PlayerIndex: cint32): cint32;
           ////// Add a Output into Device Output with default parameters
 begin
   Result := -1 ;
@@ -682,12 +687,12 @@ begin
 end;
 
 
-function uos_AddFromFile(PlayerIndex: LongInt; Filename: PChar; OutputIndex: LongInt;
-              SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
+function uos_AddFromFile(PlayerIndex: cint32; Filename: PChar; OutputIndex: cint32;
+              SampleFormat: cint32 ; FramesCount: cint32): cint32;
     /////// Add a input from audio file with custom parameters
     //////////// PlayerIndex : Index of a existing Player
     ////////// FileName : filename of audio file
-    ////////// OutputIndex : Output index of used output// -1: all output, -2: no output, other LongInt refer to a existing OutputIndex  (if multi-output then OutName = name of each output separeted by ';')
+    ////////// OutputIndex : Output index of used output// -1: all output, -2: no output, other cint32 refer to a existing OutputIndex  (if multi-output then OutName = name of each output separeted by ';')
     //////////// SampleFormat : default : -1 (1:Int16) (0: Float32, 1:Int32, 2:Int16)
     //////////// FramesCount : default : -1 (65536)
     //  result : Input Index in array    -1 = error
@@ -699,7 +704,7 @@ begin
   Result := uosPlayers[PlayerIndex].AddFromFile(Filename, OutputIndex, SampleFormat, FramesCount);
 end;
 
-function uos_AddFromFile(PlayerIndex: LongInt; Filename: PChar): LongInt;
+function uos_AddFromFile(PlayerIndex: cint32; Filename: PChar): cint32;
             /////// Add a input from audio file with default parameters
 begin
   result := -1 ;
@@ -708,8 +713,8 @@ begin
   Result := uosPlayers[PlayerIndex].AddFromFile(Filename, -1, -1, -1);
 end;
 
-function uos_AddPlugin(PlayerIndex: LongInt; PlugName: PChar; SampleRate: LongInt;
-                       Channels: LongInt): LongInt;
+function uos_AddPlugin(PlayerIndex: cint32; PlugName: PChar; SampleRate: cint32;
+                       Channels: cint32): cint32;
                      /////// Add a plugin , result is PluginIndex
                      //////////// PlayerIndex : Index of a existing Player
                      //////////// SampleRate : delault : -1 (44100)
@@ -722,7 +727,7 @@ begin
   Result := uosPlayers[PlayerIndex].AddPlugin(PlugName, SampleRate, Channels);
 end;
 
-procedure uos_SetPluginSoundTouch(PlayerIndex: LongInt; PluginIndex: LongInt; Tempo: cfloat;
+procedure uos_SetPluginSoundTouch(PlayerIndex: cint32; PluginIndex: cint32; Tempo: cfloat;
                        Pitch: cfloat; Enable: boolean);
                      ////////// PluginIndex : PluginIndex Index of a existing Plugin.
                      //////////// PlayerIndex : Index of a existing Player
@@ -732,7 +737,7 @@ begin
  uosPlayers[PlayerIndex].SetPluginSoundTouch(PluginIndex, Tempo, Pitch, Enable);
 end;
 
-procedure uos_Seek(PlayerIndex: LongInt; InputIndex: LongInt; pos: Tsf_count_t);
+procedure uos_Seek(PlayerIndex: cint32; InputIndex: cint32; pos: Tsf_count_t);
                      //// change position in sample
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -740,7 +745,7 @@ begin
   uosPlayers[PlayerIndex].Seek(InputIndex, pos);
 end;
 
-function uos_GetStatus(PlayerIndex: LongInt) : LongInt ;
+function uos_GetStatus(PlayerIndex: cint32) : cint32 ;
                          /////// Get the status of the player : -1 => error, 0 => has stopped, 1 => is running, 2 => is paused.
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -750,7 +755,7 @@ begin
  end else  result := -1 ;
 end;
 
-procedure uos_SeekSeconds(PlayerIndex: LongInt; InputIndex: LongInt; pos: cfloat);
+procedure uos_SeekSeconds(PlayerIndex: cint32; InputIndex: cint32; pos: cfloat);
                      //// change position in seconds
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -758,7 +763,7 @@ begin
   uosPlayers[PlayerIndex].SeekSeconds(InputIndex, pos);
 end;
 
-procedure uos_SeekTime(PlayerIndex: LongInt; InputIndex: LongInt; pos: TTime);
+procedure uos_SeekTime(PlayerIndex: cint32; InputIndex: cint32; pos: TTime);
                      //// change position in time format
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -766,7 +771,7 @@ begin
   uosPlayers[PlayerIndex].SeekTime(InputIndex, pos);
 end;
 
-function uos_InputLength(PlayerIndex: LongInt; InputIndex: LongInt): longint;
+function uos_InputLength(PlayerIndex: cint32; InputIndex: cint32): cint32;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : Length of Input in samples
 begin
@@ -776,7 +781,7 @@ begin
  result := uosPlayers[PlayerIndex].InputLength(InputIndex) ;
 end;
 
-function uos_InputLengthSeconds(PlayerIndex: LongInt; InputIndex: LongInt): cfloat;
+function uos_InputLengthSeconds(PlayerIndex: cint32; InputIndex: cint32): cfloat;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : Length of Input in seconds
 begin
@@ -786,7 +791,7 @@ begin
  result := uosPlayers[PlayerIndex].InputLengthSeconds(InputIndex) ;
 end;
 
-function uos_InputLengthTime(PlayerIndex: LongInt; InputIndex: LongInt): TTime;
+function uos_InputLengthTime(PlayerIndex: cint32; InputIndex: cint32): TTime;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : Length of Input in time format
 begin
@@ -795,7 +800,7 @@ begin
  result := uosPlayers[PlayerIndex].InputLengthTime(InputIndex) ;
 end;
 
-function uos_InputPosition(PlayerIndex: LongInt; InputIndex: LongInt): longint;
+function uos_InputPosition(PlayerIndex: cint32; InputIndex: cint32): cint32;
                      ////////// InputIndex : InputIndex of existing input
                      ////// result : current postion in sample
 begin
@@ -805,7 +810,7 @@ begin
  result := uosPlayers[PlayerIndex].InputPosition(InputIndex) ;
 end;
 
-procedure uos_InputSetLevelEnable(PlayerIndex: LongInt; InputIndex: LongInt ; enable : boolean);
+procedure uos_InputSetLevelEnable(PlayerIndex: cint32; InputIndex: cint32 ; enable : boolean);
                    ///////// enable/disable level calculation (default is false/disable)
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -813,7 +818,7 @@ begin
  uosPlayers[PlayerIndex].StreamIn[InputIndex].Data.levelEnable:= enable;
 end;
 
-function uos_InputGetLevelLeft(PlayerIndex: LongInt; InputIndex: LongInt): double;
+function uos_InputGetLevelLeft(PlayerIndex: cint32; InputIndex: cint32): double;
                      ////////// InputIndex : InputIndex of existing input
                      ////// result : left level(volume) from 0 to 1
 begin
@@ -823,7 +828,7 @@ begin
  result := uosPlayers[PlayerIndex].InputGetLevelLeft(InputIndex) ;
 end;
 
-function uos_InputGetSampleRate(PlayerIndex: LongInt; InputIndex: LongInt): LongInt;
+function uos_InputGetSampleRate(PlayerIndex: cint32; InputIndex: cint32): cint32;
                      ////////// InputIndex : InputIndex of existing input
                      ////// result : default sample rate
 begin
@@ -835,7 +840,7 @@ begin
  result := uosPlayers[PlayerIndex].StreamIn[InputIndex].Data.SamplerateRoot;
 end;
 
-function uos_InputGetChannels(PlayerIndex: LongInt; InputIndex: LongInt): LongInt;
+function uos_InputGetChannels(PlayerIndex: cint32; InputIndex: cint32): cint32;
                      ////////// InputIndex : InputIndex of existing input
                      ////// result : default channels
 begin
@@ -847,7 +852,7 @@ begin
  result := uosPlayers[PlayerIndex].StreamIn[InputIndex].Data.Channels;
 end;
 
-function uos_InputGetLevelRight(PlayerIndex: LongInt; InputIndex: LongInt): double;
+function uos_InputGetLevelRight(PlayerIndex: cint32; InputIndex: cint32): double;
                      ////////// InputIndex : InputIndex of existing input
                      ////// result : right level(volume) from 0 to 1
 begin
@@ -857,7 +862,7 @@ begin
  result := uosPlayers[PlayerIndex].InputGetLevelRight(InputIndex) ;
 end;
 
-function uos_InputPositionSeconds(PlayerIndex: LongInt; InputIndex: LongInt): cfloat;
+function uos_InputPositionSeconds(PlayerIndex: cint32; InputIndex: cint32): cfloat;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : current postion of Input in seconds
 begin
@@ -867,7 +872,7 @@ begin
  result := uosPlayers[PlayerIndex].InputPositionSeconds(InputIndex) ;
 end;
 
-function uos_InputPositionTime(PlayerIndex: LongInt; InputIndex: LongInt): TTime;
+function uos_InputPositionTime(PlayerIndex: cint32; InputIndex: cint32): TTime;
                      ////////// InputIndex : InputIndex of existing input
                      ///////  result : current postion of Input in time format
 begin
@@ -876,27 +881,27 @@ begin
  result := uosPlayers[PlayerIndex].InputPositionTime(InputIndex) ;
 end;
 
-Procedure uos_Play(PlayerIndex: LongInt) ;        ///// Start playing
+Procedure uos_Play(PlayerIndex: cint32) ;        ///// Start playing
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
   if  uosPlayersStat[PlayerIndex] = 1 then
 uosPlayers[PlayerIndex].Play() ;
 end;
 
-procedure uos_RePlay(PlayerIndex: LongInt);                ///// Resume playing after pause
+procedure uos_RePlay(PlayerIndex: cint32);                ///// Resume playing after pause
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
   if  uosPlayersStat[PlayerIndex] = 1 then
 uosPlayers[PlayerIndex].RePlay() ;
 end;
 
-procedure uos_Stop(PlayerIndex: LongInt);                  ///// Stop playing and free thread
+procedure uos_Stop(PlayerIndex: cint32);                  ///// Stop playing and free thread
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
 uosPlayers[PlayerIndex].Stop() ;
 end;
 
-procedure uos_Pause(PlayerIndex: LongInt);                 ///// Pause playing
+procedure uos_Pause(PlayerIndex: cint32);                 ///// Pause playing
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
     if  uosPlayersStat[PlayerIndex] = 1 then
@@ -904,14 +909,14 @@ uosPlayers[PlayerIndex].Pause() ;
 end;
 
 
-procedure uos_BeginProc(PlayerIndex: LongInt; Proc: TProc );
+procedure uos_BeginProc(PlayerIndex: cint32; Proc: TProc );
                  ///// Assign the procedure of object to execute at begin, before loop
                  //////////// PlayerIndex : Index of a existing Player
 begin
   uosPlayers[PlayerIndex].BeginProc := Proc;
 end;
 
-procedure uos_EndProc(PlayerIndex: LongInt; Proc: TProc );
+procedure uos_EndProc(PlayerIndex: cint32; Proc: TProc );
                  ///// Assign the procedure of object to execute at end, after loop
                 //////////// PlayerIndex : Index of a existing Player
                    //////////// InIndex : Index of a existing Input
@@ -920,7 +925,7 @@ begin
 end;
 
 
-procedure uos_LoopProcIn(PlayerIndex: LongInt; InIndex: LongInt; Proc: TProc );
+procedure uos_LoopProcIn(PlayerIndex: cint32; InIndex: cint32; Proc: TProc );
                       ///// Assign the procedure of object to execute inside the loop
                       //////////// PlayerIndex : Index of a existing Player
                       //////////// InIndex : Index of a existing Input
@@ -928,7 +933,7 @@ begin
   uosPlayers[PlayerIndex].StreamIn[InIndex].LoopProc := Proc;
 end;
 
-procedure uos_LoopProcOut(PlayerIndex: LongInt; OutIndex: LongInt; Proc: TProc);
+procedure uos_LoopProcOut(PlayerIndex: cint32; OutIndex: cint32; Proc: TProc);
                        ///// Assign the procedure of object to execute inside the loop
                       //////////// PlayerIndex : Index of a existing Player
                       //////////// OutIndex : Index of a existing Output
@@ -937,21 +942,21 @@ begin
 end;
 
 
-function uos_loadlib(PortAudioFileName, SndFileFileName, Mpg123FileName, SoundTouchFileName: PChar) : LongInt;
+function uos_loadlib(PortAudioFileName, SndFileFileName, Mpg123FileName, SoundTouchFileName: PChar) : cint32;
   begin
    ifflat := true;
 result := uos.uos_loadlib(PortAudioFileName, SndFileFileName, Mpg123FileName, SoundTouchFileName)  ;
 //uosLoadResult:= uos.uosLoadResult;
   end;
 
-function uos_GetVersion() : LongInt ;
+function uos_GetVersion() : cint32 ;
 begin
 result := uos.uos_GetVersion() ;
 end;
 
 procedure uos_unloadlib() ;
   var
-   x: LongInt;
+   x: cint32;
   begin
      if (length(uosPlayers) > 0) then
       for x := 0 to high(uosPlayers) do
@@ -1003,13 +1008,13 @@ end;
 //// If PlayerIndex exists already, it will be overwriten...
 
 {$IF (FPC_FULLVERSION>=20701) or DEFINED(LCL) or DEFINED(ConsoleApp) or DEFINED(Library) or DEFINED(Windows)}
-  procedure uos_CreatePlayer(PlayerIndex : LongInt);
+  procedure uos_CreatePlayer(PlayerIndex : cint32);
      {$else}
-  procedure uos_CreatePlayer(PlayerIndex : LongInt ; AParent: TObject);            //// for fpGUI
+  procedure uos_CreatePlayer(PlayerIndex : cint32 ; AParent: TObject);            //// for fpGUI
     {$endif}
 
  var
-x : LongInt;
+x : cint32;
 begin
 if PlayerIndex + 1 > length(uosPlayers) then
 begin
@@ -1034,4 +1039,4 @@ end;
 end;
 
 
-end.
+end.
