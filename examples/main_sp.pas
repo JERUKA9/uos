@@ -325,8 +325,13 @@ begin
     //////////// FramesCount : default : -1 (65536)
     //  result : -1 nothing created, otherwise Output Index in array
 
-    uos_InputSetLevelEnable(PlayerIndex1, In1Index, true) ;
+    uos_InputSetLevelEnable(PlayerIndex1, In1Index, 2) ;
     ///// set calculation of level/volume to true (usefull for showvolume procedure)
+                       ///////// set level calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul before all DSP procedures.
+                          // 2 => calcul after all DSP procedures.
+                          // 3 => calcul before and after all DSP procedures.
 
     uos_LoopProcIn(PlayerIndex1, In1Index, @LoopProcPlayer1);
     ///// Assign the procedure of object to execute inside the loop for a Input

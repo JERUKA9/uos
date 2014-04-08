@@ -65,12 +65,16 @@ uses
   uos_LibSndFile, uos_Mpg123, uos_soundtouch;
 
 const
-  uos_version : LongInt = 130140316 ;
+  uos_version : LongInt = 130140408 ;
 
 type
   TDArFloat = array of cfloat;
   TDArShort = array of cInt16;
   TDArLong = array of cInt32;
+
+  TDArPARFloat = array of TDArFloat;
+  TDArIARFloat = array of TDArPARFloat;
+
 
   PDArFloat = ^TDArFloat;
   PDArShort = ^TDArShort;
@@ -162,9 +166,12 @@ type
     DSPVolumeInIndex : LongInt;
     DSPVolumeOutIndex : LongInt;
     VLeft, VRight: double;
-    levelEnable : boolean;
-    LevelLeft, LevelRight: double;
-     {$if defined(cpu64)}
+
+    levelEnable : LongInt;
+    LevelLeft, LevelRight: cfloat;
+
+    levelArrayEnable : LongInt;
+    {$if defined(cpu64)}
     Wantframes: Tsf_count_t;
     OutFrames: Tsf_count_t;
     {$else}
@@ -284,6 +291,12 @@ type
     BeginProc: TProc;
     //// external procedure to execute at begin of thread
 
+    LoopBeginProc: TProc;
+    //// external procedure to execute at each begin of loop
+
+    LoopEndProc: TProc;
+    //// external procedure to execute at each end of loop
+
     EndProc: TProc;
     //// procedure to execute at end of thread
 
@@ -397,6 +410,23 @@ type
     function InputPosition(InputIndex: LongInt): longint;
     ////////// InputIndex : InputIndex of existing input
     ////// result : current postion in sample
+
+    procedure InputSetFrameCount(InputIndex: LongInt ; framecount : longint);
+                   ///////// set number of frames to be done. (usefull for recording and level precision)
+
+    procedure InputSetLevelEnable(InputIndex: LongInt ; levelcalc : longint);
+                   ///////// set level calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul before all DSP procedures.
+                          // 2 => calcul after all DSP procedures.
+                          // 3 => calcul before and after all DSP procedures.
+
+    procedure InputSetArrayLevelEnable(InputIndex: LongInt ; levelcalc : longint);
+                   ///////// set add level calculation in level-array (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul before all DSP procedures.
+                          // 2 => calcul after all DSP procedures.
+
 
     function InputGetLevelLeft(InputIndex: LongInt): double;
     ////////// InputIndex : InputIndex of existing input
@@ -598,6 +628,7 @@ const
 var
   uosPlayers: array of Tuos_Player;
   uosPlayersStat : array of LongInt;
+  uosLevelArray : TDArIARFloat ;
   ifflat : boolean = false;
   uosDeviceInfos: array of Tuos_DeviceInfos;
   uosLoadResult: Tuos_LoadResult;
@@ -876,6 +907,52 @@ function Tuos_Player.InputPosition(InputIndex: LongInt): longint;
   //// gives current position
 begin
    if (isAssigned = True) then Result := StreamIn[InputIndex].Data.Position;
+end;
+
+procedure Tuos_Player.InputSetFrameCount(InputIndex: LongInt ; framecount : longint);
+begin
+    if (Status > 0) and (isAssigned = True) then
+
+    case StreamIn[InputIndex].Data.LibOpen of
+            0:
+            StreamIn[InputIndex].Data.Wantframes:= (framecount * StreamIn[InputIndex].Data.Channels) ;
+
+            1:
+            StreamIn[InputIndex].Data.Wantframes:= (framecount * StreamIn[InputIndex].Data.Channels)  * 2  ;
+
+end;
+
+end;
+
+procedure Tuos_Player.InputSetArrayLevelEnable(InputIndex: LongInt ; levelcalc : longint);
+                  ///////// set add level calculation in level-array (default is 0)
+                         // 0 => no calcul
+                         // 1 => calcul before all DSP procedures.
+                         // 2 => calcul after all DSP procedures.
+begin
+ if (Status > 0) and (isAssigned = True) then
+ begin
+
+if index + 1 > length(uosLevelArray) then
+ setlength(uosLevelArray,index + 1) ;
+ if InputIndex + 1 > length(uosLevelArray[index]) then
+ setlength(uosLevelArray[index],InputIndex + 1) ;
+  setlength(uosLevelArray[index].[InputIndex],0) ;
+ StreamIn[InputIndex].Data.levelArrayEnable := levelcalc;
+ end;
+end;
+
+
+procedure Tuos_Player.InputSetLevelEnable(InputIndex: LongInt ; levelcalc : longint);
+                   ///////// set level calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul before all DSP procedures.
+                          // 2 => calcul after all DSP procedures.
+                          // 3 => calcul before and after all DSP procedures.
+
+begin
+    if (Status > 0) and (isAssigned = True) then
+StreamIn[InputIndex].Data.levelEnable:= levelcalc;
 end;
 
 function Tuos_Player.InputGetLevelLeft(InputIndex: LongInt): double;
@@ -1394,6 +1471,11 @@ begin
   Plugin[PluginIndex].param2 := Pitch;
 end;
 
+function uos_InputGetArrayLevel(PlayerIndex: cint32; InputIndex: LongInt) : TDArFloat;
+begin
+  result :=  uosLevelArray[PlayerIndex].[InputIndex] ;
+end;
+
 function uos_DSPVolume(Data: Tuos_Data; fft: Tuos_FFT): TDArFloat;
 var
   x, ratio: LongInt;
@@ -1884,7 +1966,9 @@ begin
   SetLength(StreamIn, Length(StreamIn) + 1);
   StreamIn[Length(StreamIn) - 1] := Tuos_InStream.Create();
   x := Length(StreamIn) - 1;
-   StreamIn[x].Data.levelEnable := false;
+   StreamIn[x].Data.levelEnable := 0;
+   StreamIn[x].Data.levelArrayEnable := 0;
+//   setlength(StreamIn[x].Data.LevelArray,0);
   StreamIn[x].Data.PAParam.HostApiSpecificStreamInfo := nil;
 
   if device = -1 then
@@ -2099,7 +2183,9 @@ begin
     x := Length(StreamIn) - 1;
     err := -1;
     StreamIn[x].Data.LibOpen := -1;
-    StreamIn[x].Data.levelEnable := false;
+    StreamIn[x].Data.levelEnable := 0;
+     StreamIn[x].Data.levelArrayEnable := 0;
+   //  setlength(StreamIn[x].Data.LevelArray,0);
 
      if (uosLoadResult.SFloadERROR = 0) then
     begin
@@ -2280,8 +2366,9 @@ var
 
 begin
   curpos := 0;
+
    {$IF not DEFINED(Library)}
-      if BeginProc <> nil then
+     if BeginProc <> nil then
     /////  Execute BeginProc procedure
        {$IF FPC_FULLVERSION>=20701}
      queue(BeginProc);
@@ -2301,6 +2388,27 @@ begin
     {$endif}
 
   repeat
+
+     {$IF not DEFINED(Library)}
+        if LoopBeginProc <> nil then
+    /////  Execute BeginProc procedure
+       {$IF FPC_FULLVERSION>=20701}
+     queue(LoopBeginProc);
+        {$else}
+  {$IF DEFINED(LCL) or DEFINED(ConsoleApp) or DEFINED(Library) or DEFINED(Windows)}
+     synchronize(LoopBeginProc);
+  {$else}    /// for fpGUI
+  begin
+    msg.user.Param1 := -2 ;  // it is the first proc
+    fpgPostMessage(self, refer, MSG_CUSTOM1, msg);
+   end;
+    {$endif}
+    {$endif}
+      {$else}
+    if LoopBeginProc <> nil then
+      LoopBeginProc;
+    {$endif}
+
     for x := 0 to high(StreamIn) do
     begin
 
@@ -2389,6 +2497,23 @@ begin
 
         x2 := 0;
 
+       //// Getting the level before DSP procedure
+       if (StreamIn[x].Data.levelEnable = 1) or (StreamIn[x].Data.levelEnable = 3) then StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
+
+       //// Adding level in array-level
+       if (StreamIn[x].Data.levelArrayEnable = 1) then
+       begin
+       if (StreamIn[x].Data.levelEnable = 0) or (StreamIn[x].Data.levelEnable = 3) then
+       StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
+
+       setlength(uosLevelArray[index].[x],length(uosLevelArray[index].[x]) +1);
+       uosLevelArray[index].[x].[length(uosLevelArray[index].[x]) -1 ] := StreamIn[x].Data.LevelLeft;
+
+       setlength(uosLevelArray[index].[x],length(uosLevelArray[index].[x]) +1);
+       uosLevelArray[index].[x].[length(uosLevelArray[index].[x]) -1 ] := StreamIn[x].Data.LevelRight;
+
+       end;
+
         //////// DSPin AfterBuffProc
         if (StreamIn[x].Data.Status = 1) and (length(StreamIn[x].DSP) > 0) then
           for x2 := 0 to high(StreamIn[x].DSP) do
@@ -2461,10 +2586,23 @@ begin
     //////////////////////// Give Buffer to Output
     if status = 1 then
     begin
-   //// getting the level-volume
-  if StreamIn[x].Data.levelEnable = true then StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
+   //// Getting the level after DSP procedure
+  if (StreamIn[x].Data.levelEnable = 2) or (StreamIn[x].Data.levelEnable = 3) then StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
 
-    for x := 0 to high(StreamOut) do
+  //// Adding level in array-level
+       if (StreamIn[x].Data.levelArrayEnable = 2) then
+       begin
+       if (StreamIn[x].Data.levelEnable = 0) or (StreamIn[x].Data.levelEnable = 1) then
+       StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
+
+       setlength(uosLevelArray[index].[x],length(uosLevelArray[index].[x]) +1);
+       uosLevelArray[index].[x].[length(uosLevelArray[index].[x]) -1 ] := StreamIn[x].Data.LevelLeft;
+
+       setlength(uosLevelArray[index].[x],length(uosLevelArray[index].[x]) +1);
+       uosLevelArray[index].[x].[length(uosLevelArray[index].[x]) -1 ] := StreamIn[x].Data.LevelRight;
+       end;
+
+  for x := 0 to high(StreamOut) do
 
       if ((StreamOut[x].Data.TypePut = 1) and (StreamOut[x].Data.HandleSt <> nil) and
         (StreamOut[x].Data.Enabled = True)) or
@@ -2649,6 +2787,27 @@ begin
        end;
       end;
 
+      {$IF not DEFINED(Library)}
+        if LoopEndProc <> nil then
+
+    /////  Execute LoopEndProc procedure
+    {$IF FPC_FULLVERSION>=20701}
+    sleep(200);
+       queue(LoopEndProc);
+           {$else}
+  {$IF DEFINED(LCL) or DEFINED(ConsoleApp) or DEFINED(Library) or DEFINED(Windows)}
+     synchronize(LoopEndProc);
+  {$else}    /// for fpGUI
+  begin
+    msg.user.Param1 := -2 ;  // it is the first proc
+    fpgPostMessage(self, refer, MSG_CUSTOM1, msg);
+   end;
+    {$endif}
+    {$endif}
+      {$else}
+    if LoopEndProc <> nil then
+      LoopEndProc;
+    {$endif}
   until status = 0;
 
   ////////////////////////////////////// End of Loop ////////////////////////////////////////
@@ -2703,17 +2862,15 @@ begin
       if EndProc <> nil then
        {$IF FPC_FULLVERSION>=20701}
         queue(EndProc);
-        {$else}
+         {$else}
       synchronize(EndProc); /////  Execute EndProc procedure
             {$endif}
      {$else}
       if (EndProc <> nil) then
         EndProc;
      {$endif}
-
-
-  isAssigned := false ;
-    end;
+    isAssigned := false ;
+     end;
 end;
 
 procedure Tuos_Player.onTerminate() ;
@@ -2753,6 +2910,8 @@ begin
   status := 2;
   BeginProc := nil;
   EndProc := nil;
+  loopBeginProc := nil;
+  loopEndProc := nil;
 end;
 
 destructor Tuos_DSP.Destroy;
