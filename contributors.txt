@@ -1,4 +1,4 @@
-Here are the great contributors of uos :
+Here are the great contributors of uos:
 
 KpjComp : He gives the way to link PortAudio with SndFile and shows the best way to pause a thread.
 
