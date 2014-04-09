@@ -352,9 +352,9 @@ begin
   while poswav < length(waveformdata) div chan
       do begin
     waveformBMP.Canvas.Pen.Color := clyellow;
-    waveformBMP.Canvas.Line(poswav,paintbox2.height div 2 ,poswav, ((paintbox2.height div 2)-1) - round( (waveformdata.[poswav*2]) * (paintbox2.height /2)-1));
+    waveformBMP.Canvas.Line(poswav,paintbox2.height div 2 ,poswav, ((paintbox2.height div 2)-1) - round( (waveformdata[poswav*2]) * (paintbox2.height /2)-1));
     waveformBMP.Canvas.Pen.Color := clred;
-    waveformBMP.Canvas.Line(poswav,(paintbox2.height div 2) + 2  ,poswav, ((paintbox2.height div 2)+1) + round( (waveformdata.[(poswav*2) +1]) * (paintbox2.height /2)+1));
+    waveformBMP.Canvas.Line(poswav,(paintbox2.height div 2) + 2  ,poswav, ((paintbox2.height div 2)+1) + round( (waveformdata[(poswav*2) +1]) * (paintbox2.height /2)+1));
       inc(poswav);
          end;
 
