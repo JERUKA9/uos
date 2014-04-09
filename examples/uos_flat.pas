@@ -869,11 +869,7 @@ end;
 
 function uos_InputGetArrayLevel(PlayerIndex: cint32; InputIndex: LongInt) : TDArFloat;
 begin
-  {$IF (FPC_FULLVERSION >= 20701)}
-  result :=  uosLevelArray[PlayerIndex].[InputIndex] ;
-    {$else}
-  result :=  uosLevelArray ;
-    {$endif}
+   result :=  uosLevelArray[PlayerIndex][InputIndex] ;
  end;
 
 function uos_InputGetLevelLeft(PlayerIndex: cint32; InputIndex: cint32): double;

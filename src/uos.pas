@@ -72,14 +72,8 @@ type
   TDArShort = array of cInt16;
   TDArLong = array of cInt32;
 
-  {$IF (FPC_FULLVERSION >= 20701)}
-    TDArPARFloat = array of TDArFloat;
-   TDArIARFloat = array of TDArPARFloat;
-  {$else}
-  TDArIARFloat = array of cfloat;
-   {$endif}
-
-
+  TDArPARFloat = array of TDArFloat;
+  TDArIARFloat = array of TDArPARFloat;
 
   PDArFloat = ^TDArFloat;
   PDArShort = ^TDArShort;
@@ -942,15 +936,11 @@ begin
 
 if index + 1 > length(uosLevelArray) then
  setlength(uosLevelArray,index + 1) ;
-{$IF (FPC_FULLVERSION >= 20701)}
  if InputIndex + 1 > length(uosLevelArray[index]) then
  setlength(uosLevelArray[index],InputIndex + 1) ;
-  setlength(uosLevelArray[index].[InputIndex],0) ;
+  setlength(uosLevelArray[index][InputIndex],0) ;
  StreamIn[InputIndex].Data.levelArrayEnable := levelcalc;
-    {$else}
- setlength(uosLevelArray,0) ;
- StreamIn[InputIndex].Data.levelArrayEnable := levelcalc;
-     {$endif}
+
 end;
 end;
 
@@ -1485,12 +1475,8 @@ end;
 
 function uos_InputGetArrayLevel(PlayerIndex: cint32; InputIndex: LongInt) : TDArFloat;
 begin
-  {$IF (FPC_FULLVERSION >= 20701)}
-  result :=  uosLevelArray[PlayerIndex].[InputIndex] ;
-    {$else}
-  result :=  uosLevelArray ;
-    {$endif}
- end;
+   result :=  uosLevelArray[PlayerIndex][InputIndex] ;
+  end;
 
 function uos_DSPVolume(Data: Tuos_Data; fft: Tuos_FFT): TDArFloat;
 var
@@ -2522,21 +2508,11 @@ begin
        if (StreamIn[x].Data.levelEnable = 0) or (StreamIn[x].Data.levelEnable = 3) then
        StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
 
-       {$IF (FPC_FULLVERSION >= 20701)}
-       setlength(uosLevelArray[index].[x],length(uosLevelArray[index].[x]) +1);
-       uosLevelArray[index].[x].[length(uosLevelArray[index].[x]) -1 ] := StreamIn[x].Data.LevelLeft;
+       setlength(uosLevelArray[index][x],length(uosLevelArray[index][x]) +1);
+       uosLevelArray[index][x][length(uosLevelArray[index][x]) -1 ] := StreamIn[x].Data.LevelLeft;
 
-       setlength(uosLevelArray[index].[x],length(uosLevelArray[index].[x]) +1);
-       uosLevelArray[index].[x].[length(uosLevelArray[index].[x]) -1 ] := StreamIn[x].Data.LevelRight;
-
-        {$else}
-        setlength(uosLevelArray,length(uosLevelArray) +1);
-        uosLevelArray[length(uosLevelArray) -1 ] := StreamIn[x].Data.LevelLeft;
-
-        setlength(uosLevelArray,length(uosLevelArray) +1);
-        uosLevelArray[length(uosLevelArray) -1 ] := StreamIn[x].Data.LevelRight;
-
-        {$endif}
+       setlength(uosLevelArray[index][x],length(uosLevelArray[index][x]) +1);
+       uosLevelArray[index][x][length(uosLevelArray[index][x]) -1 ] := StreamIn[x].Data.LevelRight;
        end;
 
         //////// DSPin AfterBuffProc
@@ -2620,20 +2596,11 @@ begin
        if (StreamIn[x].Data.levelEnable = 0) or (StreamIn[x].Data.levelEnable = 1) then
        StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
 
-            {$IF (FPC_FULLVERSION >= 20701)}
-       setlength(uosLevelArray[index].[x],length(uosLevelArray[index].[x]) +1);
-       uosLevelArray[index].[x].[length(uosLevelArray[index].[x]) -1 ] := StreamIn[x].Data.LevelLeft;
+       setlength(uosLevelArray[index][x],length(uosLevelArray[index][x]) +1);
+       uosLevelArray[index][x][length(uosLevelArray[index][x]) -1 ] := StreamIn[x].Data.LevelLeft;
 
-       setlength(uosLevelArray[index].[x],length(uosLevelArray[index].[x]) +1);
-       uosLevelArray[index].[x].[length(uosLevelArray[index].[x]) -1 ] := StreamIn[x].Data.LevelRight;
-
-        {$else}
-        setlength(uosLevelArray,length(uosLevelArray) +1);
-        uosLevelArray[length(uosLevelArray) -1 ] := StreamIn[x].Data.LevelLeft;
-
-        setlength(uosLevelArray,length(uosLevelArray) +1);
-        uosLevelArray[length(uosLevelArray) -1 ] := StreamIn[x].Data.LevelRight;
-       {$endif}
+       setlength(uosLevelArray[index][x],length(uosLevelArray[index][x]) +1);
+       uosLevelArray[index][x][length(uosLevelArray[index][x]) -1 ] := StreamIn[x].Data.LevelRight;
        end;
 
   for x := 0 to high(StreamOut) do
