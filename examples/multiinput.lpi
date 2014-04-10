@@ -157,8 +157,8 @@ install:
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="336"/>
-        <CursorPos X="17" Y="343"/>
+        <TopLine Value="349"/>
+        <CursorPos X="3" Y="373"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -338,8 +338,8 @@ install:
         <UnitName Value="uos"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="2487"/>
-        <CursorPos X="28" Y="2495"/>
+        <TopLine Value="2577"/>
+        <CursorPos X="31" Y="2596"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit23>
@@ -388,7 +388,7 @@ install:
         <WindowIndex Value="0"/>
         <TopLine Value="328"/>
         <CursorPos X="3" Y="348"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="14"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit28>

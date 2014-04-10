@@ -2411,13 +2411,14 @@ begin
       LoopBeginProc;
     {$endif}
 
+
     for x := 0 to high(StreamIn) do
     begin
 
       RTLeventWaitFor(evPause);  ///// is there a pause waiting ?
       RTLeventSetEvent(evPause);
 
-      if (StreamIn[x].Data.HandleSt <> nil) and (StreamIn[x].Data.Status = 1) and
+      if (StreamIn[x].Data.HandleSt <> nil) and (StreamIn[x].Data.Status > 0) and
         (StreamIn[x].Data.Enabled = True) then
       begin
 
@@ -2470,8 +2471,6 @@ begin
               end;
             end;
 
-            if StreamIn[x].Data.OutFrames < 10 then
-              StreamIn[x].Data.status := 0;  //////// no more data then close the stream
           end;
 
           1:   /////// for Input from device
@@ -2485,6 +2484,12 @@ begin
             //  if err = 0 then StreamIn[x].Data.Status := 1 else StreamIn[x].Data.Status := 0;  /// if you want clean buffer
           end;
         end;
+
+         if StreamIn[x].Data.OutFrames < 10 then
+              StreamIn[x].Data.status := 0;  //////// no more data then close the stream
+
+      if  StreamIn[x].Data.status > 0 then
+      begin
 
         if (StreamIn[x].Data.LibOpen = 1) and (StreamIn[x].Data.SampleFormat < 2) then
 
@@ -2546,8 +2551,6 @@ begin
         StreamIn[x].DSP[x2].LoopProc;
      {$endif}
        end;
-      end;
-    end;
 
         ///// End DSPin AfterBuffProc
 
@@ -2571,27 +2574,13 @@ begin
       if (StreamIn[x].LoopProc <> nil) then
         StreamIn[x].LoopProc;
      {$endif}
-
-   ////////////////// Seeking if StreamIn is terminated
-    if status > 0 then
-    begin
-      status := 0;
-      for x := 0 to high(StreamIn) do
-        if (StreamIn[x].Data.HandleSt <> nil) and (StreamIn[x].Data.Status = 1) then
-          status := 1;
     end;
 
-    RTLeventWaitFor(evPause);  ///// is there a pause waiting ?
-    RTLeventSetEvent(evPause);
-
-    //////////////////////// Give Buffer to Output
-    if status = 1 then
-    begin
-   //// Getting the level after DSP procedure
-  if (StreamIn[x].Data.levelEnable = 2) or (StreamIn[x].Data.levelEnable = 3) then StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
+    //// Getting the level after DSP procedure
+  if  (StreamIn[x].Data.status > 0) and((StreamIn[x].Data.levelEnable = 2) or (StreamIn[x].Data.levelEnable = 3)) then StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
 
   //// Adding level in array-level
-       if (StreamIn[x].Data.levelArrayEnable = 2) then
+       if  (StreamIn[x].Data.status > 0) and (StreamIn[x].Data.levelArrayEnable = 2) then
        begin
        if (StreamIn[x].Data.levelEnable = 0) or (StreamIn[x].Data.levelEnable = 1) then
        StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
@@ -2602,6 +2591,22 @@ begin
        setlength(uosLevelArray[index][x],length(uosLevelArray[index][x]) +1);
        uosLevelArray[index][x][length(uosLevelArray[index][x]) -1 ] := StreamIn[x].Data.LevelRight;
        end;
+
+   end;
+        if x = 0 then status := (StreamIn[x].Data.Status) else
+      if status = 0 then status := (StreamIn[x].Data.Status);
+
+  end;   //////////////// end for low(StreamIn[x] to high(StreamIn[x]
+
+   ////////////////// Seeking if StreamIn is terminated
+
+
+    RTLeventWaitFor(evPause);  ///// is there a pause waiting ?
+    RTLeventSetEvent(evPause);
+
+    //////////////////////// Give Buffer to Output
+    if status = 1 then
+    begin
 
   for x := 0 to high(StreamOut) do
 
@@ -2614,7 +2619,7 @@ begin
           StreamOut[x].Data.Buffer[x2] := cfloat(0);      ////// clear output
 
         for x2 := 0 to high(StreamIn) do
-          if (StreamIn[x2].Data.HandleSt <> nil) and
+          if  (StreamIn[x2].Data.status > 0) and (StreamIn[x2].Data.HandleSt <> nil) and
             (StreamIn[x2].Data.Enabled = True) and
             ((StreamIn[x2].Data.Output = x) or (StreamIn[x2].Data.Output = -1)) then
             for x3 := 0 to high(StreamIn[x2].Data.Buffer) do
