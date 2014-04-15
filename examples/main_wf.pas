@@ -229,7 +229,12 @@ begin
     In1Index := uos_AddFromFile(PlayerIndex1, pchar(Edit4.Text));
 
      //// add a Output into device with default parameters
-     uos_AddIntoDevOut(PlayerIndex1);
+    uos_AddIntoDevOut(PlayerIndex1);
+
+    uos_InputSetPositionEnable(PlayerIndex1, In1Index, 1);
+     ///////// set position calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul position.
 
     uos_LoopProcIn(PlayerIndex1, In1Index, @showposition);
     ///// Assign the procedure of object to execute inside the loop for a Input

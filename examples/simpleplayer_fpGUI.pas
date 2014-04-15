@@ -353,12 +353,18 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     //  result : -1 nothing created, otherwise Output Index in array
 
     uos_InputSetLevelEnable(PlayerIndex1, In1Index, 2) ;
-     ///// set calculation of level/volume to true (usefull for showvolume procedure)
+     ///// set calculation of level/volume (usefull for showvolume procedure)
                        ///////// set level calculation (default is 0)
                           // 0 => no calcul
                           // 1 => calcul before all DSP procedures.
                           // 2 => calcul after all DSP procedures.
                           // 3 => calcul before and after all DSP procedures.
+
+    uos_InputSetPositionEnable(PlayerIndex1, In1Index, 1) ;
+     ///// set calculation of position (usefull for positions procedure)
+                       ///////// set position calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul position.
 
     uos_LoopProcIn(PlayerIndex1, In1Index, @LoopProcPlayer1);
     ///// Assign the procedure of object to execute inside the loop of input

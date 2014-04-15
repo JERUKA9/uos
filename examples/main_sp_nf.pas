@@ -324,13 +324,19 @@ begin
     //////////// FramesCount : default : -1 (65536)
     //  result : -1 nothing created, otherwise Output Index in array
 
-    PlayerIndex1.StreamIn[In1Index].Data.levelEnable:= 2 ;
-    ///// set calculation of level/volume to true (usefull for showvolume procedure)
+    PlayerIndex1.StreamIn[In1Index].Data.LevelEnable:= 2 ;
+    ///// set calculation of level/volume (usefull for showvolume procedure)
                        ///////// set level calculation (default is 0)
                           // 0 => no calcul
                           // 1 => calcul before all DSP procedures.
                           // 2 => calcul after all DSP procedures.
                           // 3 => calcul before and after all DSP procedures.
+
+    PlayerIndex1.StreamIn[In1Index].Data.PositionEnable:= 1 ;
+     ///// set calculation of position (usefull for positions procedure)
+                       ///////// set position calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul position.
 
     PlayerIndex1.StreamIn[In1Index].LoopProc := @LoopProcPlayer1;
    ///// Assign the procedure of object to execute inside the loop for a Input

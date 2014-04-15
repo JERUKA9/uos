@@ -148,10 +148,11 @@ install:
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_wf"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="87" Y="353"/>
+        <TopLine Value="229"/>
+        <CursorPos X="4" Y="229"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -161,19 +162,18 @@ install:
         <UnitName Value="uos"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="2593"/>
-        <CursorPos X="59" Y="2603"/>
+        <TopLine Value="63"/>
+        <CursorPos X="90" Y="67"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="uos_flat.pas"/>
         <UnitName Value="uos_flat"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="868"/>
-        <CursorPos X="41" Y="872"/>
+        <TopLine Value="858"/>
+        <CursorPos X="53" Y="868"/>
         <UsageCount Value="18"/>
         <Loaded Value="True"/>
       </Unit3>

@@ -4,7 +4,7 @@ object Form1: TForm1
   Top = 57
   Width = 1018
   BorderIcons = [biSystemMenu]
-  Caption = 'Simple Player U0S PortAudio + SndFile + Mpg123'
+  Caption = 'Wave Form Designer'
   ClientHeight = 207
   ClientWidth = 1018
   Color = clMoneyGreen
@@ -85,7 +85,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDesktopCenter
-  LCLVersion = '1.2.0.3'
+  LCLVersion = '1.3'
   object Edit1: TEdit
     Left = 320
     Height = 27

@@ -363,6 +363,12 @@ procedure uos_InputSetLevelEnable(PlayerIndex: cint32; InputIndex: cint32 ; enab
                           // 2 => calcul after all DSP procedures.
                           // 3 => calcul before and after all DSP procedures.
 
+procedure uos_InputSetPositionEnable(PlayerIndex: cint32; InputIndex: cint32 ; enable : cint32);
+                 ///////// set position calculation (default is 1)
+                  ////////// InputIndex : InputIndex of existing input
+                          // 0 => no calcul
+                          // 1 => calcul position.
+
 procedure uos_InputSetArrayLevelEnable(PlayerIndex: cint32; InputIndex: cint32 ; levelcalc : cint32);
                   ///////// set add level calculation in level-array (default is 0)
                          // 0 => no calcul
@@ -854,6 +860,16 @@ begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
     if  uosPlayersStat[PlayerIndex] = 1 then
   uosPlayers[PlayerIndex].InputSetLevelEnable(InputIndex, enable) ;
+end;
+
+procedure uos_InputSetPositionEnable(PlayerIndex: cint32; InputIndex: cint32 ; enable : cint32);
+                   ///////// set position calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul position.
+begin
+  if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
+    if  uosPlayersStat[PlayerIndex] = 1 then
+  uosPlayers[PlayerIndex].InputSetPositionEnable(InputIndex, enable) ;
 end;
 
 procedure uos_InputSetArrayLevelEnable(PlayerIndex: cint32; InputIndex: cint32 ; levelcalc : cint32);

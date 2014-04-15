@@ -65,7 +65,7 @@ uses
   uos_LibSndFile, uos_Mpg123, uos_soundtouch;
 
 const
-  uos_version : LongInt = 130140408 ;
+  uos_version : LongInt = 130140410 ;
 
 type
   TDArFloat = array of cfloat;
@@ -166,7 +166,8 @@ type
     DSPVolumeOutIndex : LongInt;
     VLeft, VRight: double;
 
-    levelEnable : LongInt;
+    PositionEnable : LongInt;
+    LevelEnable : LongInt;
     LevelLeft, LevelRight: cfloat;
 
     levelArrayEnable : LongInt;
@@ -419,6 +420,11 @@ type
                           // 1 => calcul before all DSP procedures.
                           // 2 => calcul after all DSP procedures.
                           // 3 => calcul before and after all DSP procedures.
+
+     procedure InputSetPositionEnable(InputIndex: LongInt ; poscalc : longint);
+                   ///////// set position calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul of position.
 
     procedure InputSetArrayLevelEnable(InputIndex: LongInt ; levelcalc : longint);
                    ///////// set add level calculation in level-array (default is 0)
@@ -955,6 +961,15 @@ procedure Tuos_Player.InputSetLevelEnable(InputIndex: LongInt ; levelcalc : long
 begin
     if (Status > 0) and (isAssigned = True) then
 StreamIn[InputIndex].Data.levelEnable:= levelcalc;
+end;
+
+procedure Tuos_Player.InputSetPositionEnable(InputIndex: LongInt ; poscalc : longint);
+                   ///////// set position calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul position procedures.
+begin
+    if (Status > 0) and (isAssigned = True) then
+StreamIn[InputIndex].Data.PositionEnable:= poscalc;
 end;
 
 function Tuos_Player.InputGetLevelLeft(InputIndex: LongInt): double;
@@ -1969,8 +1984,9 @@ begin
   StreamIn[Length(StreamIn) - 1] := Tuos_InStream.Create();
   x := Length(StreamIn) - 1;
    StreamIn[x].Data.levelEnable := 0;
+   StreamIn[x].Data.PositionEnable := 0;
    StreamIn[x].Data.levelArrayEnable := 0;
-//   setlength(StreamIn[x].Data.LevelArray,0);
+
   StreamIn[x].Data.PAParam.HostApiSpecificStreamInfo := nil;
 
   if device = -1 then
@@ -2186,8 +2202,8 @@ begin
     err := -1;
     StreamIn[x].Data.LibOpen := -1;
     StreamIn[x].Data.levelEnable := 0;
-     StreamIn[x].Data.levelArrayEnable := 0;
-   //  setlength(StreamIn[x].Data.LevelArray,0);
+    StreamIn[x].Data.positionEnable := 0;
+    StreamIn[x].Data.levelArrayEnable := 0;
 
      if (uosLoadResult.SFloadERROR = 0) then
     begin
@@ -2432,7 +2448,8 @@ begin
           StreamIn[x].Data.Poseek := -1;
         end;
 
-        if (StreamIn[x].Data.Seekable = True) then
+          if (StreamIn[x].Data.positionEnable = 1) and
+         (StreamIn[x].Data.Seekable = True) then
           StreamIn[x].Data.position := curpos;
 
         //////// DSPin BeforeBuffProc
@@ -2491,6 +2508,8 @@ begin
       if  StreamIn[x].Data.status > 0 then
       begin
 
+        if (StreamIn[x].Data.positionEnable = 1) then
+        begin
         if (StreamIn[x].Data.LibOpen = 1) and (StreamIn[x].Data.SampleFormat < 2) then
 
           curpos := curpos + (StreamIn[x].Data.OutFrames div
@@ -2501,10 +2520,9 @@ begin
             (StreamIn[x].Data.Channels));
 
         StreamIn[x].Data.position := curpos; // new position
+       end;
 
-        x2 := 0;
-
-       //// Getting the level before DSP procedure
+        //// Getting the level before DSP procedure
        if (StreamIn[x].Data.levelEnable = 1) or (StreamIn[x].Data.levelEnable = 3) then StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
 
        //// Adding level in array-level
@@ -2593,19 +2611,19 @@ begin
        end;
 
    end;
-        if x = 0 then status := (StreamIn[x].Data.Status) else
-      if status = 0 then status := (StreamIn[x].Data.Status);
 
   end;   //////////////// end for low(StreamIn[x] to high(StreamIn[x]
 
    ////////////////// Seeking if StreamIn is terminated
-
+   status := 0 ;
+    for x := 0 to high(StreamIn) do
+    if (StreamIn[x].Data.Status) <> cint(0) then status := (StreamIn[x].Data.Status);
 
     RTLeventWaitFor(evPause);  ///// is there a pause waiting ?
     RTLeventSetEvent(evPause);
 
     //////////////////////// Give Buffer to Output
-    if status = 1 then
+    if status <> 0 then
     begin
 
   for x := 0 to high(StreamOut) do
