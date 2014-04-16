@@ -157,7 +157,7 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 var
-  filelength , framewanted: integer;
+  filelength , framewanted, sampleratedef : integer;
 begin
      form1.Height := 456;
     form1.Position := poScreenCenter;
@@ -175,31 +175,32 @@ begin
     PaintBox2.Refresh;
 
     PlayerIndex1 := 0;
-    // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
-    // If PlayerIndex exists already, it will be overwritten...
 
-    uos_CreatePlayer(PlayerIndex1);
     //// Create the player.
-    //// PlayerIndex : from 0 to what your computer can do !
+    uos_CreatePlayer(PlayerIndex1);
+     //// PlayerIndex : from 0 to what your computer can do !
     //// If PlayerIndex exists already, it will be overwriten...
 
     //// add input from audio file with default parameters
    In1Index := uos_AddFromFile(PlayerIndex1, pchar(Edit4.Text));
 
-   filelength := uos_InputLength(PlayerIndex1,In1Index) ;
+   //// no output because only decode the steam for wave form
 
-   //// determine how much frame will be designed
-   framewanted :=  filelength div paintbox2.Width;
-  uos_InputSetFrameCount(PlayerIndex1,In1Index, framewanted) ;
+    /// get the length of the audio file
+    filelength := uos_InputLength(PlayerIndex1,In1Index) ;
 
-   ///// set calculation of level/volume into array (usefull for wave form procedure)
-  uos_InputSetArrayLevelEnable(PlayerIndex1, In1Index, 2) ;
+      ///// set calculation of level/volume into array (usefull for wave form procedure)
+    uos_InputSetArrayLevelEnable(PlayerIndex1, In1Index, 2) ;
                           ///////// set level calculation (default is 0)
                           // 0 => no calcul
                           // 1 => calcul before all DSP procedures.
                           // 2 => calcul after all DSP procedures.
 
-   ///// Assign the procedure of object to execute inside at end of stream
+    //// determine how much frame will be designed
+   framewanted :=  filelength div paintbox2.Width;
+   uos_InputSetFrameCount(PlayerIndex1,In1Index, framewanted) ;
+
+  ///// Assign the procedure of object to execute at end of stream
   uos_EndProc(PlayerIndex1, @DrawWaveForm);
 
   uos_Play(PlayerIndex1);  /////// everything is ready, here we are, lets do it...
@@ -216,19 +217,16 @@ begin
   begin
 
     PlayerIndex1 := 0;
-    // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
-    // If PlayerIndex exists already, it will be overwritten...
 
+     //// Create the player.
     uos_CreatePlayer(PlayerIndex1);
-    //// Create the player.
     //// PlayerIndex : from 0 to what your computer can do !
     //// If PlayerIndex exists already, it will be overwriten...
-
 
     //// add input from audio file with default parameters
     In1Index := uos_AddFromFile(PlayerIndex1, pchar(Edit4.Text));
 
-     //// add a Output into device with default parameters
+    //// add a Output into device with default parameters
     uos_AddIntoDevOut(PlayerIndex1);
 
     uos_InputSetPositionEnable(PlayerIndex1, In1Index, 1);
@@ -242,15 +240,14 @@ begin
     //////////// InIndex : Index of a existing Input
     //////////// showposition : procedure of object to execute inside the loop
 
-
     trackbar1.Max := uos_InputLength(PlayerIndex1, In1Index);
     ////// Length of Input in samples
 
     /////// procedure to execute when stream is terminated
-   uos_EndProc(PlayerIndex1, @ClosePlayer1);
+    uos_EndProc(PlayerIndex1, @ClosePlayer1);
     ///// Assign the procedure of object to execute at end
     //////////// PlayerIndex : Index of a existing Player
-    //////////// ClosePlayer1 : procedure of object to execute inside the loop
+    //////////// ClosePlayer1 : procedure of object to execute at end of loop
 
     TrackBar1.position := 0;
     trackbar1.Enabled := True;
@@ -356,11 +353,17 @@ begin
 
   while poswav < length(waveformdata) div chan
       do begin
+    if chan = 2 then begin
     waveformBMP.Canvas.Pen.Color := clyellow;
     waveformBMP.Canvas.Line(poswav,paintbox2.height div 2 ,poswav, ((paintbox2.height div 2)-1) - round( (waveformdata[poswav*2]) * (paintbox2.height /2)-1));
     waveformBMP.Canvas.Pen.Color := clred;
     waveformBMP.Canvas.Line(poswav,(paintbox2.height div 2) + 2  ,poswav, ((paintbox2.height div 2)+1) + round( (waveformdata[(poswav*2) +1]) * (paintbox2.height /2)+1));
-      inc(poswav);
+    end;
+    if chan = 1 then begin
+    waveformBMP.Canvas.Pen.Color := clgreen;
+    waveformBMP.Canvas.Line(poswav,0 ,poswav, ((paintbox2.height)-1) - round( (waveformdata[poswav]) * (paintbox2.height)-1));
+     end;
+   inc(poswav);
          end;
 
   paintbox2.Refresh;

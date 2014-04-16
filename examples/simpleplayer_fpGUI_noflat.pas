@@ -101,7 +101,7 @@ type
 var
   PlayerIndex1: Tuos_Player;
   ordir, opath: string;
-  Out1Index, In1Index, DSP1Index, DSP2Index, Plugin1Index: cardinal;
+  In1Index, DSP1Index, DSP2Index, Plugin1Index: cardinal;
 
   procedure TSimpleplayer.btnTrackOnClick(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; const pos: TPoint);
@@ -331,7 +331,7 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
 
     // Out1Index := uos_AddIntoDevOut(PlayerIndex1) ;
     //// add a Output into device with default parameters
-    Out1Index := PlayerIndex1.AddIntoDevOut(-1, -1, PlayerIndex1.StreamIn[In1Index].Data.SampleRate, -1, samformat, -1);
+    PlayerIndex1.AddIntoDevOut(-1, -1, PlayerIndex1.StreamIn[In1Index].Data.SampleRate, -1, samformat, -1);
     //// add a Output into device with custom parameters
     //////////// PlayerIndex : Index of a existing Player
     //////////// Device ( -1 is default Output device )
@@ -349,6 +349,12 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
                           // 1 => calcul before all DSP procedures.
                           // 2 => calcul after all DSP procedures.
                           // 3 => calcul before and after all DSP procedures.
+
+   PlayerIndex1.StreamIn[In1Index].Data.PositionEnable:= 1 ;
+     ///// set calculation of position (usefull for positions procedure)
+                       ///////// set position calculation (default is 0)
+                          // 0 => no calcul
+                          // 1 => calcul position.
 
     PlayerIndex1.StreamIn[In1Index].LoopProc := @LoopProcPlayer1;
     ///// Assign the procedure of object to execute inside the loop of input

@@ -1107,6 +1107,7 @@ begin
  setlength(uosPlayersStat,PlayerIndex + 1) ;
  setlength(uosLevelArray,PlayerIndex + 1) ;
 end;
+       if uosPlayers[PlayerIndex] <> nil then uosPlayers[PlayerIndex].Terminate;
 
  {$IF ( FPC_FULLVERSION>=20701)or DEFINED(LCL) or DEFINED(ConsoleApp) or DEFINED(Library) or DEFINED(Windows)}
      uosPlayers[PlayerIndex] := Tuos_Player.Create(true);

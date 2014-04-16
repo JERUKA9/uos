@@ -148,11 +148,10 @@ install:
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_sp_nf"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="323"/>
-        <CursorPos X="36" Y="330"/>
+        <TopLine Value="379"/>
+        <CursorPos X="43" Y="408"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -170,10 +169,11 @@ install:
       <Unit3>
         <Filename Value="simpleplayer_fpGUI_noflat.pas"/>
         <UnitName Value="simpleplayer_fpGUI_noflat"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="412"/>
-        <CursorPos X="10" Y="424"/>
+        <TopLine Value="402"/>
+        <CursorPos X="53" Y="357"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit3>
