@@ -3,9 +3,9 @@ program simpleplayer_fpGUI_noflat;
 {$mode objfpc}{$H+}
   {$DEFINE UseCThreads}
 
-uses {$IFDEF UNIX} {$IFDEF UseCThreads}
+uses {$IFDEF UNIX}
   cthreads,
-  cwstring, {$ENDIF} {$ENDIF}
+  cwstring, {$ENDIF}
   SysUtils,
   uos,
   ctypes,
@@ -368,6 +368,7 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     ////////// In1Index : InputIndex of a existing input
     ////////// VolLeft : Left volume
     ////////// VolRight : Right volume
+
 
     PlayerIndex1.SetDSPVolumeIn(In1Index,DSP2Index,
       (100 - TrackBar2.position) / 100,

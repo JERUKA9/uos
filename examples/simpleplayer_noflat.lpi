@@ -150,7 +150,7 @@ install:
         <UnitName Value="main_sp_nf"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="379"/>
+        <TopLine Value="1"/>
         <CursorPos X="43" Y="408"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -159,9 +159,10 @@ install:
       <Unit2>
         <Filename Value="uos.pas"/>
         <UnitName Value="uos"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="575"/>
+        <TopLine Value="1"/>
         <CursorPos X="42" Y="587"/>
         <UsageCount Value="99"/>
         <Loaded Value="True"/>
@@ -169,11 +170,10 @@ install:
       <Unit3>
         <Filename Value="simpleplayer_fpGUI_noflat.pas"/>
         <UnitName Value="simpleplayer_fpGUI_noflat"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="402"/>
-        <CursorPos X="53" Y="357"/>
+        <TopLine Value="1"/>
+        <CursorPos X="42" Y="3"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -182,7 +182,7 @@ install:
         <UnitName Value="uoslib_h"/>
         <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="57"/>
+        <TopLine Value="1"/>
         <CursorPos X="17" Y="69"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
@@ -192,7 +192,7 @@ install:
         <UnitName Value="main_sp"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="323"/>
+        <TopLine Value="1"/>
         <CursorPos X="83" Y="334"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
