@@ -140,7 +140,7 @@ install:
         <Filename Value="multiinput.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="multiinput"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="7" Y="7"/>
@@ -335,10 +335,11 @@ install:
       <Unit23>
         <Filename Value="uos.pas"/>
         <UnitName Value="uos"/>
-        <EditorIndex Value="3"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="2487"/>
-        <CursorPos X="44" Y="2511"/>
+        <TopLine Value="2798"/>
+        <CursorPos X="3" Y="2657"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit23>
@@ -383,13 +384,10 @@ install:
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_sp"/>
-        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="328"/>
+        <TopLine Value="335"/>
         <CursorPos X="3" Y="348"/>
         <UsageCount Value="15"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit28>
       <Unit29>
         <Filename Value="../lazarus32/packager/registration/fcllaz.pas"/>
@@ -418,10 +416,9 @@ install:
       <Unit32>
         <Filename Value="uos_flat.pas"/>
         <UnitName Value="uos_flat"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="846"/>
+        <TopLine Value="852"/>
         <CursorPos X="68" Y="866"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>

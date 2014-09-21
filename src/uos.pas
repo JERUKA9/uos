@@ -669,7 +669,11 @@ var
   uosDefaultDeviceIn: LongInt;
   uosDefaultDeviceOut: LongInt;
   uosInit: Tuos_Init;
-  old8087cw: word;
+
+    {$IF DEFINED(windows)}
+   old8087cw: word;
+    {$endif}
+
    {$IF DEFINED(Java)}
   theclass : JClass;
     {$endif}
@@ -2655,8 +2659,6 @@ begin
     {$endif}
       end;
 
-
-
     //// Getting the level after DSP procedure
   if  (StreamIn[x].Data.status > 0) and((StreamIn[x].Data.levelEnable = 2) or (StreamIn[x].Data.levelEnable = 3)) then StreamIn[x].Data := DSPLevel(StreamIn[x].Data);
 
@@ -3087,7 +3089,10 @@ begin
   Mp_Unload();
   Pa_Unload();
   ST_Unload();
+    {$IF DEFINED(windows)}
   Set8087CW(old8087cw);
+    {$endif}
+
 end;
 
 function Tuos_Init.InitLib(): LongInt;
@@ -3226,8 +3231,12 @@ function uos_loadlib(PortAudioFileName, SndFileFileName, Mpg123FileName, SoundTo
   begin
    result := -1 ;
    if not assigned(uosInit) then begin
-   old8087cw := Get8087CW;
+
+  {$IF DEFINED(windows)}
+  old8087cw := Get8087CW;
    Set8087CW($133f);
+    {$endif}
+
    uosInit := TUOS_Init.Create;   //// Create Iibraries Loader-Init
    end;
    uosInit.PA_FileName := PortAudioFileName;
@@ -3406,4 +3415,4 @@ begin
 
 end;
 
-end.
+end.
