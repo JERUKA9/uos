@@ -1,4 +1,5 @@
 unit uos;
+
 {.$DEFINE library}   // uncomment it for building uos library (native and java)
 {.$DEFINE java}   // uncomment it for building uos java library
 {.$DEFINE ConsoleApp} // if FPC version < 2.7.1 uncomment it for console application
@@ -231,6 +232,7 @@ type
    {$if DEFINED(java)}
   TProc = JMethodID ;
     {$else}
+
   TProc = procedure of object;
     {$endif}
 
@@ -3415,4 +3417,4 @@ begin
 
 end;
 
-end.
+end.
