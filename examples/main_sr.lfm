@@ -139,7 +139,7 @@ object Form1: TForm1
     Left = 24
     Height = 14
     Top = 286
-    Width = 28
+    Width = 27
     Alignment = taCenter
     Caption = 'Vol L'
     Font.Height = -11
@@ -205,7 +205,7 @@ object Form1: TForm1
     Left = 70
     Height = 14
     Top = 286
-    Width = 30
+    Width = 29
     Alignment = taCenter
     Caption = 'Vol R'
     Font.Height = -11
@@ -237,9 +237,9 @@ object Form1: TForm1
   end
   object CheckBox1: TCheckBox
     Left = 122
-    Height = 24
+    Height = 22
     Top = 222
-    Width = 88
+    Width = 86
     Caption = 'Listen MIC'
     Checked = True
     OnChange = CheckBox1Change
@@ -272,9 +272,9 @@ object Form1: TForm1
   end
   object CheckBox2: TCheckBox
     Left = 122
-    Height = 24
+    Height = 22
     Top = 244
-    Width = 93
+    Width = 91
     Caption = 'Save to file'
     Checked = True
     State = cbChecked

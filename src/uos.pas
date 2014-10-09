@@ -894,6 +894,7 @@ end;
 
 procedure Tuos_Player.Seek(InputIndex:LongInt; pos: Tsf_count_t);
 //// change position in samples
+
 begin
    if (isAssigned = True) then StreamIn[InputIndex].Data.Poseek := pos;
 end;
@@ -3123,7 +3124,8 @@ begin
       DefDevOutInfo := Pa_GetDeviceInfo(DefDevOut);
       DefDevOutAPIInfo := Pa_GetHostApiInfo(DefDevOutInfo^.hostApi);
       DefDevIn := Pa_GetDefaultInputDevice();
-      DefDevInInfo := Pa_GetDeviceInfo(DefDevIn);
+      if DefDevInInfo <> nil then
+    DefDevInAPIInfo := Pa_GetHostApiInfo(DefDevInInfo^.hostApi);
       DefDevInAPIInfo := Pa_GetHostApiInfo(DefDevInInfo^.hostApi);
     end;
   end;
@@ -3337,6 +3339,7 @@ begin
  if uosDeviceInfos[x].DefaultDevOut then bool2 := 'Yes' else bool2 := 'No';
 
  devtmp := devtmp +
+
  'DeviceNum: ' + inttostr(uosDeviceInfos[x].DeviceNum) + ' ǀ' +
  ' Name: ' + uosDeviceInfos[x].DeviceName +  ' ǀ' +
  ' Type: ' + uosDeviceInfos[x].DeviceType + ' ǀ' +

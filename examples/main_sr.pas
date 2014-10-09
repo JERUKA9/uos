@@ -65,6 +65,8 @@ implementation
 
 procedure TForm1.ClosePlayer1;
 begin
+   sleep(500);
+  application.ProcessMessages;
   button2.Enabled := True;
   button3.Enabled := False;
   button5.Enabled := False;
@@ -214,7 +216,7 @@ begin
       TrackBar3.position / 100, True); /// Set volume
 
     /////// procedure to execute when stream is terminated
-    uos_EndProc(PlayerIndex1, @ClosePlayer1);
+ //   uos_EndProc(PlayerIndex1, @ClosePlayer1);
     ///// Assign the procedure of object to execute at end
     //////////// PlayerIndex : Index of a existing Player
     //////////// ClosePlayer1 : procedure of object to execute inside the loop
@@ -232,6 +234,7 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 begin
   uos_Stop(PlayerIndex1);
+   ClosePlayer1;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
@@ -362,11 +365,13 @@ end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
+  application.ProcessMessages;
   if (Button2.Enabled = False) then
   begin
     Button3.Click;
     sleep(500);
   end;
+   application.ProcessMessages;
   if button1.Enabled = False then
     uos_UnloadLib();
 end;
