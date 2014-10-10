@@ -339,5 +339,6 @@ var
   end;
 
 begin
+  Application.Title:='UOS Devices Infos';
    MainProc;
 end.

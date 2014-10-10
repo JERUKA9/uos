@@ -172,7 +172,14 @@ var
 
    PlayerIndex1 := 0 ; // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
                        // If PlayerIndex exists already, it will be overwritten...
-   uos_CreatePlayer(PlayerIndex1);
+
+ {$IF (FPC_FULLVERSION>=20701) or DEFINED(LCL) or DEFINED(ConsoleApp) or DEFINED(Library) or DEFINED(Windows)}
+       uos_CreatePlayer(PlayerIndex1);
+     {$else}
+       uos_CreatePlayer(PlayerIndex1,sender);
+    {$endif}
+
+
   //// Create the player.
   //// PlayerIndex : from 0 to what your computer can do !
   //// If PlayerIndex exists already, it will be overwriten...

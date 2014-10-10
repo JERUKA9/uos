@@ -1,6 +1,6 @@
 program consoleplay;
 
-/// WARNING : if FPC version < 2.7.1 => Do not forget to uncoment {$DEFINE ConsoleApp} in uos.pas !
+///WARNING : if FPC version < 2.7.1 => Do not forget to uncoment {$DEFINE ConsoleApp} in uos.pas and in uos_flat.pas !
 
 {$mode objfpc}{$H+}
    {$DEFINE UseCThreads}

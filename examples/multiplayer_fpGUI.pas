@@ -639,7 +639,11 @@ var
   begin
   PlayerIndex0 := 0 ;
 
-  uos_CreatePlayer(PlayerIndex0);
+     {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
+      uos_CreatePlayer(PlayerIndex0);
+          {$else}
+      uos_CreatePlayer(PlayerIndex0, sender);
+      {$ENDIF}
 
   uos_AddIntoDevOut(PlayerIndex0, -1, -1, -1, -1, 0,-1);   //// add a Output with custom parameters
  //// add a Output into device with custom parameters
@@ -705,7 +709,11 @@ var
   begin
   PlayerIndex1 := 1 ;
 
-  uos_CreatePlayer(PlayerIndex1);
+    {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
+      uos_CreatePlayer(PlayerIndex1);
+          {$else}
+      uos_CreatePlayer(PlayerIndex1, sender);
+      {$ENDIF}
 
   uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, 0,-1);   //// add a Output with custom parameters
  //// add a Output into device with custom parameters
@@ -772,7 +780,11 @@ var
   begin
   PlayerIndex2 := 2 ;
 
-  uos_CreatePlayer(PlayerIndex2);
+   {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
+      uos_CreatePlayer(PlayerIndex2);
+          {$else}
+      uos_CreatePlayer(PlayerIndex2, sender);
+      {$ENDIF}
 
   uos_AddIntoDevOut(PlayerIndex2, -1, -1, -1, -1, 0,-1);   //// add a Output with custom parameters
  //// add a Output into device with custom parameters
@@ -841,7 +853,11 @@ var
   begin
      PlayerIndex3 := 3 ;
 
-  uos_CreatePlayer(PlayerIndex3);
+     {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
+      uos_CreatePlayer(PlayerIndex3);
+          {$else}
+      uos_CreatePlayer(PlayerIndex3, sender);
+      {$ENDIF}
 
   uos_AddIntoDevOut(PlayerIndex3, -1, -1, -1, -1, 0,-1);   //// add a Output with custom parameters
  //// add a Output into device with custom parameters

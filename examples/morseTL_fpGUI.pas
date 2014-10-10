@@ -4,10 +4,10 @@ program morseTL_fpGUI;
   {$DEFINE UseCThreads}
 
 uses
-{$IFDEF UNIX}
-  cthreads,
+  {$IFDEF UNIX}
+ cthreads,
   cwstring, {$ENDIF}
-   SysUtils, Classes, fpg_base, fpg_main, fpg_form, fpg_button,
+   SysUtils, Classes, fpg_main, fpg_form, fpg_button,
   fpg_label, fpg_edit, fpg_memo, uos_flat;
 
 type
@@ -39,6 +39,8 @@ type
 var
   i :  cardinal;
   ordir : string;
+  AParent: TObject;
+
 
 procedure TForm1.CreateMorsePlayer();
 var
@@ -50,14 +52,18 @@ if i <= length(Memo1.Text) then
 begin
 chara := copy(Memo1.Text,i,1);
 
-
- fileeror :=  pchar(ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator +'0.mp3')  ;
+  fileeror :=  pchar(ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator +'0.mp3')  ;
 
   if odd(i) then player := 0 else player := 1;  ///// to switch between player1 <> player2
 
     if chara <> ' ' then
    begin
-   uos_CreatePlayer(player);
+  {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
+     uos_CreatePlayer(player);
+     {$else}
+    uos_CreatePlayer(player,AParent);
+    {$endif}
+
   uos_AddIntoDevOut(player);
 
   filetoplay := ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator + lowercase(chara) + '.mp3' ;
@@ -67,9 +73,9 @@ chara := copy(Memo1.Text,i,1);
   uos_AddFromFile(player,pchar(fileeror)) ;  /// if not existing char
   if length(Memo1.text) > i then  uos_EndProc(player, @CreateMorsePlayer);        /// assign EndProc
      sleep(strtoint(interchar.Text)) ;     ///// the pause between each character
-    uos_Play(player);
-    inc(i);
-   end
+       inc(i);
+      uos_Play(player);
+                   end
   else
   begin
    sleep(strtoint(interspace.Text)) ;   ///// the pause if space character
@@ -203,12 +209,10 @@ begin
 
   {@VFD_BODY_END: form1}
   {%endregion}
-
-    memo1.Text:='';
+     memo1.Text:='';
      ordir := IncludeTrailingBackslash(ExtractFilePath(ParamStr(0)));
 
-
-              {$IFDEF Windows}
+     {$IFDEF Windows}
      {$if defined(cpu64)}
      PA_FileName := ordir + 'lib\Windows\64bit\LibPortaudio-64.dll';
      MP_FileName := ordir + 'lib\Windows\64bit\LibMpg123-64.dll';
@@ -248,5 +252,5 @@ begin
 end;
 
 begin
-  MainProc;
+    MainProc;
 end.

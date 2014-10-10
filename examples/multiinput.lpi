@@ -338,8 +338,8 @@ install:
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="2798"/>
-        <CursorPos X="3" Y="2657"/>
+        <TopLine Value="2658"/>
+        <CursorPos X="76" Y="2665"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit23>

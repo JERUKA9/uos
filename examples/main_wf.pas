@@ -1,6 +1,8 @@
 
 /////////////////// Demo how to use United Openlib of Sound ////////////////////
 
+//// Set debugger off => too much calcul...
+
 unit main_wf;
 
 {$mode objfpc}{$H+}
