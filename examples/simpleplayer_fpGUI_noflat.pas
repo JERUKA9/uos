@@ -144,7 +144,8 @@ var
 
   procedure TSimpleplayer.TrackChangePlugSet(Sender: TObject; pos: integer);
   begin
-    ChangePlugSet(Sender);
+     if trim(Pchar(FilenameEdit5.FileName)) <> '' then
+       ChangePlugSet(Sender);
   end;
 
   procedure TSimpleplayer.btnTrackoffClick(Sender: TObject;
@@ -240,11 +241,24 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
       FilenameEdit3.ReadOnly := True;
       FilenameEdit5.ReadOnly := True;
        WindowPosition := wpScreenCenter;
-           btnLoad.Text :=
-        'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...';
-           WindowTitle := 'Simple Player.    uos version ' + inttostr(uos_getversion());
+        if trim(Pchar(FilenameEdit5.FileName)) <> '' then
+        btnLoad.Text :=
+        'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...'
+        else
+          begin
+      TrackBar4.enabled := false;
+       TrackBar5.enabled := false;
+       CheckBox2.enabled := false;
+       Button1.enabled := false;
+       label6.enabled := false;
+       label7.enabled := false;
+               btnLoad.Text :=
+        'PortAudio, SndFile and Mpg123 libraries are loaded...'  ;
+
+          end;
             UpdateWindowPosition;
-    fpgapplication.ProcessMessages;
+               WindowTitle := 'Simple Player.    uos version ' + inttostr(uos_getversion());
+       fpgapplication.ProcessMessages;
     sleep(500);
      show;
     end;
@@ -283,15 +297,17 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
 
   function DSPReverseAfter(Data: Tuos_Data; fft: Tuos_FFT): TDArFloat;
   var
-    x: integer;
+    x: integer = 0;
     arfl: TDArFloat;
   begin
-    SetLength(arfl, length(Data.Buffer));
-    for x := 0 to ((Data.OutFrames * Data.Ratio) - 1) do
-      if odd(x) then
-        arfl[x] := Data.Buffer[((Data.OutFrames * Data.Ratio) - 1) - x - 1]
-      else
-        arfl[x] := Data.Buffer[((Data.OutFrames * Data.Ratio) - 1) - x + 1];
+   SetLength(arfl, length(Data.Buffer));
+       while x < length(Data.Buffer) + 2 do
+          begin
+      arfl[x] := Data.Buffer[length(Data.Buffer) - x - 2] ;
+      arfl[x+1] := Data.Buffer[length(Data.Buffer) - x - 1] ;
+         x := x +2;
+          end;
+
     Result := arfl;
   end;
 
@@ -393,10 +409,14 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     PlayerIndex1.SetDSPIn(In1Index, DSP1Index, checkbox1.Checked);
     //// set the parameters of custom DSP;
 
+         if trim(Pchar(FilenameEdit5.FileName)) <> '' then
+    begin
+
     Plugin1Index := PlayerIndex1.AddPlugin('soundtouch', -1, -1);
     ///// add SoundTouch plugin with default samplerate(44100) / channels(2 = stereo)
 
     ChangePlugSet(self); //// custom procedure to Change plugin settings
+     end;
 
     trackbar1.Max := PlayerIndex1.InputLength( In1Index);
     ////// Length of Input in samples
