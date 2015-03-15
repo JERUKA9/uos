@@ -113,6 +113,8 @@ var
   var
     tempo, rate: cfloat;
   begin
+         if (trim(Pchar(filenameedit5.FileName)) <> '') and fileexists(filenameedit5.FileName) then
+  begin
     if 2 - (2 * (TrackBar4.Position / 100)) < 0.3 then
       tempo := 0.3
     else
@@ -129,6 +131,7 @@ var
     begin
       uos_SetPluginSoundTouch(PlayerIndex1, Plugin1Index, tempo, rate, checkbox2.Checked);
     end;
+    end;
   end;
 
   procedure TSimpleplayer.ResetPlugClick(Sender: TObject);
@@ -143,8 +146,8 @@ var
 
   procedure TSimpleplayer.TrackChangePlugSet(Sender: TObject; pos: integer);
   begin
-    if trim(Pchar(FilenameEdit5.FileName)) <> '' then
-    ChangePlugSet(Sender);
+       if (trim(Pchar(filenameedit5.FileName)) <> '') and fileexists(filenameedit5.FileName) then
+      ChangePlugSet(Sender);
   end;
 
   procedure TSimpleplayer.btnTrackoffClick(Sender: TObject;
@@ -240,7 +243,7 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
       FilenameEdit3.ReadOnly := True;
       FilenameEdit5.ReadOnly := True;
       UpdateWindowPosition;
-          if trim(Pchar(FilenameEdit5.FileName)) <> '' then
+       if (trim(Pchar(filenameedit5.FileName)) <> '') and fileexists(filenameedit5.FileName) then
         btnLoad.Text :=
         'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...'
         else
@@ -418,7 +421,8 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     uos_SetDSPIn(PlayerIndex1, In1Index, DSP1Index, checkbox1.Checked);
     //// set the parameters of custom DSP;
 
-      if trim(Pchar(FilenameEdit5.FileName)) <> '' then begin
+         if (trim(Pchar(filenameedit5.FileName)) <> '') and fileexists(filenameedit5.FileName) then
+  begin
     Plugin1Index := uos_AddPlugin(PlayerIndex1, 'soundtouch', -1, -1);
     ///// add SoundTouch plugin with default samplerate(44100) / channels(2 = stereo)
 

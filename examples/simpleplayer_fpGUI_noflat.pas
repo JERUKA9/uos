@@ -144,8 +144,8 @@ var
 
   procedure TSimpleplayer.TrackChangePlugSet(Sender: TObject; pos: integer);
   begin
-     if trim(Pchar(FilenameEdit5.FileName)) <> '' then
-       ChangePlugSet(Sender);
+        if (trim(Pchar(filenameedit5.FileName)) <> '') and fileexists(filenameedit5.FileName) then
+         ChangePlugSet(Sender);
   end;
 
   procedure TSimpleplayer.btnTrackoffClick(Sender: TObject;
@@ -241,8 +241,8 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
       FilenameEdit3.ReadOnly := True;
       FilenameEdit5.ReadOnly := True;
        WindowPosition := wpScreenCenter;
-        if trim(Pchar(FilenameEdit5.FileName)) <> '' then
-        btnLoad.Text :=
+            if (trim(Pchar(filenameedit5.FileName)) <> '') and fileexists(filenameedit5.FileName) then
+          btnLoad.Text :=
         'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...'
         else
           begin
@@ -409,9 +409,8 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     PlayerIndex1.SetDSPIn(In1Index, DSP1Index, checkbox1.Checked);
     //// set the parameters of custom DSP;
 
-         if trim(Pchar(FilenameEdit5.FileName)) <> '' then
-    begin
-
+    if (trim(Pchar(filenameedit5.FileName)) <> '') and fileexists(filenameedit5.FileName) then
+      begin
     Plugin1Index := PlayerIndex1.AddPlugin('soundtouch', -1, -1);
     ///// add SoundTouch plugin with default samplerate(44100) / channels(2 = stereo)
 

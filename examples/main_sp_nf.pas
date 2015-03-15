@@ -104,7 +104,8 @@ procedure TForm1.ChangePlugSet(Sender: TObject);
 var
   tempo, rate: cfloat;
 begin
-
+  if (trim(Pchar(edit5.text)) <> '') and fileexists(edit5.text) then
+    begin
   if (2 * (TrackBar4.Position / 100)) < 0.3 then
     tempo := 0.3
   else
@@ -121,6 +122,8 @@ begin
   begin
     PlayerIndex1.SetPluginSoundTouch(Plugin1Index, tempo, rate, checkbox2.Checked);
   end;
+
+    end;
 end;
 
 procedure TForm1.ResetPlugClick(Sender: TObject);
@@ -237,8 +240,6 @@ begin
 if uos_LoadLib(Pchar(edit1.Text), pchar(edit2.Text), pchar(edit3.Text), pchar(edit5.Text)) = 0 then
   begin
     form1.hide;
-    button1.Caption :=
-      'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...';
     button1.Enabled := False;
     edit1.ReadOnly := True;
     edit2.ReadOnly := True;
@@ -246,6 +247,21 @@ if uos_LoadLib(Pchar(edit1.Text), pchar(edit2.Text), pchar(edit3.Text), pchar(ed
     edit5.ReadOnly := True;
     form1.Height := 418;
     form1.Position := poScreenCenter;
+          if (trim(Pchar(edit5.text)) <> '') and fileexists(edit5.text) then
+       button1.Caption :=
+        'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...'
+        else
+          begin
+      TrackBar4.enabled := false;
+       TrackBar5.enabled := false;
+       CheckBox2.enabled := false;
+       Button7.enabled := false;
+       label9.enabled := false;
+       label7.enabled := false;
+             button1.Caption :=
+        'PortAudio, SndFile and Mpg123 libraries are loaded...'  ;
+              end;
+
     form1.Caption := 'Simple Player.    uos version ' + inttostr(uos_getversion());
     form1.Show;
   end
@@ -372,10 +388,13 @@ begin
     PlayerIndex1.SetDSPIn(In1Index, DSP1Index, checkbox1.Checked);
     //// set the parameters of custom DSP;
 
+   if (trim(Pchar(edit5.text)) <> '') and fileexists(edit5.text) then
+    begin
     Plugin1Index := PlayerIndex1.AddPlugin('soundtouch', -1, -1);
     ///// add SoundTouch plugin with default samplerate(44100) / channels(2 = stereo)
 
     ChangePlugSet(self); //// Change plugin settings
+     end;
 
     trackbar2.Max := PlayerIndex1.InputLength( In1Index);
     ////// Length of Input in samples
