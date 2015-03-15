@@ -2,18 +2,20 @@ program deviceinfos_fpGUI;
 
 {$mode objfpc}{$H+}
 
+
 uses
+    SysUtils,
   fpg_base,
-  SysUtils,
+  fpg_main,
+  fpg_form,
   uos_flat,
   Classes,
   fpg_button,
   fpg_widget,
   fpg_label,
   fpg_Editbtn,
-  fpg_grid,
-  fpg_main,
-  fpg_form { you can add units after this };
+  fpg_grid
+  { you can add units after this };
 
 type
 
@@ -21,6 +23,7 @@ type
     procedure UOS_logo(Sender: TObject);
   private
     {@VFD_HEAD_BEGIN: DevicesInfos}
+    infos_grid: TfpgStringGrid;
     Custom1: TfpgWidget;
     Labelport: TfpgLabel;
     btnLoad: TfpgButton;
@@ -29,8 +32,6 @@ type
     Label1: TfpgLabel;
     Label2: TfpgLabel;
     Label3: TfpgLabel;
-    infos_grid: TfpgStringGrid;
-
     {@VFD_HEAD_END: DevicesInfos}
   public
     procedure AfterCreate; override;
@@ -132,139 +133,134 @@ var
     {%region 'Auto-generated GUI code' -fold}
 
 
+
     {@VFD_BODY_BEGIN: DevicesInfos}
+  Name := 'DevicesInfos';
+  SetPosition(320, 168, 502, 385);
+  WindowTitle := 'Devices Infos ';
+  Hint := '';
+  BackGroundColor := $80000001;
+  WindowPosition := wpScreenCenter;
+  Ondestroy := @CloseClick;
 
-    Name := 'DevicesInfos';
-    SetPosition(320, 168, 502, 385);
-    WindowTitle := 'Devices Infos ';
+  infos_grid := TfpgStringGrid.Create(self);
+  with infos_grid do
+  begin
+    Name := 'infos_grid';
+    SetPosition(10, 160, 480, 180);
+    BackgroundColor := TfpgColor($80000002);
+    FontDesc := '#Grid';
+    HeaderFontDesc := '#GridHeader';
     Hint := '';
-    WindowPosition := wpScreenCenter;
-    BackgroundColor := clmoneygreen;
-    Ondestroy := @CloseClick;
+    RowCount := 1;
+    ColumnCount := 0;
+    RowSelect := False;
+    TabOrder := 0;
+    AddColumn('Dev', 40);
+    AddColumn('Name', 200);
+    AddColumn('Default IN', 80);
+    AddColumn('Default OUT', 80);
+    AddColumn('Chan IN', 60);
+    AddColumn('Chan OUT', 60);
+    AddColumn('S Rate', 63);
+    AddColumn('Latency High In', 120);
+    AddColumn('Latency High Out', 120);
+    AddColumn('Latency Low In', 120);
+    AddColumn('Latency Low Out', 120);
+    AddColumn('Host API', 80);
+    AddColumn('Type', 80);
+    DefaultRowHeight := 24;
+  end;
 
-    infos_grid := TfpgStringGrid.Create(self);
-    with infos_grid do
-    begin
-      Name := 'infos_grid';
-      SetPosition(10, 160, 480, 180);
-      BackgroundColor := TfpgColor($80000002);
-      FontDesc := '#Grid';
-      HeaderFontDesc := '#GridHeader';
-      Hint := '';
-      RowCount := 1;
-      RowSelect := False;
-      TabOrder := 0;
-      AddColumn('Dev', 40);
-      AddColumn('Name', 200);
-      AddColumn('Default IN', 80);
-      AddColumn('Default OUT', 80);
-      AddColumn('Chan IN', 60);
-      AddColumn('Chan OUT', 60);
-      AddColumn('S Rate', 63);
-      AddColumn('Latency High In', 120);
-      AddColumn('Latency High Out', 120);
-      AddColumn('Latency Low In', 120);
-      AddColumn('Latency Low Out', 120);
-      AddColumn('Host API', 80);
-      AddColumn('Type', 80);
+  Custom1 := TfpgWidget.Create(self);
+  with Custom1 do
+  begin
+    Name := 'Custom1';
+    SetPosition(10, 8, 115, 115);
+    OnPaint := @UOS_logo;
+  end;
 
-      DefaultRowHeight := 24;
-    end;
+  Labelport := TfpgLabel.Create(self);
+  with Labelport do
+  begin
+    Name := 'Labelport';
+    SetPosition(136, 40, 320, 15);
+    Alignment := taCenter;
+    FontDesc := '#Label1';
+    Hint := '';
+    Text := 'Folder + filename of PortAudio Library';
+  end;
 
-    Custom1 := TfpgWidget.Create(self);
-    with Custom1 do
-    begin
-      Name := 'Custom1';
-      SetPosition(10, 8, 115, 115);
-      OnPaint := @UOS_logo;
-    end;
+  btnLoad := TfpgButton.Create(self);
+  with btnLoad do
+  begin
+    Name := 'btnLoad';
+    SetPosition(16, 128, 470, 23);
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 0;
+    Text := 'Load that library';
+    onclick := @btnLoadClick;
+  end;
 
-    Labelport := TfpgLabel.Create(self);
-    with Labelport do
-    begin
-      Name := 'Labelport';
-      SetPosition(136, 40, 320, 15);
-      Alignment := taCenter;
-      FontDesc := '#Label1';
-      Hint := '';
-      Text := 'Folder + filename of PortAudio Library';
-    end;
+  FilenameEdit1 := TfpgFileNameEdit.Create(self);
+  with FilenameEdit1 do
+  begin
+    Name := 'FilenameEdit1';
+    SetPosition(136, 56, 356, 24);
+    ExtraHint := '';
+    FileName := '';
+    Filter := '';
+    InitialDir := '';
+    TabOrder := 3;
+  end;
 
-    btnLoad := TfpgButton.Create(self);
-    with btnLoad do
-    begin
-      Name := 'btnLoad';
-      SetPosition(16, 128, 470, 23);
-      Text := 'Load that library';
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 0;
-      onclick := @btnLoadClick;
-    end;
+  btnReLoad := TfpgButton.Create(self);
+  with btnReLoad do
+  begin
+    Name := 'btnReLoad';
+    SetPosition(430, 353, 60, 23);
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 6;
+    Text := 'Re-load';
+    onclick := @btnReLoadClick;
+  end;
 
-    FilenameEdit1 := TfpgFileNameEdit.Create(self);
-    with FilenameEdit1 do
-    begin
-      Name := 'FilenameEdit1';
-      SetPosition(136, 56, 356, 24);
-      ExtraHint := '';
-      FileName := '';
-      Filter := '';
-      InitialDir := '';
-      TabOrder := 3;
-    end;
+  Label1 := TfpgLabel.Create(self);
+  with Label1 do
+  begin
+    Name := 'Label1';
+    SetPosition(15, 355, 120, 20);
+    FontDesc := '#Label1';
+    Hint := '';
+    Text := 'Devices Count';
+  end;
 
+  Label2 := TfpgLabel.Create(self);
+  with Label2 do
+  begin
+    Name := 'Label2';
+    SetPosition(155, 355, 120, 20);
+    FontDesc := '#Label1';
+    Hint := '';
+    Text := 'Default Dev IN';
+  end;
 
+  Label3 := TfpgLabel.Create(self);
+  with Label3 do
+  begin
+    Name := 'Label3';
+    SetPosition(290, 355, 120, 20);
+    FontDesc := '#Label1';
+    Hint := '';
+    Text := 'Default Dev OUT';
+  end;
 
-    btnReLoad := TfpgButton.Create(self);
-    with btnReLoad do
-    begin
-      Name := 'btnReLoad';
-      SetPosition(430, 353, 60, 23);
-      Text := 'Re-load';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 6;
-      onclick := @btnReLoadClick;
-    end;
-
-
-
-    Label1 := TfpgLabel.Create(self);
-    with Label1 do
-    begin
-      Name := 'Label1';
-      SetPosition(15, 355, 120, 20);
-      FontDesc := '#Label1';
-      Hint := '';
-      Text := 'Devices Count';
-    end;
-
-    Label2 := TfpgLabel.Create(self);
-    with Label2 do
-    begin
-      Name := 'Label2';
-      SetPosition(155, 355, 120, 20);
-      FontDesc := '#Label1';
-      Hint := '';
-      Text := 'Default Dev IN';
-    end;
-
-    Label3 := TfpgLabel.Create(self);
-    with Label3 do
-    begin
-      Name := 'Label3';
-      SetPosition(290, 355, 120, 20);
-      FontDesc := '#Label1';
-      Hint := '';
-      Text := 'Default Dev OUT';
-    end;
-
-
-    {@VFD_BODY_END: DevicesInfos}
+  {@VFD_BODY_END: DevicesInfos}
     {%endregion}
 
 
@@ -339,6 +335,5 @@ var
   end;
 
 begin
-  Application.Title:='UOS Devices Infos';
-   MainProc;
+     MainProc;
 end.

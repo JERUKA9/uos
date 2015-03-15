@@ -143,6 +143,7 @@ var
 
   procedure TSimpleplayer.TrackChangePlugSet(Sender: TObject; pos: integer);
   begin
+    if trim(Pchar(FilenameEdit5.FileName)) <> '' then
     ChangePlugSet(Sender);
   end;
 
@@ -239,8 +240,21 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
       FilenameEdit3.ReadOnly := True;
       FilenameEdit5.ReadOnly := True;
       UpdateWindowPosition;
-      btnLoad.Text :=
-        'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...';
+          if trim(Pchar(FilenameEdit5.FileName)) <> '' then
+        btnLoad.Text :=
+        'PortAudio, SndFile, Mpg123 and Plugin SoundTouch libraries are loaded...'
+        else
+          begin
+      TrackBar4.enabled := false;
+       TrackBar5.enabled := false;
+       CheckBox2.enabled := false;
+       Button1.enabled := false;
+       label6.enabled := false;
+       label7.enabled := false;
+               btnLoad.Text :=
+        'PortAudio, SndFile and Mpg123 libraries are loaded...'  ;
+
+          end;
       WindowPosition := wpScreenCenter;
       WindowTitle := 'Simple Player.    uos version ' + inttostr(uos_getversion());
        fpgapplication.ProcessMessages;
@@ -282,15 +296,18 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
 
   function DSPReverseAfter(Data: TuosF_Data; fft: TuosF_FFT): TDArFloat;
   var
-    x: integer;
+    x: integer = 0;
     arfl: TDArFloat;
+
   begin
     SetLength(arfl, length(Data.Buffer));
-    for x := 0 to ((Data.OutFrames * Data.Ratio) - 1) do
-      if odd(x) then
-        arfl[x] := Data.Buffer[((Data.OutFrames * Data.Ratio) - 1) - x - 1]
-      else
-        arfl[x] := Data.Buffer[((Data.OutFrames * Data.Ratio) - 1) - x + 1];
+       while x < length(Data.Buffer) + 2 do
+          begin
+      arfl[x] := Data.Buffer[length(Data.Buffer) - x - 2] ;
+      arfl[x+1] := Data.Buffer[length(Data.Buffer) - x - 1] ;
+         x := x +2;
+          end;
+
     Result := arfl;
   end;
 
@@ -401,10 +418,13 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     uos_SetDSPIn(PlayerIndex1, In1Index, DSP1Index, checkbox1.Checked);
     //// set the parameters of custom DSP;
 
+      if trim(Pchar(FilenameEdit5.FileName)) <> '' then begin
     Plugin1Index := uos_AddPlugin(PlayerIndex1, 'soundtouch', -1, -1);
     ///// add SoundTouch plugin with default samplerate(44100) / channels(2 = stereo)
 
     ChangePlugSet(self); //// custom procedure to Change plugin settings
+
+      end;
 
     trackbar1.Max := uos_InputLength(PlayerIndex1, In1Index);
     ////// Length of Input in samples
@@ -472,7 +492,6 @@ end;
   procedure TSimpleplayer.AfterCreate;
   begin
     {%region 'Auto-generated GUI code' -fold}
-
 
     {@VFD_BODY_BEGIN: Simpleplayer}
     Name := 'Simpleplayer';
@@ -1000,7 +1019,8 @@ end;
     frm: TSimpleplayer;
   begin
     fpgApplication.Initialize;
-    frm := TSimpleplayer.Create(nil);
+ //   frm := TSimpleplayer.Create(nil);
+       fpgApplication.CreateForm(TSimpleplayer, frm);
     try
       frm.Show;
       fpgApplication.Run;

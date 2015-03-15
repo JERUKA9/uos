@@ -47,16 +47,17 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="SimplePlayer_FPG_noflat"/>
+      <Filename Value="SimplePlayer_FPG_noflat" ApplyConventions="False"/>
     </Target>
     <SearchPaths>
-      <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="units"/>
     </SearchPaths>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
     </CodeGeneration>
     <Linking>
       <Debugging>
+        <GenerateDebugInfo Value="False"/>
         <StripSymbols Value="True"/>
       </Debugging>
       <LinkSmart Value="True"/>
@@ -69,7 +70,6 @@
     <Other>
       <WriteFPCLogo Value="False"/>
       <CustomOptions Value="-FUunits"/>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
 </CONFIG>

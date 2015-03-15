@@ -7,7 +7,8 @@ uses
   {$IFDEF UNIX}
  cthreads,
   cwstring, {$ENDIF}
-   SysUtils, Classes, fpg_main, fpg_form, fpg_button,
+   SysUtils, Classes,  fpg_base,
+  fpg_main,    fpg_form, fpg_button,
   fpg_label, fpg_edit, fpg_memo, uos_flat;
 
 type
@@ -16,6 +17,7 @@ type
   private
     {@VFD_HEAD_BEGIN: form1}
     Label1: TfpgLabel;
+    TimerCount: TfpgTimer;
     Memo1: TfpgMemo;
     interchar: TfpgEdit;
     interspace: TfpgEdit;
@@ -29,6 +31,7 @@ type
     procedure CreateMorsePlayer();
     procedure PlayClick(Sender: TObject);
     procedure QuitClick(Sender: TObject);
+    procedure onTimerCount(Sender: TObject);
 
   end;
 
@@ -50,6 +53,8 @@ player : cardinal;
 begin
 if i <= length(Memo1.Text) then
 begin
+     Button1.Enabled := false;
+     TimerCount.Enabled := false;
 chara := copy(Memo1.Text,i,1);
 
   fileeror :=  pchar(ordir + 'sound' + directoryseparator + 'morse_audio'+  directoryseparator +'0.mp3')  ;
@@ -71,10 +76,19 @@ chara := copy(Memo1.Text,i,1);
        if fileexists(pchar(filetoplay)) then
   uos_AddFromFile(player,pchar(filetoplay)) else
   uos_AddFromFile(player,pchar(fileeror)) ;  /// if not existing char
-  if length(Memo1.text) > i then  uos_EndProc(player, @CreateMorsePlayer);        /// assign EndProc
-     sleep(strtoint(interchar.Text)) ;     ///// the pause between each character
+  if length(Memo1.text) > i then
+  begin
+  uos_EndProc(player, @CreateMorsePlayer);
+  TimerCount.Enabled := true;
+   end else
+    begin
+    Button1.Enabled := true;
+    TimerCount.Enabled := false;
+    end;
+   sleep(strtoint(interchar.Text)) ;     ///// the pause between each character
        inc(i);
-      uos_Play(player);
+
+         uos_Play(player);
                    end
   else
   begin
@@ -83,23 +97,29 @@ chara := copy(Memo1.Text,i,1);
   if length(Memo1.text) >= i then CreateMorsePlayer;
   end;
 
+ end ;
+
  end;
-end;
+
 
 procedure TForm1.PlayClick(Sender: TObject);
-var
-charac : string;
 begin
  if Memo1.Text <> '' then
  begin
   i := 1 ;
  CreateMorsePlayer();
  end;
-
 end;
+
+procedure TForm1.onTimerCount(Sender: TObject);
+begin
+  fpgapplication.processmessages;
+end;
+
 
 procedure TForm1.QuitClick(Sender: TObject);
 begin
+   TimerCount.Enabled := false;
   close;
 end;
 
@@ -108,6 +128,7 @@ var
 PA_FileName, MP_FileName : string;
 begin
   {%region 'Auto-generated GUI code' -fold}
+
 
 
   {@VFD_BODY_BEGIN: form1}
@@ -234,6 +255,10 @@ begin
 
  uos_LoadLib(Pchar(PA_FileName), nil, pchar(MP_FileName), nil);
 
+     TimerCount := Tfpgtimer.Create(100);
+     TimerCount.Enabled := False;
+     timerCount.OnTimer := @ontimercount;
+
   end;
 
 procedure MainProc;
@@ -252,5 +277,5 @@ begin
 end;
 
 begin
-    MainProc;
+  MainProc;
 end.

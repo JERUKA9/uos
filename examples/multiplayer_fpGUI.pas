@@ -103,387 +103,387 @@ var
   begin
     {%region 'Auto-generated GUI code' -fold}
 
+
     {@VFD_BODY_BEGIN: Multiplayer}
-    Name := 'Multiplayer';
-    SetPosition(322, 77, 502, 465);
-    WindowTitle := 'Multi Player';
+  Name := 'Multiplayer';
+  SetPosition(432, 151, 502, 465);
+  WindowTitle := 'Multi Player';
+  Hint := '';
+  Ondestroy := @btnCloseClick;
+  WindowPosition:=wpScreenCenter;
+
+  Custom1 := TfpgWidget.Create(self);
+  with Custom1 do
+  begin
+    Name := 'Custom1';
+    SetPosition(10, 8, 115, 115);
+    OnPaint := @uos_logo;
+  end;
+
+  Labelport := TfpgLabel.Create(self);
+  with Labelport do
+  begin
+    Name := 'Labelport';
+    SetPosition(136, 0, 320, 15);
+    Alignment := taCenter;
+    FontDesc := '#Label1';
     Hint := '';
-    WindowPosition := wpScreenCenter;
-    BackgroundColor := clmoneygreen;
-    Ondestroy := @btnCloseClick;
+    Text := 'Folder + filename of PortAudio Library';
+  end;
 
-    Custom1 := TfpgWidget.Create(self);
-    with Custom1 do
-    begin
-      Name := 'Custom1';
-      SetPosition(10, 8, 115, 115);
-      OnPaint := @uos_logo;
-    end;
+  btnLoad := TfpgButton.Create(self);
+  with btnLoad do
+  begin
+    Name := 'btnLoad';
+    SetPosition(12, 128, 480, 23);
+    Text := 'Load that libraries';
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 0;
+    onclick := @btnLoadClick;
+  end;
 
-    Labelport := TfpgLabel.Create(self);
-    with Labelport do
-    begin
-      Name := 'Labelport';
-      SetPosition(136, 0, 320, 15);
-      Alignment := taCenter;
-      FontDesc := '#Label1';
-      Hint := '';
-      Text := 'Folder + filename of PortAudio Library';
-    end;
+  FilenameEdit1 := TfpgFileNameEdit.Create(self);
+  with FilenameEdit1 do
+  begin
+    Name := 'FilenameEdit1';
+    SetPosition(136, 16, 356, 24);
+    ExtraHint := '';
+    FileName := '';
+    Filter := '';
+    InitialDir := '';
+    TabOrder := 3;
+  end;
 
-    btnLoad := TfpgButton.Create(self);
-    with btnLoad do
-    begin
-      Name := 'btnLoad';
-      SetPosition(12, 128, 480, 23);
-      Text := 'Load that libraries';
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 0;
-      onclick := @btnLoadClick;
-    end;
+  FilenameEdit2 := TfpgFileNameEdit.Create(self);
+  with FilenameEdit2 do
+  begin
+    Name := 'FilenameEdit2';
+    SetPosition(136, 56, 356, 24);
+    ExtraHint := '';
+    FileName := '';
+    Filter := '';
+    InitialDir := '';
+    TabOrder := 4;
+  end;
 
-    FilenameEdit1 := TfpgFileNameEdit.Create(self);
-    with FilenameEdit1 do
-    begin
-      Name := 'FilenameEdit1';
-      SetPosition(136, 16, 356, 24);
-      ExtraHint := '';
-      FileName := '';
-      Filter := '';
-      InitialDir := '';
-      TabOrder := 3;
-    end;
+  FilenameEdit4 := TfpgFileNameEdit.Create(self);
+  with FilenameEdit4 do
+  begin
+    Name := 'FilenameEdit4';
+    SetPosition(12, 160, 480, 24);
+    ExtraHint := '';
+    FileName := '';
+    Filter := '';
+    InitialDir := '';
+    TabOrder := 5;
+  end;
 
-    FilenameEdit2 := TfpgFileNameEdit.Create(self);
-    with FilenameEdit2 do
-    begin
-      Name := 'FilenameEdit2';
-      SetPosition(136, 56, 356, 24);
-      ExtraHint := '';
-      FileName := '';
-      Filter := '';
-      InitialDir := '';
-      TabOrder := 4;
-    end;
+  btnStart := TfpgButton.Create(self);
+  with btnStart do
+  begin
+    Name := 'btnStart';
+    SetPosition(76, 192, 60, 23);
+    Text := 'Play';
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 6;
+    onclick := @btnstartClick;
+  end;
 
-    FilenameEdit4 := TfpgFileNameEdit.Create(self);
-    with FilenameEdit4 do
-    begin
-      Name := 'FilenameEdit4';
-      SetPosition(12, 160, 480, 24);
-      ExtraHint := '';
-      FileName := '';
-      Filter := '';
-      InitialDir := '';
-      TabOrder := 5;
-    end;
+  btnStop := TfpgButton.Create(self);
+  with btnStop do
+  begin
+    Name := 'btnStop';
+    SetPosition(344, 192, 76, 23);
+    Text := 'Stop';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 7;
+    onclick := @btnStopClick;
+  end;
 
-    btnStart := TfpgButton.Create(self);
-    with btnStart do
-    begin
-      Name := 'btnStart';
-      SetPosition(76, 192, 60, 23);
-      Text := 'Play';
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 6;
-      onclick := @btnstartClick;
-    end;
+  Labelsnf := TfpgLabel.Create(self);
+  with Labelsnf do
+  begin
+    Name := 'Labelsnf';
+    SetPosition(140, 40, 316, 15);
+    Alignment := taCenter;
+    FontDesc := '#Label1';
+    Hint := '';
+    Text := 'Folder + filename of SndFile Library';
+  end;
 
-    btnStop := TfpgButton.Create(self);
-    with btnStop do
-    begin
-      Name := 'btnStop';
-      SetPosition(344, 192, 76, 23);
-      Text := 'Stop';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 7;
-      onclick := @btnStopClick;
-    end;
+  Labelmpg := TfpgLabel.Create(self);
+  with Labelmpg do
+  begin
+    Name := 'Labelmpg';
+    SetPosition(136, 80, 316, 15);
+    Alignment := taCenter;
+    FontDesc := '#Label1';
+    Hint := '';
+    Text := 'Folder + filename of Mpg123 Library';
+  end;
 
-    Labelsnf := TfpgLabel.Create(self);
-    with Labelsnf do
-    begin
-      Name := 'Labelsnf';
-      SetPosition(140, 40, 316, 15);
-      Alignment := taCenter;
-      FontDesc := '#Label1';
-      Hint := '';
-      Text := 'Folder + filename of SndFile Library';
-    end;
+  FilenameEdit3 := TfpgFileNameEdit.Create(self);
+  with FilenameEdit3 do
+  begin
+    Name := 'FilenameEdit3';
+    SetPosition(136, 96, 356, 24);
+    ExtraHint := '';
+    FileName := '';
+    Filter := '';
+    InitialDir := '';
+    TabOrder := 12;
+  end;
 
-    Labelmpg := TfpgLabel.Create(self);
-    with Labelmpg do
-    begin
-      Name := 'Labelmpg';
-      SetPosition(136, 80, 316, 15);
-      Alignment := taCenter;
-      FontDesc := '#Label1';
-      Hint := '';
-      Text := 'Folder + filename of Mpg123 Library';
-    end;
+  btnpause := TfpgButton.Create(self);
+  with btnpause do
+  begin
+    Name := 'btnpause';
+    SetPosition(168, 192, 52, 23);
+    Text := 'Pause';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 15;
+    onclick := @btnPauseClick;
+  end;
 
-    FilenameEdit3 := TfpgFileNameEdit.Create(self);
-    with FilenameEdit3 do
-    begin
-      Name := 'FilenameEdit3';
-      SetPosition(136, 96, 356, 24);
-      ExtraHint := '';
-      FileName := '';
-      Filter := '';
-      InitialDir := '';
-      TabOrder := 12;
-    end;
+  btnresume := TfpgButton.Create(self);
+  with btnresume do
+  begin
+    Name := 'btnresume';
+    SetPosition(248, 192, 64, 23);
+    Text := 'Resume';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 16;
+    onclick := @btnResumeClick;
+  end;
 
-    btnpause := TfpgButton.Create(self);
-    with btnpause do
-    begin
-      Name := 'btnpause';
-      SetPosition(168, 192, 52, 23);
-      Text := 'Pause';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 15;
-      onclick := @btnPauseClick;
-    end;
+  FilenameEdit5 := TfpgFileNameEdit.Create(self);
+  with FilenameEdit5 do
+  begin
+    Name := 'FilenameEdit5';
+    SetPosition(12, 224, 480, 24);
+    ExtraHint := '';
+    FileName := '';
+    Filter := '';
+    InitialDir := '';
+    TabOrder := 14;
+  end;
 
-    btnresume := TfpgButton.Create(self);
-    with btnresume do
-    begin
-      Name := 'btnresume';
-      SetPosition(248, 192, 64, 23);
-      Text := 'Resume';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 16;
-      onclick := @btnResumeClick;
-    end;
+  btnStart2 := TfpgButton.Create(self);
+  with btnStart2 do
+  begin
+    Name := 'btnStart2';
+    SetPosition(76, 256, 60, 23);
+    Text := 'Play';
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 15;
+    onclick := @btnstartClick2;
+  end;
 
-    FilenameEdit5 := TfpgFileNameEdit.Create(self);
-    with FilenameEdit5 do
-    begin
-      Name := 'FilenameEdit5';
-      SetPosition(12, 224, 480, 24);
-      ExtraHint := '';
-      FileName := '';
-      Filter := '';
-      InitialDir := '';
-      TabOrder := 14;
-    end;
+  btnpause2 := TfpgButton.Create(self);
+  with btnpause2 do
+  begin
+    Name := 'btnpause2';
+    SetPosition(168, 256, 52, 23);
+    Text := 'Pause';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 16;
+    onclick := @btnPauseClick2;
+  end;
 
-    btnStart2 := TfpgButton.Create(self);
-    with btnStart2 do
-    begin
-      Name := 'btnStart2';
-      SetPosition(76, 256, 60, 23);
-      Text := 'Play';
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 15;
-      onclick := @btnstartClick2;
-    end;
+  btnresume2 := TfpgButton.Create(self);
+  with btnresume2 do
+  begin
+    Name := 'btnresume2';
+    SetPosition(248, 256, 64, 23);
+    Text := 'Resume';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 17;
+    onclick := @btnResumeClick2;
+  end;
 
-    btnpause2 := TfpgButton.Create(self);
-    with btnpause2 do
-    begin
-      Name := 'btnpause2';
-      SetPosition(168, 256, 52, 23);
-      Text := 'Pause';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 16;
-      onclick := @btnPauseClick2;
-    end;
+  btnStop2 := TfpgButton.Create(self);
+  with btnStop2 do
+  begin
+    Name := 'btnStop2';
+    SetPosition(348, 256, 76, 23);
+    Text := 'Stop';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 18;
+    onclick := @btnStopClick2;
+  end;
 
-    btnresume2 := TfpgButton.Create(self);
-    with btnresume2 do
-    begin
-      Name := 'btnresume2';
-      SetPosition(248, 256, 64, 23);
-      Text := 'Resume';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 17;
-      onclick := @btnResumeClick2;
-    end;
+  FilenameEdit6 := TfpgFileNameEdit.Create(self);
+  with FilenameEdit6 do
+  begin
+    Name := 'FilenameEdit6';
+    SetPosition(12, 288, 480, 24);
+    ExtraHint := '';
+    FileName := '';
+    Filter := '';
+    InitialDir := '';
+    TabOrder := 19;
+  end;
 
-    btnStop2 := TfpgButton.Create(self);
-    with btnStop2 do
-    begin
-      Name := 'btnStop2';
-      SetPosition(348, 256, 76, 23);
-      Text := 'Stop';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 18;
-      onclick := @btnStopClick2;
-    end;
+  btnStart3 := TfpgButton.Create(self);
+  with btnStart3 do
+  begin
+    Name := 'btnStart3';
+    SetPosition(76, 320, 60, 23);
+    Text := 'Play';
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 20;
+    onclick := @btnstartClick3;
+  end;
 
-    FilenameEdit6 := TfpgFileNameEdit.Create(self);
-    with FilenameEdit6 do
-    begin
-      Name := 'FilenameEdit6';
-      SetPosition(12, 288, 480, 24);
-      ExtraHint := '';
-      FileName := '';
-      Filter := '';
-      InitialDir := '';
-      TabOrder := 19;
-    end;
+  btnPause3 := TfpgButton.Create(self);
+  with btnPause3 do
+  begin
+    Name := 'btnPause3';
+    SetPosition(168, 320, 52, 23);
+    Text := 'Pause';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 21;
+    onclick := @btnPauseClick3;
+  end;
 
-    btnStart3 := TfpgButton.Create(self);
-    with btnStart3 do
-    begin
-      Name := 'btnStart3';
-      SetPosition(76, 320, 60, 23);
-      Text := 'Play';
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 20;
-      onclick := @btnstartClick3;
-    end;
+  btnResume3 := TfpgButton.Create(self);
+  with btnResume3 do
+  begin
+    Name := 'btnResume3';
+    SetPosition(248, 320, 64, 23);
+    Text := 'Resume';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 22;
+    onclick := @btnResumeClick3;
+  end;
 
-    btnPause3 := TfpgButton.Create(self);
-    with btnPause3 do
-    begin
-      Name := 'btnPause3';
-      SetPosition(168, 320, 52, 23);
-      Text := 'Pause';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 21;
-      onclick := @btnPauseClick3;
-    end;
+  btnStop3 := TfpgButton.Create(self);
+  with btnStop3 do
+  begin
+    Name := 'btnStop3';
+    SetPosition(348, 320, 76, 23);
+    Text := 'Stop';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 23;
+    onclick := @btnStopClick3;
+  end;
 
-    btnResume3 := TfpgButton.Create(self);
-    with btnResume3 do
-    begin
-      Name := 'btnResume3';
-      SetPosition(248, 320, 64, 23);
-      Text := 'Resume';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 22;
-      onclick := @btnResumeClick3;
-    end;
+  FilenameEdit7 := TfpgFileNameEdit.Create(self);
+  with FilenameEdit7 do
+  begin
+    Name := 'FilenameEdit7';
+    SetPosition(12, 352, 480, 24);
+    ExtraHint := '';
+    FileName := '';
+    Filter := '';
+    InitialDir := '';
+    TabOrder := 24;
+  end;
 
-    btnStop3 := TfpgButton.Create(self);
-    with btnStop3 do
-    begin
-      Name := 'btnStop3';
-      SetPosition(348, 320, 76, 23);
-      Text := 'Stop';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 23;
-      onclick := @btnStopClick3;
-    end;
+  btnStart4 := TfpgButton.Create(self);
+  with btnStart4 do
+  begin
+    Name := 'btnStart4';
+    SetPosition(76, 384, 60, 23);
+    Text := 'Play';
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 25;
+    onclick := @btnstartClick4;
+  end;
 
-    FilenameEdit7 := TfpgFileNameEdit.Create(self);
-    with FilenameEdit7 do
-    begin
-      Name := 'FilenameEdit7';
-      SetPosition(12, 352, 480, 24);
-      ExtraHint := '';
-      FileName := '';
-      Filter := '';
-      InitialDir := '';
-      TabOrder := 24;
-    end;
+  btnPause4 := TfpgButton.Create(self);
+  with btnPause4 do
+  begin
+    Name := 'btnPause4';
+    SetPosition(168, 384, 52, 23);
+    Text := 'Pause';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 26;
+    onclick := @btnPauseClick4;
+  end;
 
-    btnStart4 := TfpgButton.Create(self);
-    with btnStart4 do
-    begin
-      Name := 'btnStart4';
-      SetPosition(76, 384, 60, 23);
-      Text := 'Play';
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 25;
-      onclick := @btnstartClick4;
-    end;
+  btnResume4 := TfpgButton.Create(self);
+  with btnResume4 do
+  begin
+    Name := 'btnResume4';
+    SetPosition(248, 384, 64, 23);
+    Text := 'Resume';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 27;
+    onclick := @btnResumeClick4;
+  end;
 
-    btnPause4 := TfpgButton.Create(self);
-    with btnPause4 do
-    begin
-      Name := 'btnPause4';
-      SetPosition(168, 384, 52, 23);
-      Text := 'Pause';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 26;
-      onclick := @btnPauseClick4;
-    end;
+  btnStop4 := TfpgButton.Create(self);
+  with btnStop4 do
+  begin
+    Name := 'btnStop4';
+    SetPosition(348, 384, 76, 23);
+    Text := 'Stop';
+    Enabled := False;
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 28;
+    onclick := @btnStopClick4;
+  end;
 
-    btnResume4 := TfpgButton.Create(self);
-    with btnResume4 do
-    begin
-      Name := 'btnResume4';
-      SetPosition(248, 384, 64, 23);
-      Text := 'Resume';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 27;
-      onclick := @btnResumeClick4;
-    end;
+  Button3 := TfpgButton.Create(self);
+  with Button3 do
+  begin
+    Name := 'Button3';
+    SetPosition(68, 425, 360, 23);
+    Text := 'Play All Together';
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 29;
+    onclick := @btnStartClickAll;
+  end;
 
-    btnStop4 := TfpgButton.Create(self);
-    with btnStop4 do
-    begin
-      Name := 'btnStop4';
-      SetPosition(348, 384, 76, 23);
-      Text := 'Stop';
-      Enabled := False;
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 28;
-      onclick := @btnStopClick4;
-    end;
-
-    Button3 := TfpgButton.Create(self);
-    with Button3 do
-    begin
-      Name := 'Button3';
-      SetPosition(68, 425, 360, 23);
-      Text := 'Play All Together';
-      FontDesc := '#Label1';
-      Hint := '';
-      ImageName := '';
-      TabOrder := 29;
-      onclick := @btnStartClickAll;
-    end;
-
-    {@VFD_BODY_END: Multiplayer}
+  {@VFD_BODY_END: Multiplayer}
     {%endregion}
     ordir := IncludeTrailingBackslash(ExtractFilePath(ParamStr(0)));
 
@@ -636,6 +636,8 @@ var
   end;
 
   procedure TMultiplayer.btnStartClick(Sender: TObject);
+  var
+  InIndex : integer ;
   begin
   PlayerIndex0 := 0 ;
 
@@ -645,7 +647,17 @@ var
       uos_CreatePlayer(PlayerIndex0, sender);
       {$ENDIF}
 
-  uos_AddIntoDevOut(PlayerIndex0, -1, -1, -1, -1, 0,-1);   //// add a Output with custom parameters
+    InIndex :=   uos_AddFromFile(PlayerIndex0, pchar(FilenameEdit4.filename), -1, 0, -1);  ;
+     //// add input from audio file with custom parameters
+  ////////// FileName : filename of audio file
+  //////////// PlayerIndex : Index of a existing Player
+  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
+  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Input Index in array
+
+
+   uos_AddIntoDevOut(PlayerIndex0, -1, -1, uos_InputGetSampleRate(PlayerIndex0, InIndex), -1, 0, -1);
  //// add a Output into device with custom parameters
   //////////// PlayerIndex : Index of a existing Player
   //////////// Device ( -1 is default Output device )
@@ -656,16 +668,7 @@ var
   //////////// FramesCount : default : -1 (65536)
   //  result : -1 nothing created, otherwise Output Index in array
 
-  uos_AddFromFile(PlayerIndex0, pchar(FilenameEdit4.filename), -1, 0, -1);
-  //// add input from audio file with custom parameters
-  ////////// FileName : filename of audio file
-  //////////// PlayerIndex : Index of a existing Player
-  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
-  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
-  //////////// FramesCount : default : -1 (65536)
-  //  result : -1 nothing created, otherwise Input Index in array
-
-  /////// procedure to execute when stream is terminated
+   /////// procedure to execute when stream is terminated
      uos_EndProc(PlayerIndex0, @ClosePlayer0);
    ///// Assign the procedure of object to execute at end
    //////////// PlayerIndex : Index of a existing Player
@@ -706,16 +709,28 @@ var
   end;
 
   procedure TMultiplayer.btnStartClick2(Sender: TObject);
+  var
+  InIndex : integer ;
   begin
   PlayerIndex1 := 1 ;
 
-    {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
+     {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
       uos_CreatePlayer(PlayerIndex1);
           {$else}
       uos_CreatePlayer(PlayerIndex1, sender);
       {$ENDIF}
 
-  uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, 0,-1);   //// add a Output with custom parameters
+    InIndex :=   uos_AddFromFile(PlayerIndex1, pchar(FilenameEdit5.filename), -1, 0, -1);  ;
+     //// add input from audio file with custom parameters
+  ////////// FileName : filename of audio file
+  //////////// PlayerIndex : Index of a existing Player
+  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
+  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Input Index in array
+
+
+   uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, InIndex), -1, 0, -1);
  //// add a Output into device with custom parameters
   //////////// PlayerIndex : Index of a existing Player
   //////////// Device ( -1 is default Output device )
@@ -725,15 +740,6 @@ var
   //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
   //////////// FramesCount : default : -1 (65536)
   //  result : -1 nothing created, otherwise Output Index in array
-
-  uos_AddFromFile(PlayerIndex1, Pchar(FilenameEdit5.filename), -1, 0, -1);
-  //// add input from audio file with custom parameters
-  ////////// FileName : filename of audio file
-  //////////// PlayerIndex : Index of a existing Player
-  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
-  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
-  //////////// FramesCount : default : -1 (65536)
-  //  result : -1 nothing created, otherwise Input Index in array
 
   /////// procedure to execute when stream is terminated
      uos_EndProc(PlayerIndex1, @ClosePlayer1);
@@ -776,17 +782,27 @@ var
   end;
 
   procedure TMultiplayer.btnStartClick3(Sender: TObject);
-
+  var
+  InIndex : integer ;
   begin
   PlayerIndex2 := 2 ;
 
-   {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
+     {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
       uos_CreatePlayer(PlayerIndex2);
           {$else}
       uos_CreatePlayer(PlayerIndex2, sender);
       {$ENDIF}
 
-  uos_AddIntoDevOut(PlayerIndex2, -1, -1, -1, -1, 0,-1);   //// add a Output with custom parameters
+    InIndex :=   uos_AddFromFile(PlayerIndex2, pchar(FilenameEdit6.filename), -1, 0, -1);  ;
+     //// add input from audio file with custom parameters
+  ////////// FileName : filename of audio file
+  //////////// PlayerIndex : Index of a existing Player
+  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
+  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Input Index in array
+
+   uos_AddIntoDevOut(PlayerIndex2, -1, -1, uos_InputGetSampleRate(PlayerIndex2, InIndex), -1, 0, -1);
  //// add a Output into device with custom parameters
   //////////// PlayerIndex : Index of a existing Player
   //////////// Device ( -1 is default Output device )
@@ -797,17 +813,8 @@ var
   //////////// FramesCount : default : -1 (65536)
   //  result : -1 nothing created, otherwise Output Index in array
 
-  uos_AddFromFile(PlayerIndex2, Pchar(FilenameEdit6.filename), -1, 0, -1);
-  //// add input from audio file with custom parameters
-  ////////// FileName : filename of audio file
-  //////////// PlayerIndex : Index of a existing Player
-  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
-  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
-  //////////// FramesCount : default : -1 (65536)
-  //  result : -1 nothing created, otherwise Input Index in array
-
   /////// procedure to execute when stream is terminated
-     uos_EndProc(PlayerIndex2, @ClosePlayer2);
+        uos_EndProc(PlayerIndex2, @ClosePlayer2);
    ///// Assign the procedure of object to execute at end
    //////////// PlayerIndex : Index of a existing Player
    //////////// ClosePlayer1 : procedure of object to execute inside the loop
@@ -850,8 +857,10 @@ var
 
   procedure TMultiplayer.btnStartClick4(Sender: TObject);
 
+  var
+  InIndex : integer ;
   begin
-     PlayerIndex3 := 3 ;
+  PlayerIndex3 := 3 ;
 
      {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
       uos_CreatePlayer(PlayerIndex3);
@@ -859,7 +868,17 @@ var
       uos_CreatePlayer(PlayerIndex3, sender);
       {$ENDIF}
 
-  uos_AddIntoDevOut(PlayerIndex3, -1, -1, -1, -1, 0,-1);   //// add a Output with custom parameters
+    InIndex :=   uos_AddFromFile(PlayerIndex3, pchar(FilenameEdit7.filename), -1, 0, -1);  ;
+     //// add input from audio file with custom parameters
+  ////////// FileName : filename of audio file
+  //////////// PlayerIndex : Index of a existing Player
+  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
+  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  //////////// FramesCount : default : -1 (65536)
+  //  result : -1 nothing created, otherwise Input Index in array
+
+
+   uos_AddIntoDevOut(PlayerIndex3, -1, -1, uos_InputGetSampleRate(PlayerIndex3, InIndex), -1, 0, -1);
  //// add a Output into device with custom parameters
   //////////// PlayerIndex : Index of a existing Player
   //////////// Device ( -1 is default Output device )
@@ -869,15 +888,6 @@ var
   //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
   //////////// FramesCount : default : -1 (65536)
   //  result : -1 nothing created, otherwise Output Index in array
-
-  uos_AddFromFile(PlayerIndex3, Pchar(FilenameEdit7.filename), -1, 0, -1);
-  //// add input from audio file with custom parameters
-  ////////// FileName : filename of audio file
-  //////////// PlayerIndex : Index of a existing Player
-  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
-  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
-  //////////// FramesCount : default : -1 (65536)
-  //  result : -1 nothing created, otherwise Input Index in array
 
   /////// procedure to execute when stream is terminated
      uos_EndProc(PlayerIndex3, @ClosePlayer3);

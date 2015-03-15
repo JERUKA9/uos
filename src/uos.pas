@@ -17,7 +17,7 @@ unit uos;
 *                                                                              *
 *                                                                              *
 ********************************************************************************
-*  1 th changes:  2012-07-20   (first shot)                                    *
+*  1 th changes: 2012-07-20   (first shot)                                    *
 *  2 th changes: 2012-07-31   (mono thread, only one stream)                   *
 *  3 th changes: 2012-11-13  (mono thread, multi streams)                      *
 *  4 th changes: 2012-11-14  (multi threads, multi streams)                    *
@@ -35,11 +35,12 @@ unit uos;
 * 14 th changes: 2014-03-01 (String=>PChar, GetSampleRale, => uos version 1.2) *
 * 15 th changes: 2014-03-16 (uos_flat + uos => uos version 1.3)                *
 * 16 th changes: 2014-06-16 (Java uos library compatible)                      *
+* 17 th changes: 2015-03-15 (freeBSD compatible)                               *
 *                                                                              *
 ********************************************************************************}
 
 {
-    Copyright (C) 2014  Fred van Stappen
+    Copyright (C) 2012/2015  Fred van Stappen
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -73,7 +74,7 @@ uses
   uos_LibSndFile, uos_Mpg123, uos_soundtouch;
 
 const
-  uos_version : LongInt = 130141010 ;
+  uos_version : LongInt = 13150315 ;
 
 type
   TDArFloat = array of cfloat;
@@ -232,7 +233,6 @@ type
    {$if DEFINED(java)}
   TProc = JMethodID ;
     {$else}
-
   TProc = procedure of object;
     {$endif}
 
@@ -609,8 +609,6 @@ type
 
 //////////// General public procedure/function (accessible for library uos too)
 
-
-
 procedure uos_GetInfoDevice();
 
 function uos_GetInfoDeviceStr() : Pansichar ;
@@ -622,7 +620,7 @@ procedure uos_unloadlib();
         ////// Unload all libraries... Do not forget to call it before close application...
 
 procedure uos_unloadlibCust(PortAudio, SndFile, Mpg123, SoundTouch: boolean);
-           ////// Custom Unload libraries... if true, then delete the library. You may unload what and when you want...
+           ////// Custom Unload libraries... if true, then unload the library. You may unload what and when you want...
 
 function uos_GetVersion() : LongInt ;             //// version of uos
 
@@ -894,7 +892,6 @@ end;
 
 procedure Tuos_Player.Seek(InputIndex:LongInt; pos: Tsf_count_t);
 //// change position in samples
-
 begin
    if (isAssigned = True) then StreamIn[InputIndex].Data.Poseek := pos;
 end;
@@ -2891,8 +2888,8 @@ begin
     /////  Execute LoopEndProc procedure
     {$IF FPC_FULLVERSION>=20701}
     sleep(200);
-       queue(LoopEndProc);
-           {$else}
+        queue(LoopEndProc);
+      {$else}
   {$IF DEFINED(LCL) or DEFINED(ConsoleApp) or DEFINED(Library) or DEFINED(Windows)}
      synchronize(LoopEndProc);
   {$else}    /// for fpGUI
@@ -2969,7 +2966,10 @@ begin
          {$IF not DEFINED(Library)}
       if EndProc <> nil then
        {$IF FPC_FULLVERSION>=20701}
-        queue(EndProc);
+       begin
+         queue(EndProc);
+
+        end;
          {$else}
       synchronize(EndProc); /////  Execute EndProc procedure
             {$endif}
@@ -2986,8 +2986,8 @@ begin
             {$endif}
 
        {$endif}
+       isAssigned := false ;
 
-     isAssigned := false ;
      end;
 
 end;
@@ -3419,4 +3419,4 @@ begin
 
 end;
 
-end.
+end.
