@@ -32,6 +32,7 @@ var
   res: integer;
   ordir, opath, sndfilename, PA_FileName, SF_FileName: string;
   PlayerIndex1: cardinal;
+  In1Index : integer;
 
   { TuosConsole }
 
@@ -78,8 +79,12 @@ var
     writeln('Result of loading (if 0 => ok ) : ' + IntToStr(res));
 
     uos_CreatePlayer(PlayerIndex1); //// Create the player
-    uos_AddIntoDevOut(PlayerIndex1);   //// add a Output Device with default parameters
-    uos_AddFromFile(PlayerIndex1, pchar(sndfilename));
+
+    uos_AddFromFile(PlayerIndex1,(pchar(sndfilename)));
+
+      //// add a Output
+    uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, In1Index), -1, -1, -1);
+
     uos_Play(PlayerIndex1);
    end;
 

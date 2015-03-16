@@ -60,10 +60,6 @@
     </Linking>
     <Other>
       <WriteFPCLogo Value="False"/>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
   <Debugging>

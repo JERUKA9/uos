@@ -11,8 +11,6 @@
       <XPManifest>
         <DpiAware Value="True"/>
       </XPManifest>
-      <Icon Value="0"/>
-      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -136,10 +134,7 @@ install:
       <Unit0>
         <Filename Value="filterplayer.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="filterplayer"/>
-        <EditorIndex Value="1"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
+        <IsVisibleTab Value="True"/>
         <CursorPos X="95" Y="14"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -151,132 +146,96 @@ install:
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_fp"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="0"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="11" Y="12"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="325"/>
+        <CursorPos X="93" Y="279"/>
         <UsageCount Value="200"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="lazdyn_portaudio.pas"/>
-        <UnitName Value="LazDyn_PortAudio"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="60"/>
         <CursorPos X="10" Y="60"/>
         <UsageCount Value="97"/>
       </Unit2>
       <Unit3>
         <Filename Value="Lazdyn_SoundTouch.pas"/>
-        <UnitName Value="SoundTouchDLL"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
         <CursorPos X="59" Y="12"/>
         <UsageCount Value="7"/>
       </Unit3>
       <Unit4>
         <Filename Value="u_os.pas"/>
-        <UnitName Value="U_OS"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="445"/>
         <CursorPos X="10" Y="402"/>
         <UsageCount Value="82"/>
       </Unit4>
       <Unit5>
         <Filename Value="../firstprognew/mainmixxl.pas"/>
-        <UnitName Value="mainmixxl"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="4347"/>
         <CursorPos X="9" Y="4364"/>
         <UsageCount Value="1"/>
       </Unit5>
       <Unit6>
         <Filename Value="../dynmpg123/waveutils.pas"/>
-        <UnitName Value="WaveUtils"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="3"/>
         <CursorPos X="45" Y="43"/>
         <UsageCount Value="7"/>
       </Unit6>
       <Unit7>
         <Filename Value="kPGtest.pas"/>
-        <UnitName Value="PlayMP3"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="111"/>
         <CursorPos X="32" Y="128"/>
         <UsageCount Value="9"/>
       </Unit7>
       <Unit8>
         <Filename Value="kPGtestSF.pas"/>
-        <UnitName Value="PlayWAV"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="27"/>
         <CursorPos X="29" Y="32"/>
         <UsageCount Value="9"/>
       </Unit8>
       <Unit9>
         <Filename Value="lazdyn_mpg123.pas"/>
-        <UnitName Value="lazdyn_mpg123"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="103"/>
         <CursorPos X="83" Y="113"/>
         <UsageCount Value="97"/>
       </Unit9>
       <Unit10>
         <Filename Value="../OpenC2Pas/src/main.pas"/>
-        <UnitName Value="main"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="193"/>
-        <CursorPos X="1" Y="232"/>
+        <CursorPos Y="232"/>
         <UsageCount Value="6"/>
       </Unit10>
       <Unit11>
         <Filename Value="lazdyn_libsndfile.pas"/>
-        <UnitName Value="lazdyn_libsndfile"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="288"/>
         <CursorPos X="24" Y="305"/>
         <UsageCount Value="97"/>
       </Unit11>
       <Unit12>
         <Filename Value="../U_OS_Test (copie)/u_os.pas"/>
-        <UnitName Value="U_OS"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="72"/>
         <CursorPos X="34" Y="236"/>
         <UsageCount Value="2"/>
       </Unit12>
       <Unit13>
         <Filename Value="PA_SF_MP.pas"/>
-        <UnitName Value="PA_SF_MP"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="77"/>
         <CursorPos X="20" Y="10"/>
         <UsageCount Value="4"/>
       </Unit13>
       <Unit14>
         <Filename Value="/usr/lib/codetyphon/fpcsrc/rtl/objpas/sysutils/sysstrh.inc"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="100"/>
         <CursorPos X="10" Y="112"/>
         <UsageCount Value="7"/>
       </Unit14>
       <Unit15>
         <Filename Value="../lazarus64/examples/multithreading/mainunit.pas"/>
-        <UnitName Value="MainUnit"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="70"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="7"/>
       </Unit15>
       <Unit16>
         <Filename Value="../lazarus64/examples/pascalstream/componentstreampas.pas"/>
-        <UnitName Value="ComponentStreamPas"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="33"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="10"/>
       </Unit16>
       <Unit17>
@@ -284,48 +243,32 @@ install:
         <ComponentName Value="MiXimumLP"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="mainmixxl"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="2775"/>
         <CursorPos X="20" Y="2792"/>
         <UsageCount Value="9"/>
       </Unit17>
       <Unit18>
         <Filename Value="/media/Windows7/dynsndfile/libsndfilestrings.pas"/>
-        <UnitName Value="libsndfilestrings"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="7"/>
       </Unit18>
       <Unit19>
         <Filename Value="/media/Windows7/dynsndfile/lazdyn_libsndfile.pas"/>
-        <UnitName Value="lazdyn_libsndfile"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="7"/>
       </Unit19>
       <Unit20>
         <Filename Value="../logouos/unit1.pas"/>
-        <UnitName Value="Unit1"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="67"/>
         <CursorPos X="51" Y="83"/>
         <UsageCount Value="7"/>
       </Unit20>
       <Unit21>
         <Filename Value="/usr/lib/codetyphon/lazarus/lcl/graphics.pp"/>
-        <UnitName Value="Graphics"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1168"/>
         <CursorPos X="49" Y="1181"/>
         <UsageCount Value="9"/>
       </Unit21>
       <Unit22>
         <Filename Value="/usr/lib/codetyphon/fpcsrc/rtl/objpas/objpas.pp"/>
-        <UnitName Value="objpas"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="119"/>
         <CursorPos X="8" Y="28"/>
         <UsageCount Value="7"/>
@@ -333,8 +276,7 @@ install:
       <Unit23>
         <Filename Value="uos.pas"/>
         <UnitName Value="uos"/>
-        <EditorIndex Value="2"/>
-        <WindowIndex Value="0"/>
+        <EditorIndex Value="1"/>
         <TopLine Value="3070"/>
         <CursorPos X="2" Y="3069"/>
         <UsageCount Value="100"/>
@@ -342,18 +284,13 @@ install:
       </Unit23>
       <Unit24>
         <Filename Value="uos_new.pas"/>
-        <UnitName Value="uos_new"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="310"/>
         <CursorPos X="29" Y="478"/>
         <UsageCount Value="81"/>
       </Unit24>
       <Unit25>
         <Filename Value="../firstprognew/bass.pas"/>
-        <UnitName Value="bass"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="810"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="6"/>
       </Unit25>
       <Unit26>
@@ -361,50 +298,34 @@ install:
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="Unit1"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="81"/>
         <CursorPos X="44" Y="100"/>
         <UsageCount Value="9"/>
       </Unit26>
       <Unit27>
         <Filename Value="/usr/lib/codetyphon/lazarus/packager/registration/fcllaz.pas"/>
-        <UnitName Value="fcllaz"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="4"/>
+        <CursorPos Y="4"/>
         <UsageCount Value="3"/>
       </Unit27>
       <Unit28>
         <Filename Value="../lazarus32/packager/registration/fcllaz.pas"/>
-        <UnitName Value="fcllaz"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="3"/>
       </Unit28>
       <Unit29>
         <Filename Value="../U_OS_Testnewonetype/uos.pas"/>
-        <UnitName Value="UOS"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="444"/>
         <CursorPos X="79" Y="452"/>
         <UsageCount Value="8"/>
       </Unit29>
       <Unit30>
         <Filename Value="/media/Windows7/UOS/uos.pas"/>
-        <UnitName Value="uos"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="747"/>
         <CursorPos X="5" Y="750"/>
         <UsageCount Value="4"/>
       </Unit30>
       <Unit31>
         <Filename Value="/usr/lib/codetyphon/lazarus/components/codetools/codebeautifier.pas"/>
-        <UnitName Value="CodeBeautifier"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="405"/>
-        <CursorPos X="1" Y="1"/>
         <UsageCount Value="6"/>
       </Unit31>
       <Unit32>
@@ -412,32 +333,24 @@ install:
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="MainUnitSine"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="463"/>
-        <CursorPos X="1" Y="483"/>
+        <CursorPos Y="483"/>
         <UsageCount Value="18"/>
       </Unit32>
       <Unit33>
         <Filename Value="../dynportaudio/unit1.pas"/>
-        <UnitName Value="Unit1"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="81"/>
         <CursorPos X="16" Y="91"/>
         <UsageCount Value="11"/>
       </Unit33>
       <Unit34>
         <Filename Value="filterplayer_fpGUI.lpr"/>
-        <UnitName Value="filterplayer_fpGUI"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="727"/>
         <CursorPos X="21" Y="731"/>
         <UsageCount Value="11"/>
       </Unit34>
       <Unit35>
         <Filename Value="../../development/lazarus/lcl/stdctrls.pp"/>
-        <UnitName Value="StdCtrls"/>
-        <WindowIndex Value="0"/>
         <TopLine Value="1050"/>
         <CursorPos X="24" Y="1065"/>
         <UsageCount Value="11"/>
@@ -445,133 +358,81 @@ install:
       <Unit36>
         <Filename Value="main_sp.pas"/>
         <UnitName Value="main_sp"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="375"/>
-        <CursorPos X="9" Y="375"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="317"/>
+        <CursorPos X="104" Y="333"/>
         <UsageCount Value="11"/>
       </Unit36>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="17" HistoryIndex="16">
       <Position1>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="485" Column="9" TopLine="467"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="4" Column="97"/>
       </Position1>
       <Position2>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="270" Column="3" TopLine="260"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="547" Column="24" TopLine="529"/>
       </Position2>
       <Position3>
         <Filename Value="uos.pas"/>
-        <Caret Line="4" Column="97" TopLine="1"/>
+        <Caret Line="3579" Column="19" TopLine="3560"/>
       </Position3>
       <Position4>
         <Filename Value="uos.pas"/>
-        <Caret Line="547" Column="24" TopLine="529"/>
+        <Caret Line="108" Column="24" TopLine="99"/>
       </Position4>
       <Position5>
         <Filename Value="uos.pas"/>
-        <Caret Line="3579" Column="19" TopLine="3560"/>
+        <Caret Line="547" Column="24" TopLine="529"/>
       </Position5>
       <Position6>
         <Filename Value="uos.pas"/>
-        <Caret Line="108" Column="24" TopLine="99"/>
+        <Caret Line="10" Column="68"/>
       </Position6>
       <Position7>
         <Filename Value="uos.pas"/>
-        <Caret Line="547" Column="24" TopLine="529"/>
+        <Caret Line="441" Column="25" TopLine="425"/>
       </Position7>
       <Position8>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="84" Column="1" TopLine="69"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="453" Column="54" TopLine="437"/>
       </Position8>
       <Position9>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="368" Column="44" TopLine="363"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="678" Column="25" TopLine="660"/>
       </Position9>
       <Position10>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="371" Column="29" TopLine="363"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="691" Column="68" TopLine="673"/>
       </Position10>
       <Position11>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="67" Column="27" TopLine="57"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2217" Column="56" TopLine="2196"/>
       </Position11>
       <Position12>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="105" Column="65" TopLine="84"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2250" Column="25" TopLine="2229"/>
       </Position12>
       <Position13>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="368" Column="44" TopLine="351"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="467" Column="73" TopLine="448"/>
       </Position13>
       <Position14>
         <Filename Value="uos.pas"/>
-        <Caret Line="10" Column="68" TopLine="1"/>
+        <Caret Line="703" Column="25" TopLine="682"/>
       </Position14>
       <Position15>
         <Filename Value="uos.pas"/>
-        <Caret Line="441" Column="25" TopLine="425"/>
+        <Caret Line="2184" Column="33" TopLine="2163"/>
       </Position15>
       <Position16>
         <Filename Value="uos.pas"/>
-        <Caret Line="453" Column="54" TopLine="437"/>
+        <Caret Line="2224" Column="25" TopLine="2206"/>
       </Position16>
       <Position17>
         <Filename Value="uos.pas"/>
-        <Caret Line="678" Column="25" TopLine="660"/>
-      </Position17>
-      <Position18>
-        <Filename Value="uos.pas"/>
-        <Caret Line="691" Column="68" TopLine="673"/>
-      </Position18>
-      <Position19>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2217" Column="56" TopLine="2196"/>
-      </Position19>
-      <Position20>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2250" Column="25" TopLine="2229"/>
-      </Position20>
-      <Position21>
-        <Filename Value="uos.pas"/>
-        <Caret Line="467" Column="73" TopLine="448"/>
-      </Position21>
-      <Position22>
-        <Filename Value="uos.pas"/>
-        <Caret Line="703" Column="25" TopLine="682"/>
-      </Position22>
-      <Position23>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2184" Column="33" TopLine="2163"/>
-      </Position23>
-      <Position24>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2224" Column="25" TopLine="2206"/>
-      </Position24>
-      <Position25>
-        <Filename Value="uos.pas"/>
         <Caret Line="2237" Column="68" TopLine="2219"/>
-      </Position25>
-      <Position26>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="467" Column="2" TopLine="454"/>
-      </Position26>
-      <Position27>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="477" Column="3" TopLine="460"/>
-      </Position27>
-      <Position28>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="473" Column="51" TopLine="466"/>
-      </Position28>
-      <Position29>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="5" Column="70" TopLine="1"/>
-      </Position29>
-      <Position30>
-        <Filename Value="main_fp.pas"/>
-        <Caret Line="225" Column="78" TopLine="211"/>
-      </Position30>
+      </Position17>
     </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
@@ -601,10 +462,6 @@ install:
     </Linking>
     <Other>
       <WriteFPCLogo Value="False"/>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
   <Debugging>
@@ -629,5 +486,4 @@ install:
       </Item3>
     </Exceptions>
   </Debugging>
-  <EditorMacros Count="0"/>
 </CONFIG>

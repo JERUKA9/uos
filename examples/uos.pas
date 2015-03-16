@@ -2968,7 +2968,6 @@ begin
        {$IF FPC_FULLVERSION>=20701}
        begin
          queue(EndProc);
-
         end;
          {$else}
       synchronize(EndProc); /////  Execute EndProc procedure

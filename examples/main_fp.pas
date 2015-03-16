@@ -275,12 +275,21 @@ begin
   PlayerIndex1 := 0;
   // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
   // If PlayerIndex exists already, it will be overwritten...
-  uos_CreatePlayer(PlayerIndex1);
+
+    uos_CreatePlayer(PlayerIndex1);
   //// Create the player.
   //// PlayerIndex : from 0 to what your computer can do !
   //// If PlayerIndex exists already, it will be overwriten...
 
-  Out1Index := uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, 0, -1);
+  In1Index := uos_AddFromFile(PlayerIndex1, pchar(Edit4.Text), -1, 0, -1);
+  //// add input from audio file with custom parameters
+  //////////// PlayerIndex : Index of a existing Player
+  ////////// FileName : filename of audio file
+  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
+  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
+  ////////// FramesCount : default : -1 (= 65536)
+
+  Out1Index := uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, In1Index), -1, 0, -1);
   //// add a Output into device with custom parameters
   //////////// PlayerIndex : Index of a existing Player
   //////////// Device ( -1 is default Output device )
@@ -289,14 +298,6 @@ begin
   //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
   //////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16)
   //////////// FramesCount : default : -1 (= 65536)
-
-  In1Index := uos_AddFromFile(PlayerIndex1, PChar(Edit4.Text), -1, 0, -1);
-  //// add input from audio file with custom parameters
-  //////////// PlayerIndex : Index of a existing Player
-  ////////// FileName : filename of audio file
-  ////////// OutputIndex : OutputIndex of existing Output // -1 : all output, -2: no output, other integer : existing output)
-  ////////// SampleFormat : -1 default : Int16 : (0: Float32, 1:Int32, 2:Int16) SampleFormat of Input can be <= SampleFormat float of Output
-  ////////// FramesCount : default : -1 (= 65536)
 
   EQIndex1 := uos_AddFilterIn(PlayerIndex1, In1Index, 1, 1000, 1, 1, True, nil);
   //////////// PlayerIndex : Index of a existing Player

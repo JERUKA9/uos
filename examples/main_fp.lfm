@@ -85,7 +85,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDesktopCenter
-  LCLVersion = '1.3'
+  LCLVersion = '1.5'
   object Shape3: TShape
     Left = 8
     Height = 65
@@ -122,15 +122,15 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 102
-    ClientWidth = 152
+    ClientHeight = 103
+    ClientWidth = 154
     TabOrder = 16
     object RadioButton1: TRadioButton
       Tag = 2
       Left = 6
-      Height = 22
+      Height = 23
       Top = 6
-      Width = 140
+      Width = 142
       Caption = 'BandReject'
       Checked = True
       OnChange = RadioButton1Change
@@ -140,9 +140,9 @@ object Form1: TForm1
     object RadioButton2: TRadioButton
       Tag = 3
       Left = 6
-      Height = 22
-      Top = 28
-      Width = 140
+      Height = 23
+      Top = 29
+      Width = 142
       Caption = 'BandPass'
       OnChange = RadioButton1Change
       TabOrder = 1
@@ -151,8 +151,8 @@ object Form1: TForm1
       Tag = 4
       Left = 6
       Height = 23
-      Top = 50
-      Width = 140
+      Top = 52
+      Width = 142
       Caption = 'HighPass'
       OnChange = RadioButton1Change
       TabOrder = 2
@@ -160,9 +160,9 @@ object Form1: TForm1
     object RadioButton4: TRadioButton
       Tag = 5
       Left = 6
-      Height = 23
-      Top = 73
-      Width = 140
+      Height = 22
+      Top = 75
+      Width = 142
       Caption = 'LowPass'
       OnChange = RadioButton1Change
       TabOrder = 3
@@ -245,9 +245,9 @@ object Form1: TForm1
   end
   object CheckBox1: TCheckBox
     Left = 24
-    Height = 24
+    Height = 22
     Top = 252
-    Width = 126
+    Width = 124
     Caption = 'Enable Equalizer'
     Checked = True
     OnChange = CheckBox1Change
@@ -435,9 +435,9 @@ object Form1: TForm1
   end
   object CheckBox2: TCheckBox
     Left = 374
-    Height = 24
+    Height = 22
     Top = 246
-    Width = 100
+    Width = 98
     Caption = 'Enable Filter'
     OnChange = RadioButton1Change
     TabOrder = 17
