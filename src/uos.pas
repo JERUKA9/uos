@@ -2348,8 +2348,7 @@ begin
         StreamIn[x].Data.comment := mpid3v1.comment;
         StreamIn[x].Data.tag := mpid3v1.tag;
         StreamIn[x].Data.genre := mpid3v1.genre;
-        StreamIn[x].Data.samplerateroot := MPinfo.rate;
-        StreamIn[x].Data.samplerate := MPinfo.rate;
+        StreamIn[x].Data.samplerateroot :=  StreamIn[x].Data.samplerate ;
         StreamIn[x].Data.hdformat := MPinfo.layer;
         StreamIn[x].Data.frames := MPinfo.framesize;
         StreamIn[x].Data.lengthst := mpg123_length(StreamIn[x].Data.HandleSt);
@@ -2968,7 +2967,6 @@ begin
        {$IF FPC_FULLVERSION>=20701}
        begin
          queue(EndProc);
-
         end;
          {$else}
       synchronize(EndProc); /////  Execute EndProc procedure
@@ -3419,4 +3417,4 @@ begin
 
 end;
 
-end.
+end.
