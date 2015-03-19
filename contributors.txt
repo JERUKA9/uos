@@ -17,5 +17,4 @@ Dibo : Shows the best way to calculate time.
 
 And many other in Lazarus/fpc/fpGUI forum.
 
-
 Fred van Stappen : fiens@hotmail.com 
