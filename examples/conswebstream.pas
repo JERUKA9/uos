@@ -1,18 +1,23 @@
-program consoleplay;
+{$IF DEFINED(Windows)}
+WARNING => only for unix systems...
+{$ENDIF} 
 
-///WARNING : if FPC version < 2.7.1 => Do not forget to uncoment {$DEFINE ConsoleApp} in uos.pas and in uos_flat.pas !
+program conswebstream;
+
+///WARNING : needs FPC version > 2.7.1 
 
 {$mode objfpc}{$H+}
    {$DEFINE UseCThreads}
-uses {$IFDEF UNIX}
+uses
+ {$IFDEF UNIX}
   cthreads,
-  cwstring, {$ENDIF}
+  {$ENDIF}
   Classes,
+  ctypes,
   SysUtils,
+  Pipes, Math,
   CustApp,
-  uos_flat,
-  uos,
-   ctypes { you can add units after this };
+  uos_flat;
 
 type
 
@@ -31,65 +36,65 @@ type
 
 var
   res: integer;
-  ordir, opath, sndfilename, PA_FileName, SF_FileName: string;
+  ordir, opath, PA_FileName, MP_FileName: string;
   PlayerIndex1: cardinal;
-  In1Index : integer;
+
+ // AHandleStream : THandleStream ;
 
   { TuosConsole }
 
   procedure TuosConsole.ConsolePlay;
   begin
-    ordir := IncludeTrailingBackslash(ExtractFilePath(ParamStr(0)));
+      ordir := (ExtractFilePath(ParamStr(0)));
 
           {$IFDEF Windows}
      {$if defined(cpu64)}
     PA_FileName := ordir + 'lib\Windows\64bit\LibPortaudio-64.dll';
-    SF_FileName := ordir + 'lib\Windows\64bit\LibSndFile-64.dll';
+    MP_FileName := ordir + 'lib\Windows\64bit\LibMpg123-64.dll';
 {$else}
     PA_FileName := ordir + 'lib\Windows\32bit\LibPortaudio-32.dll';
-    SF_FileName := ordir + 'lib\Windows\32bit\LibSndFile-32.dll';
+    MP_FileName := ordir + 'lib\Windows\32bit\LibMpg123-32.dll';
    {$endif}
-    sndfilename := ordir + 'sound\test.flac';
- {$ENDIF}
+  {$ENDIF}
 
  {$IFDEF linux}
     {$if defined(cpu64)}
     PA_FileName := ordir + 'lib/Linux/64bit/LibPortaudio-64.so';
-    SF_FileName := ordir + 'lib/Linux/64bit/LibSndFile-64.so';
+    MP_FileName := ordir + 'lib/Linux/64bit/LibMpg123-64.so';
     {$else}
     PA_FileName := ordir + 'lib/Linux/32bit/LibPortaudio-32.so';
-    SF_FileName := ordir + 'lib/Linux/32bit/LibSndFile-32.so';
+    MP_FileName := ordir + 'lib/Linux/32bit/LibMpg123-32.so';
 {$endif}
-    sndfilename := ordir + 'sound/test.flac';
- {$ENDIF}
+  {$ENDIF}
 
             {$IFDEF Darwin}
     opath := ordir;
     opath := copy(opath, 1, Pos('/UOS', opath) - 1);
     PA_FileName := opath + '/lib/Mac/32bit/LibPortaudio-32.dylib';
-    SF_FileName := opath + '/lib/Mac/32bit/LibSndFile-32.dylib';
-    sndfilename := opath + '/sound/test.flac';
-             {$ENDIF}
+    MP_FileName := opath + '/lib/Mac/32bit/LibMpg123-32.dylib';
+                {$ENDIF}
     PlayerIndex1 := 0;
 
     // Load the libraries
     // function uos_LoadLib(PortAudioFileName: Pchar; SndFileFileName: Pchar; Mpg123FileName: Pchar; SoundTouchFileName: Pchar) : integer;
+    // for web streaming => Mpg123 is needed
 
-   res := uos_LoadLib(Pchar(PA_FileName), Pchar(SF_FileName), nil, nil) ;
-
+    res := uos_LoadLib(Pchar(PA_FileName), nil, Pchar(MP_FileName), nil) ;
     writeln('Result of loading (if 0 => ok ) : ' + IntToStr(res));
 
+     uos_CreatePlayer(PlayerIndex1); //// Create the player
+     writeln('ok uos_CreatePlayer');
 
-   uos_CreatePlayer(PlayerIndex1); //// Create the player
+     // uos_AddFromURL(PlayerIndex1,'http://www.hubharp.com/web_sound/BachGavotteShort.mp3') ;
+     uos_AddFromURL(PlayerIndex1,'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3') ;
+     writeln('ok uos_AddFromURL');
 
-  In1Index := uos_AddFromFile(PlayerIndex1,(pchar(sndfilename)));
+      //// add a Output  => change framecount => 1024
+     uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, -1, 1024);
+     writeln('ok uos_AddIntoDevOut');
 
-    uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, In1Index), -1, -1, -1);
-
-    uos_Play(PlayerIndex1);
-
-
-     end;
+     uos_Play(PlayerIndex1);
+        end;
 
   procedure TuosConsole.doRun;
   begin

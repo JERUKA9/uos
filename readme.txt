@@ -10,6 +10,8 @@ With uos you can:
 
 . With 16, 32 or float 32 bit resolution.
 
+. Do internet audio streaming (unix only).
+
 . Record all types of input into file.
 
 . Add DSP effects and filters, however many you want and record it.
