@@ -130,11 +130,11 @@ install:
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="54">
+    <Units Count="55">
       <Unit0>
         <Filename Value="simplewebplayer.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="4"/>
         <CursorPos X="35" Y="4"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -405,7 +405,6 @@ install:
       </Unit44>
       <Unit45>
         <Filename Value="simplewebplayer_fpGUI.pas"/>
-        <UnitName Value="simplewebplayer_fpGUI"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="62"/>
         <CursorPos X="29" Y="82"/>
@@ -458,7 +457,6 @@ install:
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_wsp"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
         <TopLine Value="344"/>
         <CursorPos X="18" Y="347"/>
@@ -466,6 +464,16 @@ install:
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit53>
+      <Unit54>
+        <Filename Value="uos_httpgetthread.pas"/>
+        <UnitName Value="uos_httpgetthread"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="88"/>
+        <CursorPos X="23" Y="113"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit54>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
