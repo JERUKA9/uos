@@ -11,8 +11,7 @@ uses {$IFDEF UNIX}
   SysUtils,
   CustApp,
   uos_flat,
-  uos,
-   ctypes { you can add units after this };
+  ctypes { you can add units after this };
 
 type
 

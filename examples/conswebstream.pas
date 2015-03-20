@@ -15,7 +15,7 @@ uses
   Classes,
   ctypes,
   SysUtils,
-  Pipes, Math,
+  Math,
   CustApp,
   uos_flat;
 
@@ -120,7 +120,7 @@ var
   Application: TUOSConsole;
 begin
   Application := TUOSConsole.Create(nil);
-  Application.Title := 'Console Player';
+  Application.Title := 'Console Web Player';
     Application.Run;
   Application.Free;
 end.
