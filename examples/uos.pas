@@ -170,21 +170,21 @@ type
 type
   Tuos_Data = record  /////////////// common data
     Enabled: boolean;
-    TypePut: LongInt;
+    TypePut: integer;
     ////// -1 : nothing,  //// for Input : 0:from audio file, 1:from input device, 2:from internet audio stream
     //// for Output : 0:into wav file, 1:into output device, 2:to other stream
     Seekable: boolean;
-    Status: LongInt;
+    Status: integer;
     Buffer: TDArFloat;
     DSPVolumeInIndex : LongInt;
     DSPVolumeOutIndex : LongInt;
     VLeft, VRight: double;
 
-    PositionEnable : LongInt;
-    LevelEnable : LongInt;
+    PositionEnable : integer;
+    LevelEnable : integer;
     LevelLeft, LevelRight: cfloat;
 
-    levelArrayEnable : LongInt;
+    levelArrayEnable : integer;
     {$if defined(cpu64)}
     Wantframes: Tsf_count_t;
     OutFrames: Tsf_count_t;
@@ -219,8 +219,8 @@ type
     Sections: LongInt;
     Encoding: LongInt;
     Lengthst: LongInt;     ///////  in sample ;
-    LibOpen: LongInt;    //// -1 : nothing open, 0 : sndfile open, 1 : mpg123 open
-    Ratio: LongInt;      ////  if mpg123 then ratio := 2
+    LibOpen: integer;    //// -1: nothing open, 0: sndfile open, 1: mpg123 open
+    Ratio: integer;      ////  if mpg123 then ratio := 2
     Position: longint;
     Poseek: longint;
     Output: LongInt;
@@ -2731,8 +2731,10 @@ begin
         end;
 
         //// check if internet stream is stopped.
+   {$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
      if (StreamIn[x].Data.Seekable = false) then if StreamIn[x].Data.httpget.IsRunning = false
      then  StreamIn[x].Data.status := 0; //////// no more data then close the stream
+   {$ENDIF}
 
      if (StreamIn[x].Data.Seekable = True) then if StreamIn[x].Data.OutFrames < 10 then
           StreamIn[x].Data.status := 0;  //////// no more data then close the stream
@@ -3613,4 +3615,4 @@ begin
 
 end;
 
-end.
+end.

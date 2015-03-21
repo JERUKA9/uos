@@ -11,6 +11,7 @@
       <XPManifest>
         <DpiAware Value="True"/>
       </XPManifest>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
     <i18n>
       <EnableI18N LFM="False"/>
@@ -130,11 +131,13 @@ install:
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="57">
+    <Units Count="58">
       <Unit0>
         <Filename Value="simplewebplayer.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="7"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1"/>
         <CursorPos X="35" Y="4"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
@@ -145,7 +148,6 @@ install:
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="-1"/>
         <CursorPos X="4" Y="407"/>
         <UsageCount Value="200"/>
       </Unit1>
@@ -273,9 +275,10 @@ install:
       <Unit23>
         <Filename Value="uos.pas"/>
         <UnitName Value="uos"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="2329"/>
-        <CursorPos X="38" Y="2332"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1"/>
+        <CursorPos X="20" Y="79"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
       </Unit23>
@@ -353,7 +356,6 @@ install:
       </Unit35>
       <Unit36>
         <Filename Value="uos_portaudio.pas"/>
-        <EditorIndex Value="-1"/>
         <TopLine Value="158"/>
         <CursorPos X="5" Y="167"/>
         <UsageCount Value="17"/>
@@ -407,10 +409,10 @@ install:
       <Unit45>
         <Filename Value="simplewebplayer_fpGUI.pas"/>
         <UnitName Value="simplewebplayer_fpGUI"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="62"/>
-        <CursorPos X="29" Y="82"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="22"/>
+        <CursorPos X="9" Y="38"/>
         <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit45>
@@ -444,7 +446,6 @@ install:
       </Unit50>
       <Unit51>
         <Filename Value="uos_libsndfile.pas"/>
-        <EditorIndex Value="-1"/>
         <TopLine Value="281"/>
         <CursorPos X="3" Y="289"/>
         <UsageCount Value="12"/>
@@ -462,8 +463,9 @@ install:
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main_wsp"/>
         <EditorIndex Value="5"/>
-        <TopLine Value="344"/>
-        <CursorPos X="18" Y="347"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1"/>
+        <CursorPos X="51" Y="3"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -472,6 +474,8 @@ install:
         <Filename Value="uos_httpgetthread.pas"/>
         <UnitName Value="uos_httpgetthread"/>
         <EditorIndex Value="6"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="1"/>
         <CursorPos X="18" Y="91"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
@@ -479,7 +483,8 @@ install:
       <Unit55>
         <Filename Value="../../uoslib/src/uoslib.pas"/>
         <UnitName Value="uoslib"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="1"/>
         <TopLine Value="871"/>
         <CursorPos X="18" Y="895"/>
         <UsageCount Value="10"/>
@@ -488,132 +493,145 @@ install:
       <Unit56>
         <Filename Value="../../uoslib/src/uoslib_h.pas"/>
         <UnitName Value="uoslib_h"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="1"/>
         <TopLine Value="240"/>
         <CursorPos X="50" Y="247"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
       </Unit56>
+      <Unit57>
+        <Filename Value="/usr/share/lazarus/1.2.6/components/lazutils/paswstring.pas"/>
+        <UnitName Value="paswstring"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="1"/>
+        <TopLine Value="371"/>
+        <CursorPos X="43" Y="379"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit57>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="uos_flat.pas"/>
-        <Caret Line="781" Column="55" TopLine="757"/>
+        <Filename Value="../../uoslib/src/uoslib_h.pas"/>
+        <Caret Line="44" Column="16" TopLine="20"/>
       </Position1>
       <Position2>
-        <Filename Value="../../uoslib/src/uoslib.pas"/>
-        <Caret Line="11" Column="27"/>
+        <Filename Value="../../uoslib/src/uoslib_h.pas"/>
+        <Caret Line="78" Column="58" TopLine="54"/>
       </Position2>
       <Position3>
-        <Filename Value="../../uoslib/src/uoslib.pas"/>
-        <Caret Line="38" Column="14" TopLine="14"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="74" Column="58" TopLine="50"/>
       </Position3>
       <Position4>
         <Filename Value="uos.pas"/>
-        <Caret Line="8" Column="19"/>
+        <Caret Line="413" Column="22" TopLine="390"/>
       </Position4>
       <Position5>
         <Filename Value="uos.pas"/>
-        <Caret Line="39" Column="54" TopLine="15"/>
+        <Caret Line="940" Column="94" TopLine="921"/>
       </Position5>
       <Position6>
-        <Filename Value="../../uoslib/src/uoslib.pas"/>
-        <Caret Line="187" Column="55" TopLine="163"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2087" Column="27" TopLine="2063"/>
       </Position6>
       <Position7>
-        <Filename Value="../../uoslib/src/uoslib.pas"/>
-        <Caret Line="828" Column="55" TopLine="804"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2124" Column="28" TopLine="2100"/>
       </Position7>
       <Position8>
-        <Filename Value="../../uoslib/src/uoslib.pas"/>
-        <Caret Line="895" Column="55" TopLine="871"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2225" Column="28" TopLine="2201"/>
       </Position8>
       <Position9>
-        <Filename Value="../../uoslib/src/uoslib.pas"/>
-        <Caret Line="38" Column="14" TopLine="23"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2390" Column="146" TopLine="2349"/>
       </Position9>
       <Position10>
-        <Filename Value="../../uoslib/src/uoslib.pas"/>
-        <Caret Line="187" Column="18" TopLine="163"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2541" Column="31" TopLine="2508"/>
       </Position10>
       <Position11>
-        <Filename Value="../../uoslib/src/uoslib.pas"/>
-        <Caret Line="828" Column="18" TopLine="804"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2679" Column="38" TopLine="2646"/>
       </Position11>
       <Position12>
-        <Filename Value="../../uoslib/src/uoslib_h.pas"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="173" Column="12" TopLine="139"/>
       </Position12>
       <Position13>
-        <Filename Value="../../uoslib/src/uoslib_h.pas"/>
-        <Caret Line="44" Column="16" TopLine="20"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="877" Column="72" TopLine="843"/>
       </Position13>
       <Position14>
-        <Filename Value="../../uoslib/src/uoslib_h.pas"/>
-        <Caret Line="78" Column="58" TopLine="54"/>
+        <Filename Value="uos.pas"/>
+        <Caret Line="2087" Column="27" TopLine="2054"/>
       </Position14>
       <Position15>
         <Filename Value="uos.pas"/>
-        <Caret Line="74" Column="58" TopLine="50"/>
+        <Caret Line="2124" Column="28" TopLine="2090"/>
       </Position15>
       <Position16>
         <Filename Value="uos.pas"/>
-        <Caret Line="413" Column="22" TopLine="390"/>
+        <Caret Line="2225" Column="28" TopLine="2192"/>
       </Position16>
       <Position17>
         <Filename Value="uos.pas"/>
-        <Caret Line="940" Column="94" TopLine="921"/>
+        <Caret Line="2360" Column="41" TopLine="2342"/>
       </Position17>
       <Position18>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2087" Column="27" TopLine="2063"/>
+        <Filename Value="/usr/share/lazarus/1.2.6/components/lazutils/paswstring.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position18>
       <Position19>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2124" Column="28" TopLine="2100"/>
+        <Filename Value="/usr/share/lazarus/1.2.6/components/lazutils/paswstring.pas"/>
+        <Caret Line="379" Column="43" TopLine="371"/>
       </Position19>
       <Position20>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2225" Column="28" TopLine="2201"/>
+        <Filename Value="/usr/share/lazarus/1.2.6/components/lazutils/paswstring.pas"/>
+        <Caret Line="420" Column="56" TopLine="411"/>
       </Position20>
       <Position21>
         <Filename Value="uos.pas"/>
-        <Caret Line="2390" Column="146" TopLine="2349"/>
+        <Caret Line="1" Column="87" TopLine="1"/>
       </Position21>
       <Position22>
         <Filename Value="uos.pas"/>
-        <Caret Line="2541" Column="31" TopLine="2508"/>
+        <Caret Line="2734" Column="70" TopLine="2726"/>
       </Position22>
       <Position23>
         <Filename Value="uos.pas"/>
-        <Caret Line="2679" Column="38" TopLine="2646"/>
+        <Caret Line="76" Column="13" TopLine="69"/>
       </Position23>
       <Position24>
-        <Filename Value="uos.pas"/>
-        <Caret Line="17" Column="145"/>
+        <Filename Value="main_wsp.pas"/>
+        <Caret Line="347" Column="18" TopLine="344"/>
       </Position24>
       <Position25>
-        <Filename Value="uos.pas"/>
-        <Caret Line="173" Column="12" TopLine="139"/>
+        <Filename Value="main_wsp.pas"/>
+        <Caret Line="269" Column="33" TopLine="261"/>
       </Position25>
       <Position26>
-        <Filename Value="uos.pas"/>
-        <Caret Line="877" Column="72" TopLine="843"/>
+        <Filename Value="main_wsp.pas"/>
+        <Caret Line="3" Column="1" TopLine="1"/>
       </Position26>
       <Position27>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2087" Column="27" TopLine="2054"/>
+        <Filename Value="main_wsp.pas"/>
+        <Caret Line="1" Column="44" TopLine="1"/>
       </Position27>
       <Position28>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2124" Column="28" TopLine="2090"/>
+        <Filename Value="main_wsp.pas"/>
+        <Caret Line="2" Column="50" TopLine="1"/>
       </Position28>
       <Position29>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2225" Column="28" TopLine="2192"/>
+        <Filename Value="main_wsp.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position29>
       <Position30>
-        <Filename Value="uos.pas"/>
-        <Caret Line="2360" Column="41" TopLine="2342"/>
+        <Filename Value="/usr/share/lazarus/1.2.6/components/lazutils/paswstring.pas"/>
+        <Caret Line="379" Column="43" TopLine="371"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
@@ -645,6 +663,7 @@ install:
     </Linking>
     <Other>
       <WriteFPCLogo Value="False"/>
+      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
   <Debugging>
@@ -669,4 +688,5 @@ install:
       </Item3>
     </Exceptions>
   </Debugging>
+  <EditorMacros Count="0"/>
 </CONFIG>

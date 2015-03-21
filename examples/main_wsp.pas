@@ -1,4 +1,6 @@
-
+{$IF DEFINED(Windows) or (FPC_FULLVERSION < 20701) }
+WARNING => only for unix systems and fpc >= 20701...
+{$ENDIF}
 /////////////////// Demo how to use United Openlib of Sound ////////////////////
 
 unit main_wsp;

@@ -1,16 +1,16 @@
 program simplewebplayer_fpGUI;
 
-{$IF DEFINED(Windows)}
-WARNING => only for unix systems...
+{$IF DEFINED(Windows) or (FPC_FULLVERSION < 20701) }
+WARNING => only for unix systems and fpc >= 20701...
 {$ENDIF}
 
 {$mode objfpc}{$H+}
   {$DEFINE UseCThreads}
 
 uses
-  {$IFDEF UNIX} {$IFDEF UseCThreads}
+   {$IFDEF UNIX}
   cthreads,
-  cwstring, {$ENDIF} {$ENDIF}
+  cwstring, {$ENDIF}
   SysUtils,
   uos_flat,
   ctypes,
@@ -27,7 +27,7 @@ uses
   fpg_Panel,
   fpg_base,
   fpg_main,
-  fpg_form { you can add units after this };
+  fpg_form ;
 
 type
   TSimpleplayer = class(TfpgForm)
@@ -75,10 +75,6 @@ type
     procedure btnStopClick(Sender: TObject);
     procedure btnPauseClick(Sender: TObject);
     procedure btnResumeClick(Sender: TObject);
-     {$IF (FPC_FULLVERSION >= 20701) or DEFINED(Windows)}
-          {$else}
-    procedure CustomMsgReceived(var msg: TfpgMessageRec); message MSG_CUSTOM1;
-      {$ENDIF}
     procedure ClosePlayer1;
     procedure LoopProcPlayer1;
     procedure ShowLevel;
@@ -95,7 +91,7 @@ type
 var
   PlayerIndex1: cardinal;
   ordir, opath: string;
-  Out1Index, In1Index, DSP1Index, Plugin1Index: cardinal;
+  In1Index, Plugin1Index: cardinal;
 
 
   procedure TSimpleplayer.ChangePlugSet(Sender: TObject);
@@ -204,9 +200,7 @@ var
   end;
 
   procedure TSimpleplayer.btnLoadClick(Sender: TObject);
-  var
-    str: string;
-  begin
+   begin
     // Load the libraries
     // function uos_LoadLib(PortAudioFileName: Pchar; SndFileFileName: Pchar; Mpg123FileName: Pchar; SoundTouchFileName: Pchar) : integer;
 if uos_LoadLib(Pchar(FilenameEdit1.FileName), nil, Pchar(FilenameEdit3.FileName), Pchar(FilenameEdit5.FileName)) = 0 then
@@ -269,8 +263,6 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), nil, Pchar(FilenameEdit3.FileName)
    procedure TSimpleplayer.btnStartClick(Sender: TObject);
   var
     samformat: shortint;
-    temptime: ttime;
-    ho, mi, se, ms: word;
   begin
 
     if radiobutton1.Checked = True then
@@ -306,7 +298,7 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), nil, Pchar(FilenameEdit3.FileName)
               ////////// example : InputIndex := AddFromFile(0,'http://someserver/somesound.mp3',-1,-1,-1);
          //  result : -1 nothing created, otherwise Input Index in array
 
-     Out1Index :=  uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, samformat, 1024);
+    uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, samformat, 1024);
     //// add a Output into device with custom parameters
     //////////// PlayerIndex : Index of a existing Player
     //////////// Device ( -1 is default Output device )
