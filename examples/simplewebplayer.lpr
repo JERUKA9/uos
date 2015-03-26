@@ -1,9 +1,10 @@
 
 program simplewebplayer;
 
-{$IF DEFINED(Windows)}
-WARNING => only for unix systems...
-{$ENDIF}
+{$IFDEF windows}
+//WARNING => not for Windows yet...
+ {$ENDIF}
+
 
 {$mode objfpc}{$H+}
  {$DEFINE UseCThreads}

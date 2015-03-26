@@ -90,8 +90,8 @@ procedure uos_logo();
 var
   Form1: TForm1;
   BufferBMP: TBitmap;
-  PlayerIndex1: cardinal;
-  Out1Index, In1Index, DSP1Index, Plugin1Index: cardinal;
+  PlayerIndex1: integer;
+  Out1Index, In1Index, DSP1Index, Plugin1Index: integer;
 
 implementation
 
@@ -115,7 +115,7 @@ begin
     rate := (2 * (TrackBar5.Position / 100));
 
   label7.Caption := 'Tempo: ' + floattostrf(tempo, ffFixed, 15, 1);
-  label9.Caption := 'Rate: ' + floattostrf(rate, ffFixed, 15, 1);
+  label9.Caption := 'Pitch: ' + floattostrf(rate, ffFixed, 15, 1);
 
   if radiogroup1.Enabled = False then   /// player1 was created
   begin
@@ -328,6 +328,8 @@ begin
     //////////// FramesCount : default : -1 (65536)
     //  result : -1 nothing created, otherwise Input Index in array
 
+    if In1Index > -1 then begin
+
     // Out1Index := uos_AddIntoDevOut(PlayerIndex1) ;
     //// add a Output into device with default parameters
     Out1Index := uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, In1Index), -1, samformat, -1);
@@ -424,7 +426,7 @@ begin
     application.ProcessMessages;
 
     uos_Play(PlayerIndex1);  /////// everything is ready, here we are, lets play it...
-
+    end;
   end
   else
     MessageDlg(edit4.Text + ' do not exist...', mtWarning, [mbYes], 0);

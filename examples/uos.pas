@@ -36,7 +36,7 @@ unit uos;
 * 15 th changes: 2014-03-16 (uos_flat + uos => uos version 1.3)                *
 * 16 th changes: 2014-06-16 (Java uos library compatible)                      *
 * 17 th changes: 2015-03-15 (freeBSD compatible)                               *
-* 18 th changes: 2015-03-20 (Internet Streaming (unix only))                   *
+* 18 th changes: 2015-03-20 (Internet Streaming )                              *
 *                                                                              *
 ********************************************************************************}
 
@@ -71,8 +71,8 @@ uses
    uos_jni,
    {$endif}
 
-   {$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
-     uos_httpgetthread,
+   {$IF (FPC_FULLVERSION >= 20701)}
+     uos_httpgetthread, Pipes,
    {$ENDIF}
 
      Classes, ctypes, Math,  uos_portaudio, sysutils,
@@ -95,7 +95,7 @@ type
   PDArLong = ^TDArLong;
 
   {$IF not DEFINED(windows)}
- // THandle = pointer;
+  THandle = pointer;
   TArray = single;
   {$endif}
 
@@ -198,9 +198,19 @@ type
     Channels: LongInt;
 
     //////// for web streaming
-    {$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
+   {$IF (FPC_FULLVERSION >= 20701)}
     httpget: TThreadHttpGetter;  // threaded http getter
-    {$ENDIF}
+
+      {$IF DEFINED(windows)}
+    InHandle : longword;
+     OutHandle: longword;
+    {$else}
+     InHandle : LongInt;
+     OutHandle: LongInt;
+     {$endif}
+     InPipe: TInputPipeStream;
+     OutPipe: TOutputPipeStream;
+   {$ENDIF}
 
     /////////// audio file data
     HandleSt: pointer;
@@ -227,8 +237,6 @@ type
     PAParam: PaStreamParameters;
     FileBuffer: Tuos_FileBuffer;
   end;
-
-
 
 type
   Tuos_FFT = class(TObject)
@@ -413,8 +421,8 @@ type
     //  result :   Input Index in array    -1 = error
     //////////// example : InputIndex1 := AddFromFile(edit5.Text,-1,0,-1);
 
-    {$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
-       function AddFromURL(URL: PChar; OutputIndex: LongInt;
+  {$IF (FPC_FULLVERSION >= 20701)}
+  function AddFromURL(URL: PChar; OutputIndex: LongInt;
    SampleFormat: LongInt ; FramesCount: LongInt ): LongInt;
   /////// Add a Input from Audio URL
   ////////// URL : URL of audio file
@@ -705,6 +713,32 @@ var
 
 
 implementation
+
+function mpg_read_stream(ahandle: Pointer; AData: Pointer; ACount: Integer): Integer; cdecl;
+var
+  Stream: TStream absolute ahandle;
+begin
+  Result := Stream.Read(AData^, ACount);
+end;
+
+function mpg_seek_stream(ahandle: Pointer; aoffset: Integer): Integer;
+var
+  Stream: TStream absolute ahandle;
+begin
+  // pipe streams are not seekable but memory and filestreams are
+  Result := aoffset;
+  try
+    if aoffset <> 0 then
+      Result := Stream.Seek(soFromCurrent, aoffset);
+  except
+    Result := 0;
+  end;
+end;
+
+procedure mpg_close_stream(ahandle: Pointer);
+begin
+  TObject(ahandle).Free;
+end;
 
 function FormatBuf(Inbuf: TDArFloat; format: LongInt): TDArFloat;
 var
@@ -2235,20 +2269,22 @@ begin
     Result := x;
 end;
 
-{$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
+{$IF (FPC_FULLVERSION >= 20701)}
  function Tuos_Player.AddFromURL(URL: PChar; OutputIndex: LongInt;
    SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
 /////// Add a Input from Audio URL
   ////////// URL : URL of audio file (like  'http://someserver/somesound.mp3')
   ////////// OutputIndex : OutputIndex of existing Output // -1: all output, -2: no output, other LongInt : existing Output
   ////////// SampleFormat : -1 default : Int16 (0: Float32, 1:Int32, 2:Int16)
-  //////////// FramesCount : default : -1 (65536)
-  ////////// example : InputIndex := AddFromFile('http://someserver/somesound.mp3',-1,-1,-1);
+  //////////// FramesCount : default : -1 (1024)
+  ////////// example : InputIndex := AddFromURL('http://someserver/somesound.mp3',-1,-1,-1);
 var
-  x, err, fd : LongInt;
+  x, err, inh : LongInt;
   sfInfo: TSF_INFO;
   mpinfo: Tmpg123_frameinfo;
   mpid3v1: Tmpg123_id3v1;
+  mpid3v2: Tmpg123_id3v2;
+
 begin
    result := -1 ;
 
@@ -2268,14 +2304,24 @@ begin
     StreamIn[x].Data.positionEnable := 0;
     StreamIn[x].Data.levelArrayEnable := 0;
 
-    StreamIn[x].Data.httpget := TThreadHttpGetter.Create();
+    CreatePipeHandles(StreamIn[x].Data.InHandle, StreamIn[x].Data.OutHandle, $4000);
+  StreamIn[x].Data.InPipe := TInputPipeStream.Create(StreamIn[x].Data.InHandle);
+  StreamIn[x].Data.OutPipe := TOutputPipeStream.Create(StreamIn[x].Data.OutHandle);
 
-       Err := -1;
-       fd := 0 ;
-       //    writeln('ok httpget create');
+  // this must be before mpg123 functions or it will block waiting for data when the http getter hasn't started yet
+  StreamIn[x].Data.httpget := TThreadHttpGetter.Create(url, StreamIn[x].Data.OutPipe);
+
+   if FramesCount= -1 then
+     StreamIn[x].Data.httpget.PipeBufferSize := 1024 else
+     StreamIn[x].Data.httpget.PipeBufferSize := FramesCount;
+
+     Err := -1;
 
        StreamIn[x].Data.HandleSt := mpg123_new(nil, Err);
-        // writeln('ok mpg123_new');
+
+       if err = 0 then writeln('===> mpg123_new => ok.') else
+       writeln('===> mpg123_new NOT ok.') ;
+
        if Err = 0 then
        begin
              if SampleFormat = -1 then
@@ -2293,14 +2339,24 @@ begin
                MPG123_ENC_SIGNED_16);
          end;
 
-           Err := mpg123_open_fd(StreamIn[x].Data.HandleSt,StreamIn[x].Data.httpget.InHandle);
-             //  writeln('ok mpg123_open_fd');
+    //     Err := mpg123_open_fd(StreamIn[x].Data.HandleSt,StreamIn[x].Data.httpget.InHandle);
+
+         mpg123_replace_reader_handle(StreamIn[x].Data.HandleSt, @mpg_read_stream, @mpg_seek_stream, @mpg_close_stream);
+
+         writeln('===> mpg123_replace_reader_handle => ok.');
+
+         Err :=  mpg123_open_handle(StreamIn[x].Data.HandleSt, Pointer(StreamIn[x].Data.InPipe));
+
+   //      writeln('===> mpg123 InHandle = ' + inttostr(StreamIn[x].Data.httpget.InHandle) );
+         if err = 0 then writeln('===> mpg123_open_fd => ok.') else
+          writeln('===> mpg123_open_fd => NOT ok.') ;
+
        end
        else
        begin
          StreamIn[x].Data.LibOpen := -1;
        end;
-         // writeln('ok mpg123_open_fd all ok');
+          writeln('===> mpg123_open_fd all => ok.');
        if Err = 0 then
 
           StreamIn[x].Data.filename := URL ;
@@ -2338,15 +2394,23 @@ begin
        StreamIn[x].Data.seekable := false;
        StreamIn[x].LoopProc := nil;
 
-       StreamIn[x].Data.httpget.WantedURL(url);
+ //  StreamIn[x].Data.httpget.WantedURL(url);
 
-   // {
+
           Err := mpg123_getformat(StreamIn[x].Data.HandleSt,
         StreamIn[x].Data.samplerate, StreamIn[x].Data.channels,
         StreamIn[x].Data.encoding);
-           writeln('ok mpg123_getformat');
-   //  }
+            writeln('===> mpg123_getformat => ok');
 
+
+   if err <> 0 then
+   begin
+   sleep(200);
+      Err := mpg123_getformat(StreamIn[x].Data.HandleSt,
+        StreamIn[x].Data.samplerate, StreamIn[x].Data.channels,
+        StreamIn[x].Data.encoding);
+            writeln('===> mpg123_getformat => ok');
+            end;
 
        if SampleFormat = -1 then
          StreamIn[x].Data.SampleFormat := 2
@@ -2358,12 +2422,12 @@ begin
            else
              StreamIn[x].Data.ratio := 2 * streamIn[x].Data.Channels;
 
-   //     {
+       // {
          mpg123_info(StreamIn[x].Data.HandleSt, MPinfo);
-         mpg123_id3(StreamIn[x].Data.HandleSt, @mpid3v1, nil);
+         mpg123_id3(StreamIn[x].Data.HandleSt, @mpid3v1, @mpid3v2);
 
-           writeln('ok mpg123_info');
-         ////////////// to do : add id2v2
+           writeln('===> mpg123_infos => ok');
+         ////////////// to do : add id3v2
          StreamIn[x].Data.title := trim(mpid3v1.title);
          StreamIn[x].Data.artist := mpid3v1.artist;
          StreamIn[x].Data.album := mpid3v1.album;
@@ -2375,11 +2439,12 @@ begin
          StreamIn[x].Data.hdformat := MPinfo.layer;
          StreamIn[x].Data.frames := MPinfo.framesize;
          StreamIn[x].Data.lengthst := mpg123_length(StreamIn[x].Data.HandleSt);
-   //    }
+     //  }
 
           if StreamIn[x].Data.SampleFormat = 0 then
             mpg123_param(StreamIn[x].Data.HandleSt, StreamIn[x].Data.Channels,
               MPG123_FORCE_FLOAT, 0);
+      writeln('===> mpg123 all => ok');
          end;
        end;
     {$ENDIF}
@@ -2393,17 +2458,16 @@ function Tuos_Player.AddFromFile(Filename: PChar; OutputIndex: LongInt;
   //////////// FramesCount : default : -1 (65536)
   ////////// example : InputIndex := AddFromFile('/usr/home/test.ogg',-1,-1,-1);
 var
-  //mh: Tmpg123_handle = nil;
   x, err: LongInt;
   sfInfo: TSF_INFO;
   mpinfo: Tmpg123_frameinfo;
   mpid3v1: Tmpg123_id3v1;
+  mpid3v2: Tmpg123_id3v2;
 begin
   result := -1 ;
    if fileexists(filename) then
     begin
     x := 0;
-    err := -1;
     SetLength(StreamIn, Length(StreamIn) + 1);
     StreamIn[Length(StreamIn) - 1] := Tuos_InStream.Create;
     x := Length(StreamIn) - 1;
@@ -2415,6 +2479,7 @@ begin
 
      if (uosLoadResult.SFloadERROR = 0) then
     begin
+
       StreamIn[x].Data.HandleSt := sf_open(FileName, SFM_READ, sfInfo);
       (* try to open the file *)
       if StreamIn[x].Data.HandleSt = nil then
@@ -2511,7 +2576,7 @@ begin
         SetLength(StreamIn[x].Data.Buffer, StreamIn[x].Data.Wantframes*StreamIn[x].Data.Channels);
 
         mpg123_info(StreamIn[x].Data.HandleSt, MPinfo);
-        mpg123_id3(StreamIn[x].Data.HandleSt, @mpid3v1, nil);
+        mpg123_id3(StreamIn[x].Data.HandleSt, @mpid3v1, @mpid3v2);
         ////////////// to do : add id2v2
         StreamIn[x].Data.title := trim(mpid3v1.title);
         StreamIn[x].Data.artist := mpid3v1.artist;
@@ -2534,6 +2599,7 @@ begin
 
    if err <> 0 then
     begin
+   result := -1 ;
       exit;
     end
     else
@@ -2575,10 +2641,10 @@ end;
 procedure Tuos_Player.Execute;
 /////////////////////// The Loop Procedure ///////////////////////////////
 var
-  x, x2, x3, x4: LongInt;
+  x, x2, x3, x4, err: LongInt;
   plugenabled: boolean;
   curpos: cint64;
-  err: CInt32;
+ // err: CInt32;
   BufferplugINFLTMP: TDArFloat;
   BufferplugFL: TDArFloat;
   BufferplugSH: TDArShort;
@@ -2722,8 +2788,9 @@ begin
 
           2:  /////// for Input from Internet audio stream.
           begin
-          mpg123_read(StreamIn[x].Data.HandleSt, @StreamIn[x].Data.Buffer[0],
+         err := mpg123_read(StreamIn[x].Data.HandleSt, @StreamIn[x].Data.Buffer[0],
           StreamIn[x].Data.wantframes, StreamIn[x].Data.outframes);
+           writeln('===> mpg123_read error => ' + inttostr(err)) ;
           StreamIn[x].Data.outframes :=
             StreamIn[x].Data.outframes div StreamIn[x].Data.Channels;
                 //    writeln('mpg123_read');
@@ -2731,7 +2798,7 @@ begin
         end;
 
         //// check if internet stream is stopped.
-   {$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
+   {$IF (FPC_FULLVERSION >= 20701)}
      if (StreamIn[x].Data.Seekable = false) then if StreamIn[x].Data.httpget.IsRunning = false
      then  StreamIn[x].Data.status := 0; //////// no more data then close the stream
    {$ENDIF}
@@ -3129,7 +3196,7 @@ begin
               begin
                 mpg123_close(StreamIn[x].Data.HandleSt);
                 mpg123_delete(StreamIn[x].Data.HandleSt);
-                {$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
+               {$IF (FPC_FULLVERSION >= 20701)}
                StreamIn[x].Data.httpget.Terminate;
                StreamIn[x].Data.httpget.Free;
                {$ENDIF}
@@ -3615,4 +3682,4 @@ begin
 
 end;
 
-end.
+end.

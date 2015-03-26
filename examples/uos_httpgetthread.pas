@@ -1,17 +1,14 @@
-unit uos_httpgetthread;
-
 {This is HTTP Thread Getter done by
    Andrew Haines => andrewd207@aol.com }
 
-{Modifications for uos done by
-  Fred van Stappen => fiens@hotmail.com }
+unit uos_httpgetthread;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
- Classes, SysUtils, unix, BaseUnix;
+  Classes, SysUtils, strutils, Pipes;
 
 type
 
@@ -19,17 +16,15 @@ type
 
   TThreadHttpGetter = class(TThread)
   private
+    FOutStream: TOutputPipeStream;
     FWantedURL: String;
     FIsRunning: Boolean;
-    FOutHandle: THandle;
     function GetRedirectURL(AResponseStrings: TStrings): String;
-   protected
+  protected
     procedure Execute; override;
-   public
-    InHandle: THandle;
-    ReDirectURL: String ;
-    constructor Create();
-    procedure  WantedURL(AWantedURL: String);
+  public
+    PipeBufferSize: cardinal;
+    constructor Create(AWantedURL: String; AOutputStream: TOutputPipeStream);
     property IsRunning: Boolean read FIsRunning;
   end;
 
@@ -39,13 +34,6 @@ uses
 
 { TThreadHttpGetter }
 
-procedure TThreadHttpGetter.WantedURL(AWantedURL: String);
-begin
-   FWantedURL:=AWantedURL;
-   FIsRunning:=True;
-   Start;
-end;
-
 function TThreadHttpGetter.GetRedirectURL(AResponseStrings: TStrings): String;
 var
   S: String;
@@ -53,7 +41,6 @@ var
   Search: String = 'location:';
 begin
   Result := '';
-  ReDirectURL := '';
   for S In AResponseStrings do
   begin
     WriteLn(S);
@@ -70,54 +57,53 @@ end;
 procedure TThreadHttpGetter.Execute;
 var
   Http: TFPHTTPClient;
-  Output: THandleStream = nil;
   URL: String;
 begin
   Http := TFPHTTPClient.Create(nil);
-  Output := THandleStream.Create(FOutHandle);
   URL := FWantedURL;
   repeat
   try
     Http.RequestHeaders.Clear;
-    Http.Get(URL, Output);
+    Http.Get(URL, FOutStream);
   except
     on e: EHTTPClient do
     begin
       if Http.ResponseStatusCode = 302 then
       begin
         URL := GetRedirectURL(Http.ResponseHeaders);
-        RedirectURL := RedirectURL + URL + ' ' ;
-        writeln('Redirect URL: ' + RedirectURL) ;
         if URL <> '' then
           Continue;
       end
       else
-       Break;
-       // raise E;
+        raise E;
+    end;
+    on e: Exception do
+    begin
+      WriteLn(e.Message);
     end
     else
-    //  Raise;
-     Break;
+      Raise;
   end;
   Break;
   until False;
 
   try
-    Output.Free;
+    FOutStream.Free;
     Http.Free;
   finally
    // make sure this is set to false when done
     FIsRunning:=False;
-    FpClose(FOutHandle);
-    FpClose(InHandle);
   end;
 end;
 
-constructor TThreadHttpGetter.Create();
+
+constructor TThreadHttpGetter.Create(AWantedURL: String; AOutputStream: TOutputPipeStream);
 begin
   inherited Create(True);
-   FIsRunning:=False;
-   AssignPipe(InHandle, FOutHandle);
+  FIsRunning:=True;
+  FWantedURL:=AWantedURL;
+  FOutStream:=AOutputStream;
+  Start;
 end;
 
 end.

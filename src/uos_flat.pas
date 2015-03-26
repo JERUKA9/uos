@@ -132,7 +132,7 @@ function uos_AddFromFile(PlayerIndex: LongInt; Filename: PChar; OutputIndex: Lon
             //  result : Input Index in array  -1 = error
             //////////// example : InputIndex1 := uos_AddFromFile(0, edit5.Text,-1,0);
 
-             {$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
+           {$IF (FPC_FULLVERSION >= 20701)}
 function uos_AddFromURL(PlayerIndex: LongInt; URL: PChar): LongInt;
           /////// Add a Input from Audio URL with default parameters
 
@@ -780,7 +780,7 @@ begin
   Result := uosPlayers[PlayerIndex].AddFromFile(Filename, -1, -1, -1);
 end;
 
-{$IF DEFINED(UNIX) and (FPC_FULLVERSION >= 20701)}
+{$IF (FPC_FULLVERSION >= 20701)}
 function uos_AddFromURL(PlayerIndex: LongInt; URL: PChar; OutputIndex: LongInt;
                SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
             /////// Add a Input from Audio URL
@@ -1186,4 +1186,4 @@ end;
 end;
 
 
-end.
+end.

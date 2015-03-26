@@ -1,51 +1,86 @@
-
-program conswebstream;
-
-{$IFDEF windows}
-///WARNING => not for Windows yet...
- {$ENDIF}
-
-///WARNING : needs FPC version > 2.7.1 
+program testfpgui;
 
 {$mode objfpc}{$H+}
-   {$DEFINE UseCThreads}
+ {$DEFINE UseCThreads}
 uses
- {$IFDEF UNIX}
+  {$IFDEF UNIX}
   cthreads,
   {$ENDIF}
-  Classes,
-  ctypes,
-  SysUtils,
-  Math,
-  CustApp,
-  uos_flat;
+  SysUtils, Classes, fpg_base, fpg_main, math, uos_flat,
+  {%units 'Auto-generated GUI code'}
+  fpg_form, fpg_button
+  {%endunits}
+  ;
 
 type
-
-  { TUOSConsole }
-
-  TuosConsole = class(TCustomApplication)
+ 
+  Ttest = class(TfpgForm)
   private
-    procedure ConsolePlay;
-  protected
-    procedure doRun; override;
+    {@VFD_HEAD_BEGIN: test}
+    Button1: TfpgButton;
+    {@VFD_HEAD_END: test}
   public
-    procedure Consoleclose;
-    constructor Create(TheOwner: TComponent); override;
+    procedure AfterCreate; override;
+    procedure btnStartClick(Sender: TObject);
+
+    procedure btnCloseClick(Sender: TObject);
+    procedure ConsolePlay;
   end;
 
+{@VFD_NEWFORM_DECL}
 
+{@VFD_NEWFORM_IMPL}
 var
-  res: integer;
+ res: integer;
   ordir, opath, PA_FileName, MP_FileName, theurl : string;
-  PlayerIndex1: cardinal;
+  PlayerIndex1: cardinal = 0;
 
-   { TuosConsole }
+procedure Ttest.AfterCreate;
+begin
+  {%region 'Auto-generated GUI code' -fold}
 
-  procedure TuosConsole.ConsolePlay;
+  {@VFD_BODY_BEGIN: test}
+  Name := 'test';
+  SetPosition(427, 240, 300, 100);
+  WindowTitle := 'Internet Radio test';
+  IconName := '';
+  Hint := '';
+  WindowPosition := wpScreenCenter;
+  Ondestroy := @btnCloseClick;
+
+  Button1 := TfpgButton.Create(self);
+  with Button1 do
+  begin
+    Name := 'Button1';
+    SetPosition(100, 35, 100, 30);
+    FontDesc := '#Label1';
+    Hint := '';
+    ImageName := '';
+    TabOrder := 1;
+    Text := 'Start';
+    onClick := @btnStartClick;
+  end;
+
+  {@VFD_BODY_END: test}
+  {%endregion}
+ end;
+
+procedure Ttest.btnStartClick(Sender: TObject);
+begin
+ConsolePlay;
+end;
+
+procedure Ttest.btnCloseClick(Sender: TObject);
+  begin
+     uos_stop(PlayerIndex1);
+          sleep(100);
+      uos_UnloadLib();
+  end;
+
+ procedure Ttest.ConsolePlay;
   begin
 
-      ordir := (ExtractFilePath(ParamStr(0)));
+        ordir := (ExtractFilePath(ParamStr(0)));
 
           {$IFDEF Windows}
      {$if defined(cpu64)}
@@ -73,72 +108,48 @@ var
     PA_FileName := opath + '/lib/Mac/32bit/LibPortaudio-32.dylib';
     MP_FileName := opath + '/lib/Mac/32bit/LibMpg123-32.dylib';
                 {$ENDIF}
+
     PlayerIndex1 := 0;
 
     // Load the libraries
-    // function uos_LoadLib(PortAudioFileName: Pchar; SndFileFileName: Pchar; Mpg123FileName: Pchar; SoundTouchFileName: Pchar) : integer;
-    // for web streaming => Mpg123 is needed
-
     res := uos_LoadLib(Pchar(PA_FileName), nil, Pchar(MP_FileName), nil) ;
     if res = 0 then  writeln('===> Libraries are loaded.') else
        writeln('===> Libraries are NOT loaded.') ;
 
-     uos_CreatePlayer(PlayerIndex1); //// Create the player
+
+      uos_CreatePlayer(PlayerIndex1); //// Create the player
      writeln('===> uos_CreatePlayer => ok');
 
     theurl := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
- // theurl := 'http://www.alouette.fr/alouette.m3u' ;
  // theurl := 'http://broadcast.infomaniak.net/start-latina-high.mp3' ;
  // theurl := 'http://www.hubharp.com/web_sound/BachGavotteShort.mp3' ;
  // theurl := 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3' ;
 
-   {
- with TfpHttpClient.Create(nil) do
-
-   try   WriteLn( Get(theurl));
-    finally  Free;
-   end;
-  // }
-
       uos_AddFromURL(PlayerIndex1,pchar(theurl)) ;
-     
-     writeln('===> uos_AddFromURL => ok');
+      writeln('===> uos_AddFromURL => ok');
 
-      //// add a Output  => change framecount => 1024
+    //// add a Output  => change framecount => 1024
      uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, -1, 1024);
      writeln('===> uos_AddIntoDevOut => ok');
-      writeln('===> All ready to play.');
-     writeln('Press a key to play...');
-       readln;
+
      uos_Play(PlayerIndex1);
-        end;
+end;
 
-  procedure TuosConsole.doRun;
-  begin
-    ConsolePlay;
-    writeln('Press a key to exit...');
-      readln;
-      uos_unloadLib();
-      Terminate;
-    end;
-
-  procedure TuosConsole.ConsoleClose;
-  begin
-   uos_unloadLib();
-    Terminate;
-  end;
-
-  constructor TuosConsole.Create(TheOwner: TComponent);
-  begin
-    inherited Create(TheOwner);
-    StopOnException := True;
-  end;
-
+procedure MainProc;
 var
-  Application: TUOSConsole;
+  frm: Ttest;
 begin
-  Application := TUOSConsole.Create(nil);
-  Application.Title := 'Console Web Player';
-    Application.Run;
-  Application.Free;
+  fpgApplication.Initialize;
+  try
+    frm := Ttest.Create(nil);
+    fpgApplication.MainForm := frm;
+    frm.Show;
+    fpgApplication.Run;
+  finally
+    frm.Free;
+  end;
+end;
+
+begin
+  MainProc;
 end.

@@ -99,9 +99,9 @@ type
   {@VFD_NEWFORM_IMPL}
 
 var
-  PlayerIndex1: cardinal;
+  PlayerIndex1: integer;
   ordir, opath: string;
-  Out1Index, In1Index, DSP1Index, Plugin1Index: cardinal;
+  Out1Index, In1Index, DSP1Index, Plugin1Index: integer;
 
   procedure TSimpleplayer.btnTrackOnClick(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; const pos: TPoint);
@@ -125,7 +125,7 @@ var
       rate := 2 - (2 * (TrackBar5.Position / 100));
 
     label6.Text := 'Tempo: ' + floattostrf(tempo, ffFixed, 15, 1);
-    label7.Text := 'Rate: ' + floattostrf(rate, ffFixed, 15, 1);
+    label7.Text := 'Pitch: ' + floattostrf(rate, ffFixed, 15, 1);
 
     if radiobutton1.Enabled = False then   /// player1 was created
     begin
@@ -227,8 +227,7 @@ var
   end;
 
   procedure TSimpleplayer.btnLoadClick(Sender: TObject);
-  var
-    str: string;
+
   begin
     // Load the libraries
     // function uos_LoadLib(PortAudioFileName: Pchar; SndFileFileName: Pchar; Mpg123FileName: Pchar; SoundTouchFileName: Pchar) : integer;
@@ -354,6 +353,8 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     //////////// FramesCount : default : -1 (65536)
     //  result : -1 nothing created, otherwise Input Index in array
 
+    if In1Index > -1 then begin
+
       // Out1Index := uos_AddIntoDevOut(PlayerIndex1) ;
     //// add a Output into device with default parameters
     Out1Index := uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, In1Index), -1, samformat, -1);
@@ -451,7 +452,7 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     btnresume.Enabled := False;
 
     uos_Play(PlayerIndex1);  /////// everything is ready, here we are, lets play it...
-
+    end;
   end;
 
   procedure TSimpleplayer.ShowPosition;
@@ -890,7 +891,7 @@ end;
       SetPosition(380, 312, 80, 15);
       FontDesc := '#Label1';
       Hint := '';
-      Text := 'Rate: 1.0';
+      Text := 'Pitch: 1.0';
     end;
 
     TrackBar4 := TfpgTrackBar.Create(self);
@@ -996,16 +997,8 @@ end;
   end;
 
   procedure TSimpleplayer.uos_logo(Sender: TObject);
-  var
-    xpos, ypos, pbwidth, pbheight: integer;
-    ratio: double;
-  begin
-    xpos := 0;
-    ypos := 0;
-    ratio := 1;
-    pbwidth := 115;
-    pbheight := 115;
-    with Custom1 do
+   begin
+     with Custom1 do
     begin
       Canvas.GradientFill(GetClientRect, clgreen, clBlack, gdVertical);
       Canvas.TextColor := clWhite;

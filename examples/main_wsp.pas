@@ -1,6 +1,3 @@
-{$IF DEFINED(Windows) or (FPC_FULLVERSION < 20701) }
-WARNING => only for unix systems and fpc >= 20701...
-{$ENDIF}
 /////////////////// Demo how to use United Openlib of Sound ////////////////////
 
 unit main_wsp;
@@ -98,7 +95,7 @@ begin
     rate := (2 * (TrackBar5.Position / 100));
 
   label7.Caption := 'Tempo: ' + floattostrf(tempo, ffFixed, 15, 1);
-  label9.Caption := 'Rate: ' + floattostrf(rate, ffFixed, 15, 1);
+  label9.Caption := 'Pitch: ' + floattostrf(rate, ffFixed, 15, 1);
 
   if radiogroup1.Enabled = False then   /// player1 was created
   begin
@@ -248,6 +245,7 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 var
   samformat: shortint;
+  theurl : string;
  begin
 
     PlayerIndex1 := 0;
@@ -268,7 +266,15 @@ var
     //// PlayerIndex : from 0 to what your computer can do !
     //// If PlayerIndex exists already, it will be overwriten...
 
-     In1Index :=  uos_AddFromURL(PlayerIndex1,pchar(edit4.text),-1,samformat,-1) ;
+      theurl := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
+ // theurl := 'http://www.alouette.fr/alouette.m3u' ;
+ // theurl := 'http://broadcast.infomaniak.net/start-latina-high.mp3' ;
+ // theurl := 'http://www.hubharp.com/web_sound/BachGavotteShort.mp3' ;
+ // theurl := 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3' ;
+
+   //  In1Index :=  uos_AddFromURL(PlayerIndex1,pchar(edit4.text),-1,samformat,-1) ;
+      In1Index :=  uos_AddFromURL(PlayerIndex1, pchar(theurl),-1,samformat,-1) ;
+
     /////// Add a Input from Audio URL with custom parameters
               ////////// URL : URL of audio file (like  'http://someserver/somesound.mp3')
               ////////// OutputIndex : OutputIndex of existing Output // -1: all output, -2: no output, other LongInt : existing Output

@@ -102,7 +102,7 @@ type
 var
   PlayerIndex1: Tuos_Player;
   ordir, opath: string;
-  In1Index, DSP1Index, DSP2Index, Plugin1Index: cardinal;
+  In1Index, DSP1Index, DSP2Index, Plugin1Index: integer;
 
   procedure TSimpleplayer.btnTrackOnClick(Sender: TObject; Button: TMouseButton;
     Shift: TShiftState; const pos: TPoint);
@@ -124,7 +124,7 @@ var
       rate := 2 - (2 * (TrackBar5.Position / 100));
 
     label6.Text := 'Tempo: ' + floattostrf(tempo, ffFixed, 15, 1);
-    label7.Text := 'Rate: ' + floattostrf(rate, ffFixed, 15, 1);
+    label7.Text := 'Pitch: ' + floattostrf(rate, ffFixed, 15, 1);
 
     if radiobutton1.Enabled = False then   /// player1 was created
     begin
@@ -345,6 +345,7 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     //////////// FramesCount : default : -1 (65536)
     //  result : -1 nothing created, otherwise Input Index in array
 
+    if  In1Index > -1 then begin
 
     // Out1Index := uos_AddIntoDevOut(PlayerIndex1) ;
     //// add a Output into device with default parameters
@@ -443,7 +444,7 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), Pchar(FilenameEdit2.FileName), Pch
     btnresume.Enabled := False;
 
     PlayerIndex1.Play();  /////// everything is ready, here we are, lets play it...
-
+    end;
   end;
 
   procedure TSimpleplayer.ShowPosition;
@@ -882,7 +883,7 @@ end;
       SetPosition(380, 312, 80, 15);
       FontDesc := '#Label1';
       Hint := '';
-      Text := 'Rate: 1.0';
+      Text := 'Pitch: 1.0';
     end;
 
     TrackBar4 := TfpgTrackBar.Create(self);

@@ -1,14 +1,10 @@
 program simplewebplayer_fpGUI;
 
-{$IF DEFINED(Windows) or (FPC_FULLVERSION < 20701) }
-WARNING => only for unix systems and fpc >= 20701...
-{$ENDIF}
-
 {$mode objfpc}{$H+}
   {$DEFINE UseCThreads}
 
 uses
-   {$IFDEF UNIX}
+  {$IFDEF UNIX}
   cthreads,
   cwstring, {$ENDIF}
   SysUtils,
@@ -89,9 +85,9 @@ type
   {@VFD_NEWFORM_IMPL}
 
 var
-  PlayerIndex1: cardinal;
+  PlayerIndex1: integer;
   ordir, opath: string;
-  In1Index, Plugin1Index: cardinal;
+  In1Index, Plugin1Index: integer;
 
 
   procedure TSimpleplayer.ChangePlugSet(Sender: TObject);
@@ -110,7 +106,7 @@ var
       rate := 2 - (2 * (TrackBar5.Position / 100));
 
     label6.Text := 'Tempo: ' + floattostrf(tempo, ffFixed, 15, 1);
-    label7.Text := 'Rate: ' + floattostrf(rate, ffFixed, 15, 1);
+    label7.Text := 'Pitch: ' + floattostrf(rate, ffFixed, 15, 1);
 
     if radiobutton1.Enabled = False then   /// player1 was created
     begin
@@ -381,6 +377,8 @@ end;
   begin
     {%region 'Auto-generated GUI code' -fold}
 
+
+
     {@VFD_BODY_BEGIN: Simpleplayer}
   Name := 'Simpleplayer';
   SetPosition(467, 0, 502, 403);
@@ -542,7 +540,6 @@ end;
   begin
     Name := 'RadioButton1';
     SetPosition(128, 300, 96, 19);
-    Checked := false;
     FontDesc := '#Label1';
     GroupIndex := 0;
     Hint := '';
@@ -559,7 +556,6 @@ end;
     GroupIndex := 0;
     Hint := '';
     TabOrder := 19;
-    Checked := false;
     Text := 'Int 32 bit';
   end;
 
@@ -568,11 +564,11 @@ end;
   begin
     Name := 'RadioButton3';
     SetPosition(128, 334, 100, 19);
+    Checked := True;
     FontDesc := '#Label1';
     GroupIndex := 0;
     Hint := '';
     TabOrder := 20;
-    Checked := true;
     Text := 'Int 16 bit';
   end;
 
@@ -694,7 +690,7 @@ end;
     SetPosition(380, 312, 80, 15);
     FontDesc := '#Label1';
     Hint := '';
-    Text := 'Rate: 1.0';
+    Text := 'Pitch: 1.0';
   end;
 
   TrackBar4 := TfpgTrackBar.Create(self);
@@ -745,7 +741,7 @@ end;
     FontDesc := '#Edit1';
     Hint := '';
     TabOrder := 33;
-    Text := 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3';
+    Text := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
   end;
 
   Label8 := TfpgLabel.Create(self);
