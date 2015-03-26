@@ -43,7 +43,7 @@ begin
   Result := '';
   for S In AResponseStrings do
   begin
-    WriteLn(S);
+   // WriteLn(S);
     F := Pos(Search, Lowercase(s));
 
     if F > 0 then
@@ -79,7 +79,7 @@ begin
     end;
     on e: Exception do
     begin
-      WriteLn(e.Message);
+    //  WriteLn(e.Message);
     end
     else
       Raise;

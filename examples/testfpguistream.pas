@@ -113,12 +113,11 @@ procedure Ttest.btnCloseClick(Sender: TObject);
 
     // Load the libraries
     res := uos_LoadLib(Pchar(PA_FileName), nil, Pchar(MP_FileName), nil) ;
-    if res = 0 then  writeln('===> Libraries are loaded.') else
-       writeln('===> Libraries are NOT loaded.') ;
+  //  if res = 0 then  writeln('===> Libraries are loaded.') else  writeln('===> Libraries are NOT loaded.') ;
 
 
       uos_CreatePlayer(PlayerIndex1); //// Create the player
-     writeln('===> uos_CreatePlayer => ok');
+ //  writeln('===> uos_CreatePlayer => ok');
 
     theurl := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
  // theurl := 'http://broadcast.infomaniak.net/start-latina-high.mp3' ;
@@ -126,11 +125,11 @@ procedure Ttest.btnCloseClick(Sender: TObject);
  // theurl := 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3' ;
 
       uos_AddFromURL(PlayerIndex1,pchar(theurl)) ;
-      writeln('===> uos_AddFromURL => ok');
+   //   writeln('===> uos_AddFromURL => ok');
 
     //// add a Output  => change framecount => 1024
      uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, -1, 1024);
-     writeln('===> uos_AddIntoDevOut => ok');
+   //  writeln('===> uos_AddIntoDevOut => ok');
 
      uos_Play(PlayerIndex1);
 end;

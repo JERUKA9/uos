@@ -2319,8 +2319,7 @@ begin
 
        StreamIn[x].Data.HandleSt := mpg123_new(nil, Err);
 
-       if err = 0 then writeln('===> mpg123_new => ok.') else
-       writeln('===> mpg123_new NOT ok.') ;
+      // if err = 0 then writeln('===> mpg123_new => ok.') else writeln('===> mpg123_new NOT ok.') ;
 
        if Err = 0 then
        begin
@@ -2343,20 +2342,20 @@ begin
 
          mpg123_replace_reader_handle(StreamIn[x].Data.HandleSt, @mpg_read_stream, @mpg_seek_stream, @mpg_close_stream);
 
-         writeln('===> mpg123_replace_reader_handle => ok.');
+      //   writeln('===> mpg123_replace_reader_handle => ok.');
 
          Err :=  mpg123_open_handle(StreamIn[x].Data.HandleSt, Pointer(StreamIn[x].Data.InPipe));
 
    //      writeln('===> mpg123 InHandle = ' + inttostr(StreamIn[x].Data.httpget.InHandle) );
          if err = 0 then writeln('===> mpg123_open_fd => ok.') else
-          writeln('===> mpg123_open_fd => NOT ok.') ;
+      //    writeln('===> mpg123_open_fd => NOT ok.') ;
 
        end
        else
        begin
          StreamIn[x].Data.LibOpen := -1;
        end;
-          writeln('===> mpg123_open_fd all => ok.');
+         // writeln('===> mpg123_open_fd all => ok.');
        if Err = 0 then
 
           StreamIn[x].Data.filename := URL ;
@@ -2400,7 +2399,7 @@ begin
           Err := mpg123_getformat(StreamIn[x].Data.HandleSt,
         StreamIn[x].Data.samplerate, StreamIn[x].Data.channels,
         StreamIn[x].Data.encoding);
-            writeln('===> mpg123_getformat => ok');
+         //   writeln('===> mpg123_getformat => ok');
 
 
    if err <> 0 then
@@ -2409,7 +2408,7 @@ begin
       Err := mpg123_getformat(StreamIn[x].Data.HandleSt,
         StreamIn[x].Data.samplerate, StreamIn[x].Data.channels,
         StreamIn[x].Data.encoding);
-            writeln('===> mpg123_getformat => ok');
+         //   writeln('===> mpg123_getformat => ok');
             end;
 
        if SampleFormat = -1 then
@@ -2426,7 +2425,7 @@ begin
          mpg123_info(StreamIn[x].Data.HandleSt, MPinfo);
          mpg123_id3(StreamIn[x].Data.HandleSt, @mpid3v1, @mpid3v2);
 
-           writeln('===> mpg123_infos => ok');
+         //  writeln('===> mpg123_infos => ok');
          ////////////// to do : add id3v2
          StreamIn[x].Data.title := trim(mpid3v1.title);
          StreamIn[x].Data.artist := mpid3v1.artist;
@@ -2444,7 +2443,7 @@ begin
           if StreamIn[x].Data.SampleFormat = 0 then
             mpg123_param(StreamIn[x].Data.HandleSt, StreamIn[x].Data.Channels,
               MPG123_FORCE_FLOAT, 0);
-      writeln('===> mpg123 all => ok');
+    //  writeln('===> mpg123 all => ok');
          end;
        end;
     {$ENDIF}
@@ -2790,7 +2789,7 @@ begin
           begin
          err := mpg123_read(StreamIn[x].Data.HandleSt, @StreamIn[x].Data.Buffer[0],
           StreamIn[x].Data.wantframes, StreamIn[x].Data.outframes);
-           writeln('===> mpg123_read error => ' + inttostr(err)) ;
+         //  writeln('===> mpg123_read error => ' + inttostr(err)) ;
           StreamIn[x].Data.outframes :=
             StreamIn[x].Data.outframes div StreamIn[x].Data.Channels;
                 //    writeln('mpg123_read');
