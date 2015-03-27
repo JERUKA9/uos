@@ -3,6 +3,7 @@ unit uos;
 {.$DEFINE library}   // uncomment it for building uos library (native and java)
 {.$DEFINE java}   // uncomment it for building uos java library
 {.$DEFINE ConsoleApp} // if FPC version < 2.7.1 uncomment it for console application
+{$DEFINE webstream} // uncomment it for Internet Audio Stream application
 
 {*******************************************************************************
 *                  United Openlibraries of Sound ( uos )                       *
@@ -71,7 +72,7 @@ uses
    uos_jni,
    {$endif}
 
-   {$IF (FPC_FULLVERSION >= 20701)}
+    {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
      uos_httpgetthread, Pipes,
    {$ENDIF}
 
@@ -198,17 +199,23 @@ type
     Channels: LongInt;
 
     //////// for web streaming
-   {$IF (FPC_FULLVERSION >= 20701)}
+   {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
     httpget: TThreadHttpGetter;  // threaded http getter
 
       {$IF DEFINED(windows)}
-    InHandle : longword;
+     {$if defined(cpu64)}
+     InHandle : Qword;
+     OutHandle: Qword;
+     {$else}
+      InHandle : longword;
      OutHandle: longword;
+         {$ENDIF}
     {$else}
-     InHandle : LongInt;
+    InHandle : LongInt;
      OutHandle: LongInt;
-     {$endif}
-     InPipe: TInputPipeStream;
+      {$endif}
+
+    InPipe: TInputPipeStream;
      OutPipe: TOutputPipeStream;
    {$ENDIF}
 
@@ -421,7 +428,7 @@ type
     //  result :   Input Index in array    -1 = error
     //////////// example : InputIndex1 := AddFromFile(edit5.Text,-1,0,-1);
 
-  {$IF (FPC_FULLVERSION >= 20701)}
+   {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
   function AddFromURL(URL: PChar; OutputIndex: LongInt;
    SampleFormat: LongInt ; FramesCount: LongInt ): LongInt;
   /////// Add a Input from Audio URL
@@ -2269,7 +2276,7 @@ begin
     Result := x;
 end;
 
-{$IF (FPC_FULLVERSION >= 20701)}
+{$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
  function Tuos_Player.AddFromURL(URL: PChar; OutputIndex: LongInt;
    SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
 /////// Add a Input from Audio URL
@@ -2797,7 +2804,7 @@ begin
         end;
 
         //// check if internet stream is stopped.
-   {$IF (FPC_FULLVERSION >= 20701)}
+     {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
      if (StreamIn[x].Data.Seekable = false) then if StreamIn[x].Data.httpget.IsRunning = false
      then  StreamIn[x].Data.status := 0; //////// no more data then close the stream
    {$ENDIF}
@@ -3195,7 +3202,7 @@ begin
               begin
                 mpg123_close(StreamIn[x].Data.HandleSt);
                 mpg123_delete(StreamIn[x].Data.HandleSt);
-               {$IF (FPC_FULLVERSION >= 20701)}
+                 {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
                StreamIn[x].Data.httpget.Terminate;
                StreamIn[x].Data.httpget.Free;
                {$ENDIF}
