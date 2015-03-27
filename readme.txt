@@ -10,7 +10,7 @@ With uos you can:
 
 . With 16, 32 or float 32 bit resolution.
 
-. Do internet audio streaming (unix only).
+. Do internet audio streaming.
 
 . Record all types of input into file.
 
@@ -22,6 +22,7 @@ uos uses the SoundTouch, PortAudio, SndFile and Mpg123 audio libraries.
 
 Included in the package:
 . Examples fpGUI, LCL(Lazarus) and console.
+. Binaries of libraries for Linux, Windows, OSX, freeBSD.
 
 Fred van Stappen
 fiens@hotmail.com
