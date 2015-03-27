@@ -37,7 +37,7 @@ unit uos;
 * 15 th changes: 2014-03-16 (uos_flat + uos => uos version 1.3)                *
 * 16 th changes: 2014-06-16 (Java uos library compatible)                      *
 * 17 th changes: 2015-03-15 (freeBSD compatible)                               *
-* 18 th changes: 2015-03-20 (Internet Streaming )                              *
+* 18 th changes: 2015-03-20 (Andrew's Audio Internet Streaming)                *
 *                                                                              *
 ********************************************************************************}
 
