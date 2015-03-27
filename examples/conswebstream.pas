@@ -5,7 +5,7 @@ program conswebstream;
 ///WARNING => not for Windows yet...
  {$ENDIF}
 
-///WARNING : needs FPC version > 2.7.1 
+///WARNING : needs FPC version > 2.7.1
 
 {$mode objfpc}{$H+}
    {$DEFINE UseCThreads}
@@ -101,7 +101,7 @@ var
   // }
 
       uos_AddFromURL(PlayerIndex1,pchar(theurl)) ;
-     
+
      writeln('===> uos_AddFromURL => ok');
 
       //// add a Output  => change framecount => 1024

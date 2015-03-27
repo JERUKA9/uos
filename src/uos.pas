@@ -2347,7 +2347,7 @@ begin
          Err :=  mpg123_open_handle(StreamIn[x].Data.HandleSt, Pointer(StreamIn[x].Data.InPipe));
 
    //      writeln('===> mpg123 InHandle = ' + inttostr(StreamIn[x].Data.httpget.InHandle) );
-         if err = 0 then writeln('===> mpg123_open_fd => ok.') else
+     ///    if err = 0 then writeln('===> mpg123_open_fd => ok.') else
       //    writeln('===> mpg123_open_fd => NOT ok.') ;
 
        end
