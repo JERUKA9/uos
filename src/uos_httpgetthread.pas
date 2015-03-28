@@ -74,14 +74,16 @@ begin
           Continue;
       end
       else
-        raise E;
+       Break;
+       // raise E;
     end;
     on e: Exception do
     begin
     //  WriteLn(e.Message);
     end
     else
-      Raise;
+     // Raise;
+      Break;
   end;
   Break;
   until False;
