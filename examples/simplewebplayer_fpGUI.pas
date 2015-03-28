@@ -226,8 +226,15 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), nil, Pchar(FilenameEdit3.FileName)
           end;
       WindowPosition := wpScreenCenter;
       WindowTitle := 'Simple Web Player    uos version ' + inttostr(uos_getversion());
+
+      // Some audio web streaming
+     edit1.text := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
+ //  edit1.text := 'http://broadcast.infomaniak.net/start-latina-high.mp3' ;
+ //  edit1.text := 'http://www.hubharp.com/web_sound/BachGavotteShort.mp3' ;
+ //  edit1.text := 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3' ;
+
        fpgapplication.ProcessMessages;
-      sleep(500);
+      sleep(250);
       Show;
     end;
   end;
@@ -285,7 +292,7 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), nil, Pchar(FilenameEdit3.FileName)
     //// PlayerIndex : from 0 to what your computer can do !
     //// If PlayerIndex exists already, it will be overwriten...
 
-      In1Index :=  uos_AddFromURL(PlayerIndex1,pchar(edit1.text),-1,samformat,-1) ;
+    In1Index :=  uos_AddFromURL(PlayerIndex1,pchar(edit1.text),-1,samformat,-1) ;
     /////// Add a Input from Audio URL with custom parameters
               ////////// URL : URL of audio file (like  'http://someserver/somesound.mp3')
               ////////// OutputIndex : OutputIndex of existing Output // -1: all output, -2: no output, other LongInt : existing Output
@@ -376,8 +383,6 @@ end;
   procedure TSimpleplayer.AfterCreate;
   begin
     {%region 'Auto-generated GUI code' -fold}
-
-
 
     {@VFD_BODY_BEGIN: Simpleplayer}
   Name := 'Simpleplayer';

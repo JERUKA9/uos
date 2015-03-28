@@ -1,9 +1,11 @@
 unit uos;
 
-{.$DEFINE library}   // uncomment it for building uos library (native and java)
-{.$DEFINE java}   // uncomment it for building uos java library
+
+    // WARNING =>  All those defines must be the same as in uos_flat.pas
+{.$DEFINE library}   // uncomment for building uos library (native and java)
+{.$DEFINE java}   // uncomment for building uos java library
 {.$DEFINE ConsoleApp} // if FPC version < 2.7.1 uncomment it for console application
-{$DEFINE webstream} // uncomment it for Internet Audio Stream application
+{$DEFINE webstream} // uncomment for Internet Audio Stream application
 
 {*******************************************************************************
 *                  United Openlibraries of Sound ( uos )                       *
@@ -57,7 +59,6 @@ unit uos;
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-
 }
 
 interface
@@ -81,7 +82,7 @@ uses
 
 
 const
-  uos_version : LongInt = 15150321 ;
+  uos_version : LongInt = 15150327 ;
 
 type
   TDArFloat = array of cfloat;
@@ -172,7 +173,7 @@ type
   Tuos_Data = record  /////////////// common data
     Enabled: boolean;
     TypePut: integer;
-    ////// -1 : nothing,  //// for Input : 0:from audio file, 1:from input device, 2:from internet audio stream
+    ////// -1 : nothing,  //// for Input : 0:from audio file, 1:from input device (like mic), 2:from internet audio stream, 3:from synthe(TOODO)
     //// for Output : 0:into wav file, 1:into output device, 2:to other stream
     Seekable: boolean;
     Status: integer;
@@ -212,11 +213,11 @@ type
          {$ENDIF}
     {$else}
     InHandle : LongInt;
-     OutHandle: LongInt;
+    OutHandle: LongInt;
       {$endif}
 
     InPipe: TInputPipeStream;
-     OutPipe: TOutputPipeStream;
+    OutPipe: TOutputPipeStream;
    {$ENDIF}
 
     /////////// audio file data
@@ -248,7 +249,7 @@ type
 type
   Tuos_FFT = class(TObject)
   public
-    TypeFilter: LongInt;
+    TypeFilter: integer;
     LowFrequency, HighFrequency: LongInt;
     AlsoBuf: boolean;
     a3, a32: array[0..2] of cfloat;
@@ -721,6 +722,8 @@ var
 
 implementation
 
+
+{$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
 function mpg_read_stream(ahandle: Pointer; AData: Pointer; ACount: Integer): Integer; cdecl;
 var
   Stream: TStream absolute ahandle;
@@ -746,6 +749,7 @@ procedure mpg_close_stream(ahandle: Pointer);
 begin
   TObject(ahandle).Free;
 end;
+{$endif}
 
 function FormatBuf(Inbuf: TDArFloat; format: LongInt): TDArFloat;
 var

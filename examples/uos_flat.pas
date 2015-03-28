@@ -1,7 +1,10 @@
 unit uos_flat;
+
+// WARNING =>  All those defines must be the same as in uos.pas
 {.$DEFINE library}   // uncomment it for building uos library (native and java)
 {.$DEFINE java}   // uncomment it for building uos java library
 {.$DEFINE ConsoleApp} // if FPC version < 2.7.1 uncomment it for console application
+{$DEFINE webstream} // uncomment for Internet Audio Stream application
 
    // This is the "Flat Layer" of uos => for universal procedures.
 
@@ -132,7 +135,7 @@ function uos_AddFromFile(PlayerIndex: LongInt; Filename: PChar; OutputIndex: Lon
             //  result : Input Index in array  -1 = error
             //////////// example : InputIndex1 := uos_AddFromFile(0, edit5.Text,-1,0);
 
-           {$IF (FPC_FULLVERSION >= 20701)}
+        {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
 function uos_AddFromURL(PlayerIndex: LongInt; URL: PChar): LongInt;
           /////// Add a Input from Audio URL with default parameters
 

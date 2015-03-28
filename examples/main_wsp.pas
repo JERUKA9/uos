@@ -215,6 +215,13 @@ if uos_LoadLib(Pchar(edit1.Text), nil, pchar(edit3.Text), pchar(edit5.Text)) = 0
     form1.Height := 418;
     form1.Position := poScreenCenter;
     form1.Caption := 'Simple Web Player.    uos version ' + inttostr(uos_getversion());
+
+    // Some audio web streaming
+     edit4.text := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
+ //  edit4.text := 'http://broadcast.infomaniak.net/start-latina-high.mp3' ;
+ //  edit4.text := 'http://www.hubharp.com/web_sound/BachGavotteShort.mp3' ;
+ //  edit4.text := 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3' ;
+
     form1.Show;
   end
   else
@@ -245,8 +252,7 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 var
   samformat: shortint;
-  theurl : string;
- begin
+  begin
 
     PlayerIndex1 := 0;
     // PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, ...)
@@ -266,24 +272,15 @@ var
     //// PlayerIndex : from 0 to what your computer can do !
     //// If PlayerIndex exists already, it will be overwriten...
 
-      theurl := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
- // theurl := 'http://www.alouette.fr/alouette.m3u' ;
- // theurl := 'http://broadcast.infomaniak.net/start-latina-high.mp3' ;
- // theurl := 'http://www.hubharp.com/web_sound/BachGavotteShort.mp3' ;
- // theurl := 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3' ;
-
-   //  In1Index :=  uos_AddFromURL(PlayerIndex1,pchar(edit4.text),-1,samformat,-1) ;
-      In1Index :=  uos_AddFromURL(PlayerIndex1, pchar(theurl),-1,samformat,-1) ;
-
-    /////// Add a Input from Audio URL with custom parameters
+    In1Index :=  uos_AddFromURL(PlayerIndex1, pchar(edit4.text),-1,samformat,-1) ;
+      /////// Add a Input from Audio URL with custom parameters
               ////////// URL : URL of audio file (like  'http://someserver/somesound.mp3')
               ////////// OutputIndex : OutputIndex of existing Output // -1: all output, -2: no output, other LongInt : existing Output
               ////////// SampleFormat : -1 default : Int16 (0: Float32, 1:Int32, 2:Int16)
               //////////// FramesCount : default : -1 (1024)
               ////////// example : InputIndex := AddFromFile(0,'http://someserver/somesound.mp3',-1,-1,-1);
-         //  result : -1 nothing created, otherwise Input Index in array
+              //  result : -1 nothing created, otherwise Input Index in array
 
-     //// add a Output into device with default parameters
     Out1Index := uos_AddIntoDevOut(PlayerIndex1, -1, -1, -1, -1, samformat, -1);
     //// add a Output into device with custom parameters
     //////////// PlayerIndex : Index of a existing Player

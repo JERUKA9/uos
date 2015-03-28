@@ -158,7 +158,7 @@ object Form1: TForm1
     Alignment = taCenter
     AutoSize = False
     TabOrder = 0
-    Text = 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3'
+    Text = 'http://broadcast.infomaniak.net:80/alouette-high.mp3'
   end
   object PaintBox1: TPaintBox
     Left = 18
