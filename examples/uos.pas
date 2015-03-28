@@ -2291,6 +2291,7 @@ end;
   ////////// example : InputIndex := AddFromURL('http://someserver/somesound.mp3',-1,-1,-1);
 var
   x, err, inh : LongInt;
+  PipeBufferSize : cardinal;
   sfInfo: TSF_INFO;
   mpinfo: Tmpg123_frameinfo;
   mpid3v1: Tmpg123_id3v1;
@@ -2315,16 +2316,16 @@ begin
     StreamIn[x].Data.positionEnable := 0;
     StreamIn[x].Data.levelArrayEnable := 0;
 
-    CreatePipeHandles(StreamIn[x].Data.InHandle, StreamIn[x].Data.OutHandle, $4000);
+       if FramesCount= -1 then
+     PipeBufferSize := $4000 else
+     PipeBufferSize := FramesCount;
+
+    CreatePipeHandles(StreamIn[x].Data.InHandle, StreamIn[x].Data.OutHandle, PipeBufferSize);
   StreamIn[x].Data.InPipe := TInputPipeStream.Create(StreamIn[x].Data.InHandle);
   StreamIn[x].Data.OutPipe := TOutputPipeStream.Create(StreamIn[x].Data.OutHandle);
 
   // this must be before mpg123 functions or it will block waiting for data when the http getter hasn't started yet
   StreamIn[x].Data.httpget := TThreadHttpGetter.Create(url, StreamIn[x].Data.OutPipe);
-
-   if FramesCount= -1 then
-     StreamIn[x].Data.httpget.PipeBufferSize := 1024 else
-     StreamIn[x].Data.httpget.PipeBufferSize := FramesCount;
 
      Err := -1;
 
@@ -2349,13 +2350,11 @@ begin
                MPG123_ENC_SIGNED_16);
          end;
 
-    //     Err := mpg123_open_fd(StreamIn[x].Data.HandleSt,StreamIn[x].Data.httpget.InHandle);
-
-         mpg123_replace_reader_handle(StreamIn[x].Data.HandleSt, @mpg_read_stream, @mpg_seek_stream, @mpg_close_stream);
+      mpg123_replace_reader_handle(StreamIn[x].Data.HandleSt, @mpg_read_stream, @mpg_seek_stream, @mpg_close_stream);
 
       //   writeln('===> mpg123_replace_reader_handle => ok.');
 
-         Err :=  mpg123_open_handle(StreamIn[x].Data.HandleSt, Pointer(StreamIn[x].Data.InPipe));
+       Err :=  mpg123_open_handle(StreamIn[x].Data.HandleSt, Pointer(StreamIn[x].Data.InPipe));
 
    //      writeln('===> mpg123 InHandle = ' + inttostr(StreamIn[x].Data.httpget.InHandle) );
      ///    if err = 0 then writeln('===> mpg123_open_fd => ok.') else
@@ -2415,7 +2414,7 @@ begin
 
    if err <> 0 then
    begin
-   sleep(200);
+      sleep(200);
       Err := mpg123_getformat(StreamIn[x].Data.HandleSt,
         StreamIn[x].Data.samplerate, StreamIn[x].Data.channels,
         StreamIn[x].Data.encoding);

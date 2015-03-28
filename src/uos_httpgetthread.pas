@@ -23,7 +23,6 @@ type
   protected
     procedure Execute; override;
   public
-    PipeBufferSize: cardinal;
     constructor Create(AWantedURL: String; AOutputStream: TOutputPipeStream);
     property IsRunning: Boolean read FIsRunning;
   end;

@@ -23,7 +23,7 @@ unit uos_flat;
 ********************************************************************************
 }
 {
-    Copyright (C) 2014  Fred van Stappen
+    Copyright (C) 2012/20115  Fred van Stappen
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
