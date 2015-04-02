@@ -176,6 +176,21 @@ begin
   Edit4.Text := ordir + 'sound\test.mp3';
  {$ENDIF}
 
+ {$IFDEF freebsd}
+    {$if defined(cpu64)}
+    Edit1.Text := ordir + 'lib/freeBSD/64bit/libportaudio-64.so';
+     Edit2.Text := ordir + 'lib/freeBSD/64bit/libsndfile-64.so';
+    Edit3.Text := ordir + 'lib/freeBSD/64bit/libmpg123-64.so';
+    Edit5.Text := ordir + 'lib/freeBSD/64bit/libsoundtouch-64.so';
+    {$else}
+   Edit1.Text := ordir + 'lib/freeBSD/32bit/libportaudio-64.so';
+     Edit2.Text := ordir + 'lib/freeBSD/32bit/libsndfile-64.so';
+    Edit3.Text := ordir + 'lib/freeBSD/32bit/libmpg123-64.so';
+    Edit5.Text := ordir + 'lib/freeBSD/32bit/libsoundtouch-64.so';
+{$endif}
+     Edit4.Text := ordir + 'sound/test.mp3';
+ {$ENDIF}
+
   {$IFDEF Darwin}
   opath := ordir;
   opath := copy(opath, 1, Pos('/uos', opath) - 1);

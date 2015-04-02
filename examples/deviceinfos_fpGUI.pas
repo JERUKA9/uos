@@ -284,6 +284,15 @@ var
 
             {$ENDIF}
 
+{$IFDEF freebsd}
+    {$if defined(cpu64)}
+   FilenameEdit1.FileName := ordir + 'lib/freeBSD/64bit/libportaudio-64.so';
+    {$else}
+   FilenameEdit1.FileName := ordir + 'lib/freeBSD/32bit/libportaudio-32.so';
+ {$endif}
+ 
+ {$ENDIF}
+
    {$IFDEF linux}
     {$if defined(cpu64)}
     FilenameEdit1.FileName := ordir + '/lib/Linux/64bit/LibPortaudio-64.so';

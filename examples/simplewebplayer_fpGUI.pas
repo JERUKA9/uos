@@ -228,7 +228,11 @@ if uos_LoadLib(Pchar(FilenameEdit1.FileName), nil, Pchar(FilenameEdit3.FileName)
       WindowTitle := 'Simple Web Player    uos version ' + inttostr(uos_getversion());
 
       // Some audio web streaming
-     edit1.text := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
+     edit1.text := 'http://streaming304.radionomy.com:80/GENERATIONSOULDISCOFUNK-MP3';
+ //  edit1.text := 'http://broadcast.infomaniak.net:80/alouette-high.mp3';
+ //  edit1.text := 'http://arvorig-fm.online.stalig.net/live.mp3'
+ //  edit1.text := 'http://str1.sad.ukrd.com:80/2br';
+ //  edit1.text := 'http://streaming304.radionomy.com:80/GENERATIONSOULDISCOFUNK-MP3';
  //  edit1.text := 'http://broadcast.infomaniak.net/start-latina-high.mp3' ;
  //  edit1.text := 'http://www.hubharp.com/web_sound/BachGavotteShort.mp3' ;
  //  edit1.text := 'http://www.jerryradio.com/downloads/BMB-64-03-06-MP3/jg1964-03-06t01.mp3' ;

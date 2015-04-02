@@ -62,6 +62,18 @@ var
     sndfilename := ordir + 'sound/test.flac';
  {$ENDIF}
 
+ {$IFDEF freebsd}
+    {$if defined(cpu64)}
+    PA_FileName := ordir + 'lib/freeBSD/64bit/libportaudio-64.so';
+    SF_FileName := ordir + 'lib/freeBSD/64bit/libsndfile-64.so';
+    {$else}
+    PA_FileName := ordir + 'lib/freeBSD/32bit/libportaudio-32.so';
+    SF_FileName := ordir + 'lib/freeBSD/32bit/libsndfile-32.so';
+{$endif}
+    sndfilename := ordir + 'sound/test.flac';
+ {$ENDIF}
+
+
             {$IFDEF Darwin}
     opath := ordir;
     opath := copy(opath, 1, Pos('/UOS', opath) - 1);
