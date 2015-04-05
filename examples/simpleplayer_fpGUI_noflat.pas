@@ -980,12 +980,12 @@ end;
     FilenameEdit1.Text := ordir + 'lib/freeBSD/64bit/libportaudio-64.so';
      FilenameEdit2.Text := ordir + 'lib/freeBSD/64bit/libsndfile-64.so';
     FilenameEdit3.Text := ordir + 'lib/freeBSD/64bit/libmpg123-64.so';
-    FilenameEdit5.Text := ordir + 'lib/freeBSD/64bit/libsoundtouch-64.so';
+    FilenameEdit5.Text := '';
     {$else}
-   FilenameEdit1.Text := ordir + 'lib/freeBSD/32bit/libportaudio-64.so';
-     FilenameEdit2.Text := ordir + 'lib/freeBSD/32bit/libsndfile-64.so';
-    FilenameEdit3.Text := ordir + 'lib/freeBSD/32bit/libmpg123-64.so';
-    FilenameEdit5.Text := ordir + 'lib/freeBSD/32bit/libsoundtouch-64.so';
+   FilenameEdit1.Text := ordir + 'lib/freeBSD/32bit/libportaudio-32.so';
+     FilenameEdit2.Text := ordir + 'lib/freeBSD/32bit/libsndfile-32.so';
+    FilenameEdit3.Text := ordir + 'lib/freeBSD/32bit/libmpg123-32.so';
+    FilenameEdit5.Text := '';
 {$endif}
      FilenameEdit4.Text := ordir + 'sound/test.mp3';
  {$ENDIF}
