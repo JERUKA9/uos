@@ -82,7 +82,7 @@ uses
 
 
 const
-  uos_version : LongInt = 15150327 ;
+  uos_version : LongInt = 15150406 ;
 
 type
   TDArFloat = array of cfloat;
@@ -2796,6 +2796,7 @@ begin
           end;
 
           2:  /////// for Input from Internet audio stream.
+
           begin
          err := mpg123_read(StreamIn[x].Data.HandleSt, @StreamIn[x].Data.Buffer[0],
           StreamIn[x].Data.wantframes, StreamIn[x].Data.outframes);
