@@ -977,17 +977,17 @@ end;
  
  {$IFDEF freebsd}
     {$if defined(cpu64)}
-    FilenameEdit1.Text := ordir + 'lib/freeBSD/64bit/libportaudio-64.so';
-     FilenameEdit2.Text := ordir + 'lib/freeBSD/64bit/libsndfile-64.so';
-    FilenameEdit3.Text := ordir + 'lib/freeBSD/64bit/libmpg123-64.so';
-    FilenameEdit5.Text := '';
+    FilenameEdit1.FileName := ordir + 'lib/freeBSD/64bit/libportaudio-64.so';
+     FilenameEdit2.FileName := ordir + 'lib/freeBSD/64bit/libsndfile-64.so';
+    FilenameEdit3.FileName := ordir + 'lib/freeBSD/64bit/libmpg123-64.so';
+    FilenameEdit5.FileName := '';
     {$else}
-   FilenameEdit1.Text := ordir + 'lib/freeBSD/32bit/libportaudio-32.so';
-     FilenameEdit2.Text := ordir + 'lib/freeBSD/32bit/libsndfile-32.so';
-    FilenameEdit3.Text := ordir + 'lib/freeBSD/32bit/libmpg123-32.so';
-    FilenameEdit5.Text := '';
+   FilenameEdit1.FileName := ordir + 'lib/freeBSD/32bit/libportaudio-32.so';
+     FilenameEdit2.FileName := ordir + 'lib/freeBSD/32bit/libsndfile-32.so';
+    FilenameEdit3.FileName := ordir + 'lib/freeBSD/32bit/libmpg123-32.so';
+    FilenameEdit5.FileName := '';
 {$endif}
-     FilenameEdit4.Text := ordir + 'sound/test.mp3';
+     FilenameEdit4.FileName := ordir + 'sound/test.mp3';
  {$ENDIF}
 
     FilenameEdit4.Initialdir := ordir + 'sound';

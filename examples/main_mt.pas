@@ -127,6 +127,16 @@ begin
    {$endif}
    {$ENDIF}
 
+  {$IFDEF freebsd}
+    {$if defined(cpu64)}
+   PA_FileName := ordir + 'lib/freeBSD/64bit/libportaudio-64.so';
+   MP_FileName := ordir + 'lib/freeBSD/64bit/libmpg123-64.so';
+   {$else}
+   PA_FileName := ordir + 'lib/freeBSD/32bit/libportaudio-32.so';
+   MP_FileName := ordir + 'lib/freeBSD/32bit/libmpg123-32.so';
+   {$endif}
+   {$ENDIF}
+
 uos_LoadLib(Pchar(PA_FileName), nil, pchar(MP_FileName), nil);
 
    end;
@@ -137,4 +147,4 @@ begin
   end;
 
 end.
-
+

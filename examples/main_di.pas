@@ -79,6 +79,14 @@ begin
 {$else}
   edit1.Text := application.Location + 'lib/Linux/32bit/LibPortaudio-32.so';
 {$endif}
+ {$endif}
+
+ {$IFDEF freebsd}
+    {$if defined(cpu64)}
+  edit1.Text := application.Location + 'lib/freeBSD/64bit/libportaudio-64.so';
+{$else}
+  edit1.Text := application.Location + 'lib/freeBSD/32bit/libportaudio-32.so';
+{$endif}
 
             {$ENDIF}
   //////////////////////////////////////////////////////////////////////////

@@ -90,7 +90,7 @@ var
 
     writeln('Result of loading (if 0 => ok ) : ' + IntToStr(res));
 
-
+   if res = 0 then begin
    uos_CreatePlayer(PlayerIndex1); //// Create the player
 
   In1Index := uos_AddFromFile(PlayerIndex1,(pchar(sndfilename)));
@@ -98,7 +98,7 @@ var
     uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, In1Index), -1, -1, -1);
 
     uos_Play(PlayerIndex1);
-
+   end;
 
      end;
 

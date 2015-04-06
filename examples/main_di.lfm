@@ -210,7 +210,7 @@ object Form1: TForm1
     Left = 12
     Height = 15
     Top = 356
-    Width = 118
+    Width = 124
     Caption = 'Device Count =  99'
     ParentColor = False
   end
@@ -218,7 +218,7 @@ object Form1: TForm1
     Left = 152
     Height = 15
     Top = 356
-    Width = 146
+    Width = 153
     Caption = 'Default Device  IN =  99'
     ParentColor = False
   end
@@ -226,7 +226,7 @@ object Form1: TForm1
     Left = 320
     Height = 15
     Top = 356
-    Width = 158
+    Width = 167
     Caption = 'Default Device OUT  =  99'
     ParentColor = False
   end

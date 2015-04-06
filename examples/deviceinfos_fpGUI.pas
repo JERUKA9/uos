@@ -290,8 +290,7 @@ var
     {$else}
    FilenameEdit1.FileName := ordir + 'lib/freeBSD/32bit/libportaudio-32.so';
  {$endif}
- 
- {$ENDIF}
+  {$ENDIF}
 
    {$IFDEF linux}
     {$if defined(cpu64)}
@@ -305,11 +304,7 @@ var
 
     FilenameEdit1.Initialdir := ordir + 'lib';
 
-     {$IF DEFINED(fpGUI)}
-    windowtitle := 'fpgui';
-  {$endif}
-
-  end;
+     end;
 
   procedure TDevicesInfos.UOS_logo(Sender: TObject);
   var
