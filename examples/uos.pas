@@ -2808,7 +2808,7 @@ begin
 
         //// check if internet stream is stopped.
      {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
-     if (StreamIn[x].Data.Seekable = false) then if StreamIn[x].Data.httpget.IsRunning = false
+     if (StreamIn[x].Data.Seekable = false) and (StreamIn[x].Data.TypePut = 2) then if StreamIn[x].Data.httpget.IsRunning = false
      then  StreamIn[x].Data.status := 0; //////// no more data then close the stream
    {$ENDIF}
 
@@ -3206,7 +3206,7 @@ begin
                 mpg123_close(StreamIn[x].Data.HandleSt);
                 mpg123_delete(StreamIn[x].Data.HandleSt);
                  {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
-               StreamIn[x].Data.httpget.Terminate;
+                StreamIn[x].Data.httpget.Terminate;
                StreamIn[x].Data.httpget.Free;
                {$ENDIF}
 
