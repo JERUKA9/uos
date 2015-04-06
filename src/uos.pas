@@ -73,7 +73,7 @@ uses
    uos_jni,
    {$endif}
 
-    {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
+    {$IF DEFINED(webstream)}
      uos_httpgetthread, Pipes,
    {$ENDIF}
 
@@ -200,7 +200,7 @@ type
     Channels: LongInt;
 
     //////// for web streaming
-   {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
+  {$IF DEFINED(webstream)}
     httpget: TThreadHttpGetter;  // threaded http getter
 
       {$IF DEFINED(windows)}
@@ -429,7 +429,7 @@ type
     //  result :   Input Index in array    -1 = error
     //////////// example : InputIndex1 := AddFromFile(edit5.Text,-1,0,-1);
 
-   {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
+  {$IF DEFINED(webstream)}
   function AddFromURL(URL: PChar; OutputIndex: LongInt;
    SampleFormat: LongInt ; FramesCount: LongInt ): LongInt;
   /////// Add a Input from Audio URL
@@ -723,7 +723,7 @@ var
 implementation
 
 
-{$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
+{$IF DEFINED(webstream)}
 function mpg_read_stream(ahandle: Pointer; AData: Pointer; ACount: Integer): Integer; cdecl;
 var
   Stream: TStream absolute ahandle;
@@ -2280,7 +2280,7 @@ begin
     Result := x;
 end;
 
-{$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
+{$IF DEFINED(webstream)}
  function Tuos_Player.AddFromURL(URL: PChar; OutputIndex: LongInt;
    SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
 /////// Add a Input from Audio URL
@@ -2807,8 +2807,8 @@ begin
         end;
 
         //// check if internet stream is stopped.
-     {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
-     if (StreamIn[x].Data.Seekable = false) and (StreamIn[x].Data.TypePut = 2) then if StreamIn[x].Data.httpget.IsRunning = false
+    {$IF DEFINED(webstream)}
+     if (StreamIn[x].Data.TypePut = 2) then if StreamIn[x].Data.httpget.IsRunning = false
      then  StreamIn[x].Data.status := 0; //////// no more data then close the stream
    {$ENDIF}
 
@@ -3205,7 +3205,7 @@ begin
               begin
                 mpg123_close(StreamIn[x].Data.HandleSt);
                 mpg123_delete(StreamIn[x].Data.HandleSt);
-                 {$IF (FPC_FULLVERSION >= 20701) and DEFINED(webstream)}
+                {$IF DEFINED(webstream)}
                 StreamIn[x].Data.httpget.Terminate;
                StreamIn[x].Data.httpget.Free;
                {$ENDIF}
