@@ -109,7 +109,7 @@ begin
   Edit4.Text := ordir + 'sound/test.mp3';
             {$ENDIF}
 
-$IFDEF freebsd}
+            {$IFDEF freebsd}
     {$if defined(cpu64)}
    Edit1.Text := ordir + 'lib/freeBSD/64bit/libportaudio-64.so';
   Edit3.Text := ordir + 'lib/freeBSD/64bit/libmpg123-64.so';
@@ -172,7 +172,7 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 var
-  filelength , framewanted, sampleratedef : integer;
+  filelength , framewanted : integer;
 begin
      form1.Height := 456;
     form1.Position := poScreenCenter;
@@ -241,8 +241,10 @@ begin
     //// add input from audio file with default parameters
     In1Index := uos_AddFromFile(PlayerIndex1, pchar(Edit4.Text));
 
-    //// add a Output into device with default parameters
-    uos_AddIntoDevOut(PlayerIndex1);
+
+      //// add a Output into device
+     uos_AddIntoDevOut(PlayerIndex1, -1, -1, uos_InputGetSampleRate(PlayerIndex1, In1Index), -1, -1, -1);
+
 
     uos_InputSetPositionEnable(PlayerIndex1, In1Index, 1);
      ///////// set position calculation (default is 0)
@@ -391,7 +393,6 @@ begin
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
-
   if button1.Enabled = False then
     uos_UnloadLib();
 end;
