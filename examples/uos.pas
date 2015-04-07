@@ -1,11 +1,18 @@
 unit uos;
 
-
     // WARNING =>  All those defines must be the same as in uos_flat.pas
+
+{.$DEFINE ConsoleApp} // if FPC version < 2.7.1 uncomment for console application
+
 {.$DEFINE library}   // uncomment for building uos library (native and java)
 {.$DEFINE java}   // uncomment for building uos java library
-{.$DEFINE ConsoleApp} // if FPC version < 2.7.1 uncomment it for console application
-{$DEFINE webstream} // uncomment for Internet Audio Stream application
+
+{$DEFINE portaudio} // uncomment to enable portaudio compiling
+{$DEFINE sndfile} // uncomment to enable sndfile compiling
+{$DEFINE mpg123} // uncomment to enable mpg123 compiling
+{$DEFINE soundtouch} // uncomment to enable soundtouch compiling
+
+{$DEFINE webstream} // uncomment to enable Internet Audio Stream
 
 {*******************************************************************************
 *                  United Openlibraries of Sound ( uos )                       *
@@ -77,8 +84,23 @@ uses
      uos_httpgetthread, Pipes,
    {$ENDIF}
 
-     Classes, ctypes, Math,  uos_portaudio, sysutils,
-  uos_LibSndFile, uos_Mpg123, uos_soundtouch  ;
+   {$IF DEFINED(portaudio)}
+   uos_portaudio,
+   {$endif}
+
+   {$IF DEFINED(sndfile)}
+   uos_LibSndFile,
+   {$endif}
+
+   {$IF DEFINED(mpg123)}
+   uos_Mpg123,
+   {$endif}
+
+   {$IF DEFINED(soundtouch)}
+   uos_soundtouch,
+   {$endif}
+
+     Classes, ctypes, Math, sysutils;
 
 
 const
@@ -102,6 +124,13 @@ type
   {$endif}
 
 type
+  {$if not defined(fs32bit)}
+     Tcount_t    = cint64;          { used for file sizes }
+  {$else}
+     Tcount_t    = cint;
+  {$endif}
+
+type
   Tuos_LoadResult = record
     PAloadError: LongInt;
     SFloadError: LongInt;
@@ -120,12 +149,15 @@ type
     SF_FileName: pchar; // SndFile
     MP_FileName: pchar; // Mpg123
     Plug_ST_FileName: pchar; // Plugin SoundTouch
+
+     {$IF DEFINED(portaudio)}
     DefDevOut: PaDeviceIndex;
     DefDevOutInfo: PPaDeviceInfo;
     DefDevOutAPIInfo: PPaHostApiInfo;
     DefDevIn: PaDeviceIndex;
     DefDevInInfo: PPaDeviceInfo;
     DefDevInAPIInfo: PPaHostApiInfo;
+    {$endif}
     function loadlib: LongInt;
     procedure unloadlib;
     procedure unloadlibCust(PortAudio, SndFile, Mpg123, SoundTouch: boolean);
@@ -185,15 +217,16 @@ type
     PositionEnable : integer;
     LevelEnable : integer;
     LevelLeft, LevelRight: cfloat;
-
     levelArrayEnable : integer;
-    {$if defined(cpu64)}
-    Wantframes: Tsf_count_t;
-    OutFrames: Tsf_count_t;
+
+       {$if defined(cpu64)}
+    Wantframes: Tcount_t;
+    OutFrames: Tcount_t;
     {$else}
     Wantframes: longint;
     OutFrames: longint;
-    {$endif}
+       {$endif}
+
     SamplerateRoot: longword;
     SampleRate: longword;
     SampleFormat: LongInt;
@@ -202,8 +235,7 @@ type
     //////// for web streaming
   {$IF DEFINED(webstream)}
     httpget: TThreadHttpGetter;  // threaded http getter
-
-      {$IF DEFINED(windows)}
+     {$IF DEFINED(windows)}
      {$if defined(cpu64)}
      InHandle : Qword;
      OutHandle: Qword;
@@ -233,7 +265,12 @@ type
     Album: string;
     Genre: byte;
     HDFormat: LongInt;
-    Frames: Tsf_count_t;
+    {$IF DEFINED(sndfile)}
+   Frames: Tcount_t;
+   {$else}
+   Frames: longint;
+    {$endif}
+
     Sections: LongInt;
     Encoding: LongInt;
     Lengthst: LongInt;     ///////  in sample ;
@@ -242,8 +279,10 @@ type
     Position: longint;
     Poseek: longint;
     Output: LongInt;
+    {$IF DEFINED(portaudio)}
     PAParam: PaStreamParameters;
-    FileBuffer: Tuos_FileBuffer;
+   {$endif}
+   FileBuffer: Tuos_FileBuffer;
   end;
 
 type
@@ -382,7 +421,9 @@ type
 
     procedure Pause();                 ///// Pause playing
 
-    function AddIntoDevOut(Device: LongInt; Latency: CDouble;
+
+   {$IF DEFINED(portaudio)}
+     function AddIntoDevOut(Device: LongInt; Latency: CDouble;
       SampleRate: LongInt; Channels: LongInt; SampleFormat: LongInt ; FramesCount: LongInt ): LongInt;
      ////// Add a Output into Device Output
     //////////// Device ( -1 is default device )
@@ -393,6 +434,7 @@ type
     //////////// FramesCount : default : -1 (= 65536)
     //  result :  Output Index in array    -1 = error
     /// example : OutputIndex1 := AddIntoDevOut(-1,-1,-1,-1,0);
+     {$endif}
 
     function AddIntoFile(Filename: PChar; SampleRate: LongInt;
       Channels: LongInt; SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
@@ -405,7 +447,9 @@ type
     //  result : Output Index in array     -1 = error
     //////////// example : OutputIndex1 := AddIntoFile(edit5.Text,-1,-1, 0, -1);
 
-    function AddFromDevIn(Device: LongInt; Latency: CDouble;
+
+      {$IF DEFINED(portaudio)}
+     function AddFromDevIn(Device: LongInt; Latency: CDouble;
   SampleRate: LongInt; Channels: LongInt; OutputIndex: LongInt;
   SampleFormat: LongInt; FramesCount : LongInt): LongInt;
    ////// Add a Input from Device Input with custom parameters
@@ -418,6 +462,7 @@ type
     //////////// FramesCount : default : -1 (65536)
     //  result :  otherwise Output Index in array   -1 = error
     /// example : OutputIndex1 := AddFromDevice(-1,-1,-1,-1,-1,-1);
+     {$endif}
 
     function AddFromFile(Filename: Pchar; OutputIndex: LongInt;
       SampleFormat: LongInt ; FramesCount: LongInt): LongInt;
@@ -447,15 +492,17 @@ type
     //////////// Channels : delault : -1 (2:stereo) (1:mono, 2:stereo, ...)
     ////// Till now, only 'soundtouch' PlugName is registred.
 
+    {$IF DEFINED(soundtouch)}
     procedure SetPluginSoundTouch(PluginIndex: LongInt; Tempo: cfloat;
       Pitch: cfloat; Enable: boolean);
     ////////// PluginIndex : PluginIndex Index of a existing Plugin.
     //////////                proc : loopprocedure
+    {$endif}
 
     function GetStatus() : LongInt ;
     /////// Get the status of the player : 0 => has stopped, 1 => is running, 2 => is paused, -1 => error.
 
-    procedure Seek(InputIndex: LongInt; pos: Tsf_count_t);
+    procedure Seek(InputIndex: LongInt; pos: Tcount_t);
     //// change position in sample
 
     procedure SeekSeconds(InputIndex: LongInt; pos: cfloat);
@@ -650,9 +697,11 @@ type
 
 //////////// General public procedure/function (accessible for library uos too)
 
+   {$IF DEFINED(portaudio)}
 procedure uos_GetInfoDevice();
 
 function uos_GetInfoDeviceStr() : Pansichar ;
+   {$endif}
 
 function uos_loadlib(PortAudioFileName, SndFileFileName, Mpg123FileName, SoundTouchFileName: PChar) : LongInt;
         ////// load libraries... if libraryfilename = '' =>  do not load it...  You may load what and when you want...
@@ -912,6 +961,7 @@ begin
   begin
   err := -1;
 
+   {$IF DEFINED(portaudio)}
   for x := 0 to high(StreamOut) do
     if StreamOut[x].Data.HandleSt <> nil then
     begin
@@ -924,6 +974,7 @@ begin
       err := Pa_StartStream(StreamIn[x].Data.HandleSt);
       sleep(200);
      end;
+    {$endif}
 
   start;   // resume;  //  { if fpc version <= 2.4.4}
   Status := 1;
@@ -960,7 +1011,7 @@ begin
   end;
 end;
 
-procedure Tuos_Player.Seek(InputIndex:LongInt; pos: Tsf_count_t);
+procedure Tuos_Player.Seek(InputIndex:LongInt; pos: Tcount_t);
 //// change position in samples
 begin
    if (isAssigned = True) then StreamIn[InputIndex].Data.Poseek := pos;
@@ -1512,6 +1563,7 @@ end;
 
 end;
 
+{$IF DEFINED(soundtouch)}
 function SoundTouchPlug(bufferin: TDArFloat; plugHandle: THandle; NumSample : LongInt;
   tempo: float; pitch: float; channels: float; ratio: float; notused1: float;
   notused2: float): TDArFloat;
@@ -1543,6 +1595,7 @@ begin
     end;
   Result := BufferplugFL;
 end;
+{$endif}
 
 function Tuos_Player.AddPlugin(PlugName: PChar; SampleRate: LongInt;
   Channels: LongInt): LongInt;
@@ -1565,7 +1618,8 @@ begin
     Plugin[x].param4 := -1;
     Plugin[x].param5 := -1;
     Plugin[x].param6 := -1;
-    Plugin[x].PlugHandle := soundtouch_createInstance();
+    {$IF DEFINED(soundtouch)}
+     Plugin[x].PlugHandle := soundtouch_createInstance();
     if SampleRate = -1 then
       soundtouch_setSampleRate(Plugin[x].PlugHandle, 44100)
     else
@@ -1578,10 +1632,12 @@ begin
     soundtouch_setTempo(Plugin[x].PlugHandle, 1);
     soundtouch_clear(Plugin[x].PlugHandle);
     Plugin[x].PlugFunc := @soundtouchplug;
+   {$endif}
     Result := x;
   end;
 end;
 
+{$IF DEFINED(soundtouch)}
 procedure Tuos_Player.SetPluginSoundTouch(PluginIndex: LongInt;
   Tempo: cfloat; Pitch: cfloat; Enable: boolean);
 begin
@@ -1591,6 +1647,7 @@ begin
   Plugin[PluginIndex].param1 := Tempo;
   Plugin[PluginIndex].param2 := Pitch;
 end;
+{$endif}
 
 function uos_InputGetArrayLevel(PlayerIndex: cint32; InputIndex: LongInt) : TDArFloat;
 begin
@@ -2066,6 +2123,9 @@ begin
 
 end;
 
+
+{$IF DEFINED(portaudio)}
+
 function Tuos_Player.AddFromDevIn(Device: LongInt; Latency: CDouble;
   SampleRate: LongInt; Channels: LongInt; OutputIndex: LongInt;
   SampleFormat: LongInt; FramesCount : LongInt): LongInt;
@@ -2142,6 +2202,7 @@ begin
   else
     Result := x;
 end;
+  {$endif}
 
 
 function Tuos_Player.AddIntoFile(Filename: PChar; SampleRate: LongInt;
@@ -2209,7 +2270,9 @@ begin
   StreamOut[x].LoopProc := nil;
 end;
 
-function Tuos_Player.AddIntoDevOut(Device: LongInt; Latency: CDouble;
+
+{$IF DEFINED(portaudio)}
+ function Tuos_Player.AddIntoDevOut(Device: LongInt; Latency: CDouble;
   SampleRate: LongInt; Channels: LongInt; SampleFormat: LongInt; FramesCount: LongInt): LongInt;
   /////// Add a Output into OUT device with Custom parameters
   //////////// Device ( -1 is default device )
@@ -2218,7 +2281,7 @@ function Tuos_Player.AddIntoDevOut(Device: LongInt; Latency: CDouble;
   //////////// Channels : delault : -1 (2:stereo) (0: no channels, 1:mono, 2:stereo, ...)
   //////////// SampleFormat : -1 default : Int16 (0: Float32, 1:Int32, 2:Int16)
   //////////// FramesCount : default : -1 (65536)
-  //////////// example : AddOutput(-1,-1,-1,-1,-1,-1);
+  //////////// example : AddInoDevOut(-1,-1,-1,-1,-1,-1);
 var
   x, err: LongInt;
 begin
@@ -2279,6 +2342,7 @@ begin
   else
     Result := x;
 end;
+ {$endif}
 
 {$IF DEFINED(webstream)}
  function Tuos_Player.AddFromURL(URL: PChar; OutputIndex: LongInt;
@@ -2292,10 +2356,14 @@ end;
 var
   x, err, inh : LongInt;
   PipeBufferSize : cardinal;
-  sfInfo: TSF_INFO;
+  {$IF DEFINED(sndfile)}
+    sfInfo: TSF_INFO;
+   {$endif}
+  {$IF DEFINED(mpg123)}
   mpinfo: Tmpg123_frameinfo;
   mpid3v1: Tmpg123_id3v1;
   mpid3v2: Tmpg123_id3v2;
+   {$endif}
 
 begin
    result := -1 ;
@@ -2303,6 +2371,7 @@ begin
    // code for internet streaming
 
   //////////// mpg123
+  {$IF DEFINED(mpg123)}
      if (uosLoadResult.MPloadERROR = 0) then
      begin
         x := 0;
@@ -2455,6 +2524,7 @@ begin
               MPG123_FORCE_FLOAT, 0);
     //  writeln('===> mpg123 all => ok');
          end;
+    {$endif}
        end;
     {$ENDIF}
 
@@ -2468,10 +2538,17 @@ function Tuos_Player.AddFromFile(Filename: PChar; OutputIndex: LongInt;
   ////////// example : InputIndex := AddFromFile('/usr/home/test.ogg',-1,-1,-1);
 var
   x, err: LongInt;
-  sfInfo: TSF_INFO;
+
+  {$IF DEFINED(sndfile)}
+   sfInfo: TSF_INFO;
+   {$endif}
+
+   {$IF DEFINED(mpg123)}
   mpinfo: Tmpg123_frameinfo;
   mpid3v1: Tmpg123_id3v1;
   mpid3v2: Tmpg123_id3v2;
+  {$endif}
+
 begin
   result := -1 ;
    if fileexists(filename) then
@@ -2486,7 +2563,8 @@ begin
     StreamIn[x].Data.positionEnable := 0;
     StreamIn[x].Data.levelArrayEnable := 0;
 
-     if (uosLoadResult.SFloadERROR = 0) then
+    {$IF DEFINED(sndfile)}
+       if (uosLoadResult.SFloadERROR = 0) then
     begin
 
       StreamIn[x].Data.HandleSt := sf_open(FileName, SFM_READ, sfInfo);
@@ -2523,7 +2601,11 @@ begin
         err := 0;
       end;
     end;
-    //////////// mpg123
+
+   {$endif}
+
+    {$IF DEFINED(mpg123)}
+     //////////// mpg123
     if ((StreamIn[x].Data.LibOpen = -1)) and (uosLoadResult.MPloadERROR = 0) then
     begin
       Err := -1;
@@ -2605,6 +2687,7 @@ begin
         StreamIn[x].Data.LibOpen := -1;
        end;
     end;
+   {$endif}
 
    if err <> 0 then
     begin
@@ -2631,6 +2714,7 @@ begin
       case StreamIn[x].Data.LibOpen of
         0:
           StreamIn[x].Data.ratio := StreamIn[x].Data.Channels;
+        {$IF DEFINED(mpg123)}
         1:
         begin
           if StreamIn[x].Data.SampleFormat = 2 then
@@ -2642,6 +2726,8 @@ begin
             mpg123_param(StreamIn[x].Data.HandleSt, StreamIn[x].Data.Channels,
               MPG123_FORCE_FLOAT, 0);
         end;
+        {$endif}
+
       end;
     end;
   end;
@@ -2736,9 +2822,13 @@ begin
         if (StreamIn[x].Data.Poseek > -1) and (StreamIn[x].Data.Seekable = True) then
          begin                    ////// is there a seek waiting ?
           case StreamIn[x].Data.LibOpen of
-            0: sf_seek(StreamIn[x].Data.HandleSt, StreamIn[x].Data.Poseek, SEEK_SET);
-            1: mpg123_seek(StreamIn[x].Data.HandleSt, StreamIn[x].Data.Poseek, SEEK_SET);
-          end;
+            {$IF DEFINED(sndfile)}
+            0: sf_seek(StreamIn[x].Data.HandleSt, StreamIn[x].Data.Poseek, 0);
+            {$endif}
+            {$IF DEFINED(mpg123)}
+            1: mpg123_seek(StreamIn[x].Data.HandleSt, StreamIn[x].Data.Poseek, 0);
+            {$endif}
+           end;
           curpos := StreamIn[x].Data.Poseek;
           StreamIn[x].Data.Poseek := -1;
         end;
@@ -2762,17 +2852,20 @@ begin
           begin
             case StreamIn[x].Data.LibOpen of
               //////////// Here we are, reading the data and store it in buffer
-              0: case StreamIn[x].Data.SampleFormat of
-                  0: StreamIn[x].Data.OutFrames :=
+                {$IF DEFINED(sndfile)}
+               0: case StreamIn[x].Data.SampleFormat of
+                    0: StreamIn[x].Data.OutFrames :=
                       sf_read_float(StreamIn[x].Data.HandleSt,
                       @StreamIn[x].Data.Buffer[0], StreamIn[x].Data.Wantframes);
-                  1: StreamIn[x].Data.OutFrames :=
+                    1: StreamIn[x].Data.OutFrames :=
                       sf_read_int(StreamIn[x].Data.HandleSt,
                       @StreamIn[x].Data.Buffer[0], StreamIn[x].Data.Wantframes);
-                  2: StreamIn[x].Data.OutFrames :=
+                    2: StreamIn[x].Data.OutFrames :=
                       sf_read_short(StreamIn[x].Data.HandleSt,
                       @StreamIn[x].Data.Buffer[0], StreamIn[x].Data.Wantframes);
-                end;
+                  end;
+                 {$endif}
+               {$IF DEFINED(mpg123)}
               1:
               begin
                 mpg123_read(StreamIn[x].Data.HandleSt, @StreamIn[x].Data.Buffer[0],
@@ -2780,11 +2873,14 @@ begin
                 StreamIn[x].Data.outframes :=
                   StreamIn[x].Data.outframes div StreamIn[x].Data.Channels;
               end;
-            end;
+              {$endif}
+             end;
 
           end;
 
-          1:   /////// for Input from device
+
+           {$IF DEFINED(portaudio)}
+           1:   /////// for Input from device
           begin
             for x2 := 0 to StreamIn[x].Data.WantFrames do
               StreamIn[x].Data.Buffer[x2] := cfloat(0);      ////// clear input
@@ -2794,17 +2890,21 @@ begin
               StreamIn[x].Data.WantFrames * StreamIn[x].Data.Channels;
             //  if err = 0 then StreamIn[x].Data.Status := 1 else StreamIn[x].Data.Status := 0;  /// if you want clean buffer
           end;
+           {$endif}
 
-          2:  /////// for Input from Internet audio stream.
+           {$IF DEFINED(webstream)}
+           2:  /////// for Input from Internet audio stream.
 
           begin
+          {$IF DEFINED(mpg123)}
          err := mpg123_read(StreamIn[x].Data.HandleSt, @StreamIn[x].Data.Buffer[0],
           StreamIn[x].Data.wantframes, StreamIn[x].Data.outframes);
          //  writeln('===> mpg123_read error => ' + inttostr(err)) ;
           StreamIn[x].Data.outframes :=
             StreamIn[x].Data.outframes div StreamIn[x].Data.Channels;
-                //    writeln('mpg123_read');
+          {$ENDIF}
          end;
+            {$ENDIF}
         end;
 
         //// check if internet stream is stopped.
@@ -3072,7 +3172,9 @@ begin
               end;
 
               case StreamOut[x].Data.TypePut of
-                1:     /////// Give to output device
+
+                 {$IF DEFINED(portaudio)}
+                  1:     /////// Give to output device
                 begin
                   case StreamOut[x].Data.SampleFormat of
                     0:
@@ -3098,6 +3200,7 @@ begin
                   end;
                   // if err <> 0 then status := 0;   // if you want clean buffer ...
                 end;
+                {$endif}
 
                 0:
                 begin  /////// Give to wav file
@@ -3126,7 +3229,8 @@ begin
 
           ///////// Finally give buffer to output
           case StreamOut[x].Data.TypePut of
-            1:     /////// Give to output device
+         {$IF DEFINED(portaudio)}
+          1:     /////// Give to output device
             begin
 
               err :=
@@ -3136,6 +3240,7 @@ begin
 
               // if err <> 0 then status := 0;   // if you want clean buffer ...
             end;
+          {$endif}
 
             0:     /////// Give to wav file
               StreamOut[x].Data.FileBuffer.Data.WriteBuffer(
@@ -3185,18 +3290,25 @@ begin
   if status = 0 then
   begin
          if length(PlugIn) > 0 then
-      for x := 0 to high(PlugIn) do
+
+         {$IF DEFINED(soundtouch)}
+        for x := 0 to high(PlugIn) do
+
         if Plugin[x].Name = 'soundtouch' then
         begin
           soundtouch_clear(Plugin[x].PlugHandle);
           soundtouch_destroyInstance(Plugin[x].PlugHandle);
         end;
+       {$endif}
 
     for x := 0 to high(StreamIn) do
       if (StreamIn[x].Data.HandleSt <> nil) then
         case StreamIn[x].Data.TypePut of
           0: case StreamIn[x].Data.LibOpen of
-              0: sf_close(StreamIn[x].Data.HandleSt);
+            {$IF DEFINED(sndfile)}
+             0: sf_close(StreamIn[x].Data.HandleSt);
+            {$endif}
+             {$IF DEFINED(mpg123)}
               1:
               begin
                 mpg123_close(StreamIn[x].Data.HandleSt);
@@ -3210,23 +3322,29 @@ begin
                 StreamIn[x].Data.httpget.Terminate;
                StreamIn[x].Data.httpget.Free;
                {$ENDIF}
-
               end;
+              {$endif}
             end;
-          1:
+           {$IF DEFINED(portaudio)}
+             1:
           begin
             Pa_StopStream(StreamIn[x].Data.HandleSt);
             Pa_CloseStream(StreamIn[x].Data.HandleSt);
           end;
+           {$endif}
+
         end;
 
        for x := 0 to high(StreamOut) do
     begin
-      if (StreamOut[x].Data.HandleSt <> nil) and (StreamOut[x].Data.TypePut = 1) then
+       {$IF DEFINED(portaudio)}
+       if (StreamOut[x].Data.HandleSt <> nil) and (StreamOut[x].Data.TypePut = 1) then
       begin
        Pa_StopStream(StreamOut[x].Data.HandleSt);
        Pa_CloseStream(StreamOut[x].Data.HandleSt);
       end;
+       {$endif}
+
       if (StreamOut[x].Data.TypePut = 0) then
       begin
         sleep(100);
@@ -3353,18 +3471,35 @@ end;
 procedure Tuos_Init.unloadlibCust(PortAudio, SndFile, Mpg123, SoundTouch: boolean);
                ////// Custom Unload libraries... if true, then delete the library. You may unload what and when you want...
 begin
- if PortAudio = true then  Pa_Unload();
- if SndFile = true then  sf_Unload();
+   {$IF DEFINED(portaudio)}
+  if PortAudio = true then  Pa_Unload();
+    {$endif}
+  {$IF DEFINED(sndfile)}
+  if SndFile = true then  sf_Unload();
+   {$endif}
+  {$IF DEFINED(mpg123)}
  if Mpg123 = true then  mp_Unload();
+   {$endif}
+ {$IF DEFINED(soundtouch)}
  if SoundTouch = true then  st_Unload();
+ {$endif}
+
 end;
 
 procedure Tuos_Init.unloadlib;
 begin
-  Sf_Unload();
+  {$IF DEFINED(sndfile)}
+   Sf_Unload();
+    {$endif}
+  {$IF DEFINED(mpg123)}
   Mp_Unload();
-  Pa_Unload();
-  ST_Unload();
+    {$endif}
+   {$IF DEFINED(portaudio)}
+   Pa_Unload();
+    {$endif}
+   {$IF DEFINED(soundtouch)}
+   ST_Unload();
+   {$endif}
     {$IF DEFINED(windows)}
   Set8087CW(old8087cw);
     {$endif}
@@ -3374,6 +3509,7 @@ end;
 function Tuos_Init.InitLib(): LongInt;
 begin
   Result := -1;
+  {$IF DEFINED(mpg123)}
   if (uosLoadResult.MPloadERROR = 0) then
     if mpg123_init() = MPG123_OK then
     begin
@@ -3386,7 +3522,9 @@ begin
       Result := -2;
       uosLoadResult.MPinitError := 1;
     end;
+   {$endif}
 
+   {$IF DEFINED(portaudio)}
   if (uosLoadResult.PAloadERROR = 0) then
   begin
     uosLoadResult.PAinitError := Pa_Initialize();
@@ -3401,14 +3539,23 @@ begin
     DefDevInAPIInfo := Pa_GetHostApiInfo(DefDevInInfo^.hostApi);
         end;
   end;
+    {$endif}
+
+
   if (Result = -1) and (uosLoadResult.SFloadERROR = 0) then
     Result := 0;
 end;
 
 function Tuos_Init.loadlib(): LongInt;
 begin
-  Result := -1;
-   if (PA_FileName <>  nil) and (PA_FileName <>  '') then
+  Result := 0;
+  uosLoadResult.PAloadERROR := -1;
+  uosLoadResult.SFloadERROR := -1;
+  uosLoadResult.MPloadERROR := -1;
+  uosLoadResult.STloadERROR := -1;
+
+   {$IF DEFINED(portaudio)}
+    if (PA_FileName <>  nil) and (PA_FileName <>  '') then
   begin
     if not fileexists(PA_FileName) then
       uosLoadResult.PAloadERROR := 1
@@ -3426,7 +3573,9 @@ begin
   end
   else
     uosLoadResult.PAloadERROR := -1;
+     {$endif}
 
+   {$IF DEFINED(sndfile)}
   if (SF_FileName <> nil) and (SF_FileName <>  '') then
   begin
     if not fileexists(SF_FileName) then
@@ -3449,7 +3598,8 @@ begin
   end
   else
     uosLoadResult.SFloadERROR := -1;
-
+   {$endif}
+   {$IF DEFINED(mpg123)}
   if (MP_FileName <> nil) and (MP_FileName <>  '') then
   begin
     if not fileexists(MP_FileName) then
@@ -3474,7 +3624,9 @@ begin
   end
   else
     uosLoadResult.MPloadERROR := -1;
+   {$endif}
 
+  {$IF DEFINED(soundtouch)}
   if (Plug_ST_FileName <> nil) and (Plug_ST_FileName <>  '')  then
   begin
     if not fileexists(Plug_ST_FileName) then
@@ -3498,7 +3650,7 @@ begin
   end
   else
     uosLoadResult.STloadERROR := -1;
-
+   {$endif}
     if Result = 0 then
     Result := InitLib();
 end;
@@ -3540,6 +3692,8 @@ begin
  uosInit.unloadlibcust(PortAudio, SndFile, Mpg123, SoundTouch) ;
 end;
 
+
+{$IF DEFINED(portaudio)}
 procedure uos_GetInfoDevice();
 var
   x: LongInt;
@@ -3630,6 +3784,7 @@ begin
  end;
 result := pansichar( devtmp + ' ' );
 end;
+{$endif}
 
 {$IF DEFINED(Java)}
 procedure Tuos_Player.beginprocjava();

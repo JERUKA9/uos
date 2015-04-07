@@ -1,10 +1,18 @@
 unit uos_flat;
 
 // WARNING =>  All those defines must be the same as in uos.pas
-{.$DEFINE library}   // uncomment it for building uos library (native and java)
-{.$DEFINE java}   // uncomment it for building uos java library
-{.$DEFINE ConsoleApp} // if FPC version < 2.7.1 uncomment it for console application
-{$DEFINE webstream} // uncomment for Internet Audio Stream application
+
+{.$DEFINE ConsoleApp} // if FPC version < 2.7.1 uncomment for console application
+
+{.$DEFINE library}   // uncomment for building uos library (native and java)
+{.$DEFINE java}   // uncomment for building uos java library
+
+{$DEFINE portaudio} // uncomment to enable portaudio compiling
+{$DEFINE sndfile} // uncomment to enable sndfile compiling
+{$DEFINE mpg123} // uncomment to enable mpg123 compiling
+{$DEFINE soundtouch} // uncomment to enable soundtouch compiling
+
+{$DEFINE webstream} // uncomment to enable Internet Audio Stream
 
    // This is the "Flat Layer" of uos => for universal procedures.
 
@@ -64,19 +72,20 @@ uses
  TProc = procedure of object;
     {$endif}
 
+ type
+  {$if not defined(fs32bit)}
+     Tcount_t    = cint64;          { used for file sizes          }
+  {$else}
+     Tcount_t    = cint;
+  {$endif}
+
   type
   TDArFloat = array of cfloat;
   type
   TuosF_Data = Tuos_Data;
   TuosF_FFT = Tuos_FFT ;
-  type
-  {$if not defined(fs32bit)}
-     Tsf_count_t    = cint64;          { used for file sizes          }
-  {$else}
-     Tsf_count_t    = cint;
-  {$endif}
 
-    {$IF (FPC_FULLVERSION >= 20701) or DEFINED(LCL) or DEFINED(ConsoleApp) or DEFINED(Windows) or DEFINED(Library)}
+  {$IF (FPC_FULLVERSION >= 20701) or DEFINED(LCL) or DEFINED(ConsoleApp) or DEFINED(Windows) or DEFINED(Library)}
          {$else}
           const
          MSG_CUSTOM1 = FPGM_USER + 1;
@@ -84,9 +93,12 @@ uses
 
 //////////// General public procedure/function (accessible for library uos too)
 
+
+{$IF DEFINED(portaudio)}
 procedure uos_GetInfoDevice();
 
 function uos_GetInfoDeviceStr() : Pansichar ;
+{$endif}
 
 function uos_loadlib(PortAudioFileName, SndFileFileName, Mpg123FileName, SoundTouchFileName: PChar) : LongInt;
         ////// load libraries... if libraryfilename = '' =>  do not load it...  You may load what and when you want...
@@ -103,6 +115,8 @@ procedure uos_CreatePlayer(PlayerIndex: LongInt);
 procedure uos_CreatePlayer(PlayerIndex: LongInt; AParent: TObject);
 {$endif}
 
+
+{$IF DEFINED(portaudio)}
 function uos_AddIntoDevOut(PlayerIndex: LongInt): LongInt;
         //// PlayerIndex : from 0 to what your computer can do ! (depends of ram, cpu, soundcard, ...)
         //// If PlayerIndex already exists, it will be overwriten...
@@ -120,6 +134,7 @@ function uos_AddIntoDevOut(PlayerIndex: LongInt; Device: LongInt; Latency: CDoub
           //////////// FramesCount : default : -1 (= 65536)
           //  result : Output Index in array  , -1 = error
           /// example : OutputIndex1 := uos_AddIntoDevOut(0,-1,-1,-1,-1,0);
+ {$endif}
 
 function uos_AddFromFile(PlayerIndex: LongInt; Filename: PChar): LongInt;
             /////// Add a input from audio file with default parameters
@@ -166,6 +181,7 @@ function uos_AddIntoFile(PlayerIndex: cint32; Filename: PChar): cint32;
               //////////// PlayerIndex : Index of a existing Player
               ////////// FileName : filename of saved audio wav file
 
+{$IF DEFINED(portaudio)}
 function uos_AddFromDevIn(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
              SampleRate: cint32; Channels: cint32; OutputIndex: cint32;
              SampleFormat: cint32; FramesCount : cint32): cint32;
@@ -184,6 +200,7 @@ function uos_AddFromDevIn(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
 function uos_AddFromDevIn(PlayerIndex: cint32): cint32;
               ////// Add a Input from Device Input with custom parameters
               ///////// PlayerIndex : Index of a existing Player
+{$endif}
 
 procedure uos_BeginProc(PlayerIndex: cint32; Proc: TProc);
             ///// Assign the procedure of object to execute  at begining, before loop
@@ -356,16 +373,17 @@ function uos_AddPlugin(PlayerIndex: cint32; PlugName: PChar; SampleRate: cint32;
                      //////////// SampleRate : delault : -1 (44100)
                      //////////// Channels : delault : -1 (2:stereo) (1:mono, 2:stereo, ...)
                      ////// Till now, only 'soundtouch' PlugName is registred.
-
+{$IF DEFINED(soundtouch)}
 procedure uos_SetPluginSoundTouch(PlayerIndex: cint32; PluginIndex: cint32; Tempo: cfloat;
                        Pitch: cfloat; Enable: boolean);
                      ////////// PluginIndex : PluginIndex Index of a existing Plugin.
                      //////////// PlayerIndex : Index of a existing Player
+{$endif}
 
 function uos_GetStatus(PlayerIndex: cint32) : cint32 ;
              /////// Get the status of the player : -1 => error,  0 => has stopped, 1 => is running, 2 => is paused.
 
-procedure uos_Seek(PlayerIndex: cint32; InputIndex: cint32; pos: Tsf_count_t);
+procedure uos_Seek(PlayerIndex: cint32; InputIndex: cint32; pos: Tcount_t);
                      //// change position in sample
 
 procedure uos_SeekSeconds(PlayerIndex: cint32; InputIndex: cint32; pos: cfloat);
@@ -665,8 +683,8 @@ if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
 end;
 
 
-
-function uos_AddFromDevIn(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
+ {$IF DEFINED(portaudio)}
+ function uos_AddFromDevIn(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
              SampleRate: cint32; Channels: cint32; OutputIndex: cint32;
              SampleFormat: cint32; FramesCount : cint32): cint32;
               ////// Add a Input from Device Input with custom parameters
@@ -696,7 +714,7 @@ begin
     if  uosPlayersStat[PlayerIndex] = 1 then
   Result :=  uosPlayers[PlayerIndex].AddFromDevIn(-1, -1, -1, -1, -1, -1, -1) ;
 end;
-
+   {$endif}
 
 function uos_AddIntoFile(PlayerIndex: cint32; Filename: PChar; SampleRate: cint32;
                  Channels: cint32; SampleFormat: cint32 ; FramesCount: cint32): cint32;
@@ -728,7 +746,8 @@ end;
 
 
 
-function uos_AddIntoDevOut(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
+{$IF DEFINED(portaudio)}
+ function uos_AddIntoDevOut(PlayerIndex: cint32; Device: cint32; Latency: CDouble;
             SampleRate: cint32; Channels: cint32; SampleFormat: cint32 ; FramesCount: cint32 ): cint32;
           ////// Add a Output into Device Output with custom parameters
 begin
@@ -755,7 +774,7 @@ begin
     if  uosPlayersStat[PlayerIndex] = 1 then
   Result :=  uosPlayers[PlayerIndex].AddIntoDevOut(-1, -1, -1, -1, -1 ,-1);
 end;
-
+{$endif}
 
 function uos_AddFromFile(PlayerIndex: cint32; Filename: PChar; OutputIndex: cint32;
               SampleFormat: cint32 ; FramesCount: cint32): cint32;
@@ -822,7 +841,7 @@ begin
     if  uosPlayersStat[PlayerIndex] = 1 then
   Result := uosPlayers[PlayerIndex].AddPlugin(PlugName, SampleRate, Channels);
 end;
-
+{$IF DEFINED(soundtouch)}
 procedure uos_SetPluginSoundTouch(PlayerIndex: cint32; PluginIndex: cint32; Tempo: cfloat;
                        Pitch: cfloat; Enable: boolean);
                      ////////// PluginIndex : PluginIndex Index of a existing Plugin.
@@ -832,8 +851,9 @@ begin
     if  uosPlayersStat[PlayerIndex] = 1 then
  uosPlayers[PlayerIndex].SetPluginSoundTouch(PluginIndex, Tempo, Pitch, Enable);
 end;
+{$endif}
 
-procedure uos_Seek(PlayerIndex: cint32; InputIndex: cint32; pos: Tsf_count_t);
+procedure uos_Seek(PlayerIndex: cint32; InputIndex: cint32; pos: Tcount_t);
                      //// change position in sample
 begin
   if (length(uosPlayers) > 0) and (PlayerIndex +1 <= length(uosPlayers)) then
@@ -1131,8 +1151,9 @@ uos.uos_unloadlibcust(PortAudio, SndFile, Mpg123, SoundTouch) ;
 uosLoadResult:= uos.uosLoadResult;
 end;
 
-procedure uos_GetInfoDevice();
 
+{$IF DEFINED(portaudio)}
+procedure uos_GetInfoDevice();
 begin
 uos.uos_GetInfoDevice();
 setlength(uosDeviceInfos,length(uos.uosDeviceInfos));
@@ -1151,6 +1172,7 @@ uosDeviceCount:= uos.uosDeviceCount;
 uosDefaultDeviceIn:= uos.uosDefaultDeviceIn;
 uosDefaultDeviceOut:= uos.uosDefaultDeviceOut;
 end;
+ {$endif}
 
 // Create the player , PlayerIndex1 : from 0 to what your computer can do !
 //// If PlayerIndex exists already, it will be overwriten...
