@@ -485,6 +485,7 @@ end;
   begin
     {%region 'Auto-generated GUI code' -fold}
 
+
     {@VFD_BODY_BEGIN: Simpleplayer}
     Name := 'Simpleplayer';
     SetPosition(467, 0, 502, 403);
