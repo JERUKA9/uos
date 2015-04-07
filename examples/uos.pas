@@ -104,7 +104,7 @@ uses
 
 
 const
-  uos_version : LongInt = 15150406 ;
+  uos_version : LongInt = 15150407 ;
 
 type
   TDArFloat = array of cfloat;
@@ -205,7 +205,7 @@ type
   Tuos_Data = record  /////////////// common data
     Enabled: boolean;
     TypePut: integer;
-    ////// -1 : nothing,  //// for Input : 0:from audio file, 1:from input device (like mic), 2:from internet audio stream, 3:from synthe(TOODO)
+    ////// -1 : nothing,  //// for Input : 0:from audio file, 1:from input device (like mic), 2:from internet audio stream, 3:from synthe(TODO)
     //// for Output : 0:into wav file, 1:into output device, 2:to other stream
     Seekable: boolean;
     Status: integer;
@@ -976,7 +976,7 @@ begin
      end;
     {$endif}
 
-  start;   // resume;  //  { if fpc version <= 2.4.4}
+  start;   // resume;  { if fpc version <= 2.4.4}
   Status := 1;
   RTLeventSetEvent(evPause);
 end;
@@ -3665,7 +3665,7 @@ function uos_loadlib(PortAudioFileName, SndFileFileName, Mpg123FileName, SoundTo
    Set8087CW($133f);
     {$endif}
 
-   uosInit := TUOS_Init.Create;   //// Create Iibraries Loader-Init
+   uosInit := TUOS_Init.Create;   //// Create Libraries Loader-Init
    end;
    uosInit.PA_FileName := PortAudioFileName;
    uosInit.SF_FileName := SndFileFileName;
