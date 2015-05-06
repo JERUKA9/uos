@@ -104,7 +104,7 @@ uses
 
 
 const
-  uos_version : LongInt = 151505206 ;
+  uos_version : LongInt = 15150506 ;
 
 type
   TDArFloat = array of cfloat;
@@ -1953,6 +1953,7 @@ begin
           2:
           begin
             fft.LeftResult := round((res * 1) + (res2 * fft.gain));
+
             if ifbuf = True then
               ps^[i] := round((res * 1) + (res2 * fft.gain));
           end;
