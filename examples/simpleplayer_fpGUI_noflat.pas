@@ -986,7 +986,7 @@ end;
    FilenameEdit1.FileName := ordir + 'lib/freeBSD/32bit/libportaudio-32.so';
      FilenameEdit2.FileName := ordir + 'lib/freeBSD/32bit/libsndfile-32.so';
     FilenameEdit3.FileName := ordir + 'lib/freeBSD/32bit/libmpg123-32.so';
-    FilenameEdit5.FileName := '';
+     FilenameEdit5.FileName := '';
 {$endif}
      FilenameEdit4.FileName := ordir + 'sound/test.mp3';
  {$ENDIF}

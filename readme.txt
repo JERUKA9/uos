@@ -8,7 +8,7 @@ With uos you can:
 
 . Listen to mp3, ogg, wav, flac,... audio files.
 
-. With 16, 32 or float 32 bit resolution.
+. Deal with 16, 32 or float 32 bit resolution.
 
 . Do internet audio streaming.
 
@@ -16,13 +16,13 @@ With uos you can:
 
 . Add DSP effects and filters, however many you want and record it.
 
-. Listen to multiple inputs and outputs.
+. Listen to multiple input and output.
 
 uos uses the SoundTouch, PortAudio, SndFile and Mpg123 audio libraries.
 
 Included in the package:
 . Examples fpGUI, LCL and console.
-. Binaries of libraries for Linux, Windows, OSX, freeBSD.
+. Binaries of libraries for Linux, Windows, Mac osX, freeBSD.
 
 Fred van Stappen
 fiens@hotmail.com

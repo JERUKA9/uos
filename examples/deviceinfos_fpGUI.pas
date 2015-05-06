@@ -2,8 +2,7 @@ program deviceinfos_fpGUI;
 
 {$mode objfpc}{$H+}
 
-
-uses
+ uses
     SysUtils,
   fpg_base,
   fpg_main,

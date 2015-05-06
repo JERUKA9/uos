@@ -73,6 +73,7 @@
     <Other>
       <WriteFPCLogo Value="False"/>
       <CustomOptions Value="-FUunits"/>
+      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
 </CONFIG>

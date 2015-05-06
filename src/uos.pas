@@ -104,7 +104,7 @@ uses
 
 
 const
-  uos_version : LongInt = 15150407 ;
+  uos_version : LongInt = 151505206 ;
 
 type
   TDArFloat = array of cfloat;
@@ -1670,7 +1670,7 @@ begin
     2:
     begin
       ps := @Data.Buffer;
-      for x := 0 to (Data.OutFrames) do
+      for x := 0 to (Data.OutFrames -1) do
         if odd(x) then
           ps^[x] := trunc(ps^[x] * vright)
         else
@@ -1679,7 +1679,7 @@ begin
     1:
     begin
       pl := @Data.Buffer;
-      for x := 0 to (Data.OutFrames) do
+      for x := 0 to (Data.OutFrames -1) do
         if odd(x) then
           pl^[x] := trunc(pl^[x] * vright)
         else
